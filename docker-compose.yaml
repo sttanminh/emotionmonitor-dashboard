@@ -1,0 +1,19 @@
+version: '3.9'
+services:
+  postgres-db:
+    image: postgres:latest
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_DB: dev_insights
+      POSTGRES_USER: dev_team
+      POSTGRES_PASSWORD: secret
+
+  flyway:
+    image: flyway/flyway:latest
+    command: -url=jdbc:postgresql://postgres-db:5432/dev_insights -user=dev_team -password=secret -connectRetries=60 migrate
+    volumes:
+      - ./db:/flyway/sql
+    depends_on:
+      - postgres-db
+  
