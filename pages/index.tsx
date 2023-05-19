@@ -5,7 +5,7 @@ import React from 'react';
 
 const Page: NextPageWithLayout = () => {
   return <>
-    <div>{"Hello world"}</div> 
+    <div></div> 
   </>
 };
  
