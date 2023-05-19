@@ -1,14 +1,19 @@
 /* layout.module.css */
 
 .layout {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  background-color: #e9e5e5; /* Replace with your desired background color */
   display: flex;
+  flex-direction: column;
 }
 
 .navigation {
   position: fixed;
   left: 0;
   top: 0;
-  background-color: hwb(0 53% 47%);
+  background-color: hwb(0 100% 0%);
   color: #ffffff;
   width: 3.4%;
   height: 100vh;

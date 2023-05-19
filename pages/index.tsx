@@ -4,15 +4,16 @@ import type { NextPageWithLayout } from './_app';
 import React from 'react';
 
 const Page: NextPageWithLayout = () => {
-  return <>
-    <div></div> 
-  </>
+  return (
+    <>
+    </>
+  );
 };
- 
+
 Page.getLayout = function getLayout(page: ReactElement) {
   return (
     <Layout>{page}</Layout>
   );
 };
- 
+
 export default Page;
