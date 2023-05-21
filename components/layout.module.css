@@ -1,0 +1,65 @@
+/* layout.module.css */
+
+.layout {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  background-color: #e9e5e5; /* Replace with your desired background color */
+  display: flex;
+  flex-direction: column;
+}
+
+.navigation {
+  position: fixed;
+  left: 0;
+  top: 0;
+  background-color: hwb(0 100% 0%);
+  color: #ffffff;
+  width: 3.4%;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  border-radius: 4px; /* Add border radius for curved borders */
+}
+
+.navButton {
+  padding: 10px;
+  margin-bottom: 10px;
+  text-align: center;
+  width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  background-color: transparent; /* Set the background color to transparent */
+  border: none; /* Remove the border */
+}
+
+.settingsButton {
+  margin-top: auto;
+  padding: 10px;
+  text-align: center;
+  width: 100%;
+  background-color: transparent; /* Set the background color to transparent */
+  border: none; /* Remove the border */
+}
+
+.trelloIcon {
+  color: hsl(0, 0%, 4%); /* Color for Trello icon */
+}
+
+.jiraIcon {
+  color: #0052CC; /* Color for Jira icon */
+}
+
+.gitIcon {
+  color: #F05032; /* Color for Git icon */
+}
+
+.settingsIcon {
+  color: #423f3f; /* Color for Settings icon */
+}
+
+
