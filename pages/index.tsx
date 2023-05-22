@@ -124,93 +124,69 @@ const Page: NextPageWithLayout = () => {
   // const selectSegment = (segment: number) => setSegmentSelected(segment)
 
   return (
-    
-    <div style={{marginLeft: "90px", marginTop: "10px"}}>
-
-
-      <div style={{ marginBottom: "20px", width: "100%"}}>
-        <select value={activeProject} onChange={(e) => setActiveProject(e.target.value)}
-        style={{ 
-          width: "97%", 
-          height: "50px", 
-          appearance: "none", 
-          borderRadius: "10px",
-          borderColor: "black",
-          paddingLeft: "0.5rem",
-          paddingRight: "1.5rem",
-          backgroundColor: "rgb(174, 173, 173)",
-          fontSize: '23px',
-          backgroundImage: `url('data:image/svg+xml;utf8,<svg fill="black" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M5 8l5 5 5-5H5z"/></svg>')`,
-          backgroundPosition: 'right 10px center',
-          backgroundRepeat: 'no-repeat',
-          backgroundSize: '24px',
-        }}
+    <div className="page-container">
+      <div className="select-container">
+        <select
+          value={activeProject}
+          onChange={(e) => setActiveProject(e.target.value)}
         >
           <option value="Option 1">Project 1</option>
           <option value="Option 2">Project 2</option>
         </select>
       </div>
 
-      <div style={{ marginBottom: "0px", border: "1px solid black", borderRadius: "8px", display: "flex", width: "18%", height: "27px", overflow: "hidden", background: "rgb(174, 173, 173)" }}>
-        <button 
-          style={{ flex: "1", padding: "10px", backgroundColor: summaryTypeSelection === "By Task" ?  "rgb(153, 204, 255)" : "transparent" , border: "none", color: "white" }}
-          onClick={() => setSummaryTypeSelection("By Task")}
-        >
-          By Task
-        </button>
-        <button 
-          style={{ flex: "1", padding: "10px", backgroundColor: summaryTypeSelection === "Overall" ? "rgb(153, 204, 255)" : "transparent", border: "none", color: "white" }}
-          onClick={() => setSummaryTypeSelection("Overall")}
-        >
-          Overall
-        </button>
-      </div>
-
-
-      {summaryTypeSelection !== "Overall" && <div style={{ display: "flex", alignItems: "center", padding: "10px", marginLeft: "250px", marginTop: "-40px" }}>
-          <button style={{border: "none", backgroundColor: "transparent"}} onClick={() => navigateOptions(-1, tasks, activeTaskLabel, setActiveTaskLabel)}>
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-caret-left" viewBox="0 0 16 16">
-          <path d="M10 12.796V3.204L4.519 8 10 12.796zm-.659.753-5.48-4.796a1 1 0 0 1 0-1.506l5.48-4.796A1 1 0 0 1 11 3.204v9.592a1 1 0 0 1-1.659.753z"/>
-          </svg>  
-          </button>
-          <div style={{borderRadius: "5px", border: "1px solid black", padding: "5px", width: "70%", textAlign: "center", background: "rgb(233, 233, 233)"}}>{activeTaskLabel}</div>
-          <button style={{border: "none", backgroundColor: "transparent"}} onClick={() => navigateOptions(1, tasks, activeTaskLabel, setActiveTaskLabel)}>
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-caret-right" viewBox="0 0 16 16">
-  <path d="M6 12.796V3.204L11.481 8 6 12.796zm.659.753 5.48-4.796a1 1 0 0 0 0-1.506L6.66 2.451C6.011 1.885 5 2.345 5 3.204v9.592a1 1 0 0 0 1.659.753z"/>
-</svg>
-          </button>
-        </div>}
-        <div style={{ display: "flex", alignItems: "center", padding: "10px", marginLeft: "1130px", marginTop: "-51px"}}>
-          <button style={{border: "none", backgroundColor: "transparent"}} onClick={() => navigateOptions(-1, weeks, summaryTimeSelector, setSummaryTimeSelector)}>
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-caret-left" viewBox="0 0 16 16">
-          <path d="M10 12.796V3.204L4.519 8 10 12.796zm-.659.753-5.48-4.796a1 1 0 0 1 0-1.506l5.48-4.796A1 1 0 0 1 11 3.204v9.592a1 1 0 0 1-1.659.753z"/>
-          </svg>  
-          </button>
-          <div style={{borderRadius: "5px", border: "1px solid black", padding: "5px", width: "50%", textAlign: "center", background: "rgb(233, 233, 233)"}}>{summaryTimeSelector}</div>
-          <button style={{border: "none", backgroundColor: "transparent"}} onClick={() => navigateOptions(1, weeks, summaryTimeSelector, setSummaryTimeSelector)}>
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-caret-right" viewBox="0 0 16 16">
-  <path d="M6 12.796V3.204L11.481 8 6 12.796zm.659.753 5.48-4.796a1 1 0 0 0 0-1.506L6.66 2.451C6.011 1.885 5 2.345 5 3.204v9.592a1 1 0 0 0 1.659.753z"/>
-</svg>
-          </button>
-        </div>
-      
-    <div style={{ display: 'flex', marginTop: '20px'}}>
-      <div style={{ flex: '0 0 43%', marginRight: '20px', height: '300px', borderRadius: '10px', background: 'white', padding: '20px' }}>
-        {/* Commenting this out to reduce scope for now (also feel like it is possible to use a premade component for this) and because the state management is all inconsistent
-        <div style={{ marginBottom: "0px", border: "1px solid black", borderRadius: "8px", display: "flex", width: "40%", height: "27px", overflow: "hidden", background: "rgb(174, 173, 173)", marginLeft: '360px', marginTop: '5px' }}>
-            <button onClick={() => selectSegment(1)} style={{ flex: '1', backgroundColor: segmentSelected === 1 ? "rgb(153, 204, 255)" : "transparent" , border: "none", color: "white"  }}>Negative</button>
-            <button onClick={() => selectSegment(2)} style={{ flex: '1', backgroundColor: segmentSelected === 2 ? "rgb(153, 204, 255)" : "transparent" , border: "none", color: "white"  }}>Positive</button>
-            <button onClick={() => selectSegment(3)} style={{ flex: '1', backgroundColor: segmentSelected === 3 ? "rgb(153, 204, 255)" : "transparent" , border: "none", color: "white"  }}>All</button>
-          </div> */}
-          <HorizontalBarGraph data={summaryTypeSelection === "Overall" ? data.Overall : data[activeTaskLabel]}/>
-      </div>
-      <div style={{ flex: '0 0 43%', marginLeft: '10px', marginRight: '10px', height: '300px', borderRadius: '10px', background: 'white', padding: '20px' }}>
-        <h2>{activeTaskLabel}</h2>
-        <p>{`${activeTaskLabel} summary!`}</p>
-      </div>
+        <div className="selections-container">
+    <div className="button-container">
+      <button
+        className={summaryTypeSelection === "By Task" ? "active" : ""}
+        onClick={() => setSummaryTypeSelection("By Task")}
+      >
+        By Task
+      </button>
+      <button
+        className={summaryTypeSelection === "Overall" ? "active" : ""}
+        onClick={() => setSummaryTypeSelection("Overall")}
+      >
+        Overall
+      </button>
     </div>
 
-</div>
+    {summaryTypeSelection !== "Overall" && (
+      <div className="label-container">
+        <button
+          className="arrow-button"
+          onClick={() => navigateOptions(-1, tasks, activeTaskLabel, setActiveTaskLabel)}
+        >←</button>
+        <div className="label-task">{activeTaskLabel}</div>
+        <button
+          className="arrow-button"
+          onClick={() => navigateOptions(1, tasks, activeTaskLabel, setActiveTaskLabel)}
+        >→</button>
+      </div>
+    )}
+
+    <div className="label-container-2">
+      <button
+        className="arrow-button"
+        onClick={() => navigateOptions(-1, weeks, summaryTimeSelector, setSummaryTimeSelector)}
+      >←</button>
+      <div className="label-week">{summaryTimeSelector}</div>
+      <button
+        className="arrow-button"
+        onClick={() => navigateOptions(1, weeks, summaryTimeSelector, setSummaryTimeSelector)}
+      >→</button>
+    </div>
+  </div>
+      <div className="flex-container">
+        <div className="graph-container">
+          <HorizontalBarGraph data={summaryTypeSelection === "Overall" ? data.Overall : data[activeTaskLabel]} />
+        </div>
+        <div className="task-info-container">
+          <h2>{activeTaskLabel}</h2>
+          <p>{`${activeTaskLabel} summary!`}</p>
+        </div>
+      </div>
+    </div>
   );
 };
 
