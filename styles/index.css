@@ -3,6 +3,9 @@
     margin-top: 10px;
   }
   
+  .page-config-container{
+    display: flex;
+  }
   .select-container {
     margin-bottom: 20px;
     width: 100%;
@@ -25,7 +28,8 @@
   }
   
   .button-container {
-    margin-bottom: 0px;
+    margin-top: 10px;
+
     border: 1px solid black;
     border-radius: 8px;
     display: flex;
@@ -46,7 +50,7 @@
     background-color: rgb(153, 204, 255);
   }
   
-  .label-container {
+  .task-selector {
     display: flex;
     align-items: center;
     padding: 10px;
@@ -54,11 +58,11 @@
     width: max-content;
   }
 
-  .label-container-2 {
+  .time-selector {
     display: flex;
     align-items: center;
     padding: 10px;
-
+    float: right;
   }
   
   .label-container .arrow-button {
@@ -116,15 +120,7 @@
     background: white;
     padding: 20px;
   }
-  
-  .task-info-container h2 {
-    /* Add additional styling for h2 if needed */
-  }
-  
-  .task-info-container p {
-    /* Add additional styling for p if needed */
-  }
-  
+
   .selections-container {
     display: flex;
     justify-content: space-between;

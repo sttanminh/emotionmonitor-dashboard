@@ -1,14 +1,13 @@
-import { Layout } from '@/components/layout';
-import { ReactElement, Suspense } from 'react';
+import { Layout } from '@/components/layout/layout';
+import { ReactElement} from 'react';
 import type { NextPageWithLayout } from './_app';
 import React, {useState} from 'react';
-import {HorizontalBarGraph, GraphData} from '@/components/horizontalBarGraph';
+import {GraphData} from '@/components/graph/horizontalBarGraph';
+import { EmotionSummaryModule } from '@/components/modules/emotionSummaryModule';
+import { TaskInfoModule } from '@/components/modules/taskInfoModule';
+import { NavigationBar } from '@/components/navigationBar/navigationBar';
+import { ProjectSelector } from '@/components/ProjectSelector/projectSelector';
 
-
-// using this home made mod function because % doesn't play well with negatives
-function mod(n: number, m: number) {
-  return ((n % m) + m) % m;
-}
 
 // dummy data for selectors
 const tasks = ["Task 1", "Task 2", "Task 3"];
@@ -113,11 +112,7 @@ const Page: NextPageWithLayout = () => {
   const [activeTaskLabel, setActiveTaskLabel] = useState<string>("Task 1");
   const [summaryTimeSelector, setSummaryTimeSelector] = useState("Week 1");
 
-  const navigateOptions = (direction: 1 | -1, options: string[], current: string, setter: React.Dispatch<React.SetStateAction<string>>) => {
-    const currentIndex = options.indexOf(current);
-    const nextItem = options[mod((currentIndex + direction), options.length)];
-    setter(nextItem);
-  };
+  
 
   // const [segmentSelected, setSegmentSelected] = useState(1);
 
@@ -125,68 +120,39 @@ const Page: NextPageWithLayout = () => {
 
   return (
     <div className="page-container">
-      <div className="select-container">
-        <select
-          value={activeProject}
-          onChange={(e) => setActiveProject(e.target.value)}
-        >
-          <option value="Option 1">Project 1</option>
-          <option value="Option 2">Project 2</option>
-        </select>
+      <ProjectSelector setActiveProject={setActiveProject} activeProject={{name: activeProject, id: activeProject}} projects={[{name: "Project 1", id: "project1"}, {name: "Project 2", id: "project2"}, {name: "Project 3", id: "project3"}]}/>
+
+      <div className="page-config-container">
+        <div className="button-container">
+          <button
+            className={summaryTypeSelection === "By Task" ? "active" : ""}
+            onClick={() => setSummaryTypeSelection("By Task")}
+          >
+            By Task
+          </button>
+          <button
+            className={summaryTypeSelection === "Overall" ? "active" : ""}
+            onClick={() => setSummaryTypeSelection("Overall")}
+          >
+            Overall
+          </button>
+        </div>
+
+        {summaryTypeSelection !== "Overall" && (
+          <div className="task-selector">
+            <NavigationBar activeItem={activeTaskLabel} setActiveItem={setActiveTaskLabel} selectionItems={tasks} labelStyle="label-task"/>
+          </div>
+        )}
+
+        <div className="time-selector">
+          <NavigationBar activeItem={summaryTimeSelector} setActiveItem={setSummaryTimeSelector} selectionItems={weeks} labelStyle="label-week"/>
+        </div>
       </div>
-
-        <div className="selections-container">
-    <div className="button-container">
-      <button
-        className={summaryTypeSelection === "By Task" ? "active" : ""}
-        onClick={() => setSummaryTypeSelection("By Task")}
-      >
-        By Task
-      </button>
-      <button
-        className={summaryTypeSelection === "Overall" ? "active" : ""}
-        onClick={() => setSummaryTypeSelection("Overall")}
-      >
-        Overall
-      </button>
-    </div>
-
-    {summaryTypeSelection !== "Overall" && (
-      <div className="label-container">
-        <button
-          className="arrow-button"
-          onClick={() => navigateOptions(-1, tasks, activeTaskLabel, setActiveTaskLabel)}
-        >←</button>
-        <div className="label-task">{activeTaskLabel}</div>
-        <button
-          className="arrow-button"
-          onClick={() => navigateOptions(1, tasks, activeTaskLabel, setActiveTaskLabel)}
-        >→</button>
-      </div>
-    )}
-
-    <div className="label-container-2">
-      <button
-        className="arrow-button"
-        onClick={() => navigateOptions(-1, weeks, summaryTimeSelector, setSummaryTimeSelector)}
-      >←</button>
-      <div className="label-week">{summaryTimeSelector}</div>
-      <button
-        className="arrow-button"
-        onClick={() => navigateOptions(1, weeks, summaryTimeSelector, setSummaryTimeSelector)}
-      >→</button>
-    </div>
-  </div>
       <div className="flex-container">
-        <div className="graph-container">
-          <HorizontalBarGraph data={summaryTypeSelection === "Overall" ? data.Overall : data[activeTaskLabel]} />
-        </div>
-        <div className="task-info-container">
-          <h2>{activeTaskLabel}</h2>
-          <p>{`${activeTaskLabel} summary!`}</p>
-        </div>
+          <EmotionSummaryModule data={summaryTypeSelection === "Overall" ? data.Overall : data[activeTaskLabel]} />
+          <TaskInfoModule data={{taskID: 12345, taskName: activeTaskLabel}} />
       </div>
-    </div>
+  </div>
   );
 };
 
