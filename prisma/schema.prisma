@@ -8,11 +8,11 @@ generator client {
 }
 
 model TrelloCard {
-  id         String       @id @default(auto()) @map("_id") @db.ObjectId
-  taskName   String
-  project    Project      @relation(fields: [projectId], references: [id])
-  projectId  String       @db.ObjectId
-  Submission Submission[]
+  id          String       @id @map("_id") @db.ObjectId
+  taskName    String
+  project     Project      @relation(fields: [projectId], references: [id])
+  projectId   String       @db.ObjectId
+  submissions Submission[]
 }
 
 model JiraCard {
@@ -28,7 +28,7 @@ model JiraCard {
 }
 
 model User {
-  id              String       @id @default(auto()) @map("_id") @db.ObjectId
+  id              String       @id @map("_id") @db.ObjectId
   name            String
   email           String?
   submissions     Submission[]
@@ -38,20 +38,24 @@ model User {
 }
 
 model Project {
-  id          String       @id @map("_id") @db.ObjectId
-  source      Source
-  name        String
-  metricIds   String[]     @db.ObjectId
-  metrics     Metric[]     @relation(fields: [metricIds], references: [id])
-  adminIds    String[]     @db.ObjectId
-  adminList   User[]       @relation(fields: [adminIds], references: [id])
-  trelloCards TrelloCard[]
-  jiraCards   JiraCard[]
+  id              String       @id @map("_id") @db.ObjectId
+  source          Source
+  name            String
+  emojis          String[]
+  referenceNumber Int
+  levelLabel      String
+  metricIds       String[]     @db.ObjectId
+  metrics         Metric[]     @relation(fields: [metricIds], references: [id])
+  adminIds        String[]     @db.ObjectId
+  adminList       User[]       @relation(fields: [adminIds], references: [id])
+  trelloCards     TrelloCard[]
+  jiraCards       JiraCard[]
 }
 
 model Metric {
   id         String    @id @default(auto()) @map("_id") @db.ObjectId
   name       String    @unique
+  default    Boolean   @default(false)
   projectIds String[]  @db.ObjectId
   Projects   Project[] @relation(fields: [projectIds], references: [id])
   ratings    Rating[]
