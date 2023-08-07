@@ -7,8 +7,41 @@ import { EmotionSummaryModule } from '@/components/modules/emotionSummaryModule'
 import { TaskInfoModule } from '@/components/modules/taskInfoModule';
 import { NavigationBar } from '@/components/navigationBar/navigationBar';
 import { ProjectSelector } from '@/components/ProjectSelector/projectSelector';
+import MetricGraphs from '@/components/GraphByLevel/MetricGraphs';
 
-
+//dummy data for metricsGraphp
+const metric = {
+  emo1: {
+    level1: 10,
+    level2: 20,
+    level3: 15,
+  },
+  emo2: {
+    level1: 10,
+    level2: 20,
+    level3: 15,
+  },
+  emo3: {
+    level1: 10,
+    level2: 20,
+    level3: 15,
+  },
+  emo4: {
+    level1: 10,
+    level2: 20,
+    level3: 15,
+  },
+  emo5: {
+    level1: 10,
+    level2: 20,
+    level3: 15,
+  },
+  emo6: {
+    level1: 10,
+    level2: 2,
+    level3: 15,
+  },
+};
 // dummy data for selectors
 const tasks = ["Task 1", "Task 2", "Task 3"];
 const weeks = ["Week 1", "Week 2", "Week 3"];
@@ -151,6 +184,11 @@ const Page: NextPageWithLayout = () => {
       <div className="flex-container">
           <EmotionSummaryModule data={summaryTypeSelection === "Overall" ? data.Overall : data[activeTaskLabel]} />
           <TaskInfoModule data={{taskID: 12345, taskName: activeTaskLabel}} />
+      </div>
+      <div className="metricGraph">
+        <MetricGraphs metric={metric} />
+        <MetricGraphs metric={metric} />
+        <MetricGraphs metric={metric} />
       </div>
   </div>
   );

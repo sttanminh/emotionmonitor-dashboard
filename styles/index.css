@@ -1,7 +1,16 @@
 .page-container {
     margin-left: 90px;
     margin-top: 10px;
+
   }
+
+.metricGraph{
+  background-color: white;
+  margin-top: 10px;
+  border: 0px solid;
+  width: fit-content;
+  border-radius: 5px;
+}
   
   .page-config-container{
     display: flex;
