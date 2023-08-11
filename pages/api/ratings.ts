@@ -1,10 +1,7 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
-import dotenv from "dotenv";
 import prisma from "@/lib/prisma";
-import { Prisma, Rating } from "@prisma/client";
 
-dotenv.config();
 const apiKey = process.env.API_KEY!;
 const apiToken = process.env.API_TOKEN!;
 

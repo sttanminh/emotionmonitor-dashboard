@@ -1,19 +1,31 @@
-import { FC } from "react";
+import { TrelloCard } from "@prisma/client";
+import { FC, useEffect, useState } from "react";
 
-export type TaskData = {
-    taskID: number
-    taskName: string
-}
 interface Props {
-  data: TaskData;
-
+  id?: string;
 }
 
-export const TaskInfoModule: FC<Props> = ({data}: Props) => {
-return (
-  <div className="task-info-container">
-    <h2>{data.taskName}</h2>
-    <p>{`${data.taskName} summary!`}</p>
-  </div>
-  )
-}
+export const TaskInfoModule: FC<Props> = ({ id }: Props) => {
+  const [data, setData] = useState<TrelloCard | undefined>(undefined);
+  const [isLoading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch(`/api/trelloCard?id=${id}`)
+      .then((res) => res.json())
+      .then((data) => {
+        setData(data.trelloCard);
+        setLoading(false);
+      });
+  }, [id]);
+
+  if (isLoading) return <p>Loading...</p>;
+  if (!data) return <p>No profile data</p>;
+  return (
+    data && (
+      <div className="task-info-container">
+        <h2>{data.taskName}</h2>
+        <p>{`${data.description}`}</p>
+      </div>
+    )
+  );
+};

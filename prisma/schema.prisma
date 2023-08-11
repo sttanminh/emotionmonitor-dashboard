@@ -10,6 +10,7 @@ generator client {
 model TrelloCard {
   id          String       @id @map("_id") @db.ObjectId
   taskName    String
+  description String
   project     Project      @relation(fields: [projectId], references: [id])
   projectId   String       @db.ObjectId
   submissions Submission[]
