@@ -43,8 +43,8 @@ model Project {
   source          Source
   name            String
   emojis          String[]
-  referenceNumber Int
-  levelLabel      String
+  referenceNumber Int?
+  levelLabel      String?
   metricIds       String[]     @db.ObjectId
   metrics         Metric[]     @relation(fields: [metricIds], references: [id])
   adminIds        String[]     @db.ObjectId
