@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { Layout } from '@/components/layout/layout';
 import { ReactElement} from 'react';
 import type { NextPageWithLayout } from './_app';
@@ -136,36 +137,82 @@ const data: {[key in string]: GraphData[]} = {
       emotionAv: 30
     },
   ]
+=======
+import { Layout } from "@/components/layout/layout";
+import { ReactElement, useEffect } from "react";
+import type { NextPageWithLayout } from "./_app";
+import React, { useState } from "react";
+import { EmotionSummaryModule } from "@/components/modules/emotionSummaryModule";
+import { TaskInfoModule } from "@/components/modules/taskInfoModule";
+import { NavigationBar } from "@/components/navigationBar/navigationBar";
+import { ProjectSelector } from "@/components/ProjectSelector/projectSelector";
+import { Project, TrelloCard } from "@prisma/client";
+
+export interface ProjectPlus extends Project {
+  trelloCards: Task[];
 }
+export interface Task {
+  id: string;
+  taskName: string;
+>>>>>>> origin/ellen/connect-db
+}
+// dummy projects for selectors
+const weeks = ["Week 1", "Week 2", "Week 3"];
 
 const Page: NextPageWithLayout = () => {
-  const [activeProject, setActiveProject] = useState("Project 1");
-  const [summaryTypeSelection, setSummaryTypeSelection] = useState("By Task");
+  const [projects, setprojects] = useState<ProjectPlus[] | null>(null);
+  const [isLoading, setLoading] = useState(true);
+  const [activeProject, setActiveProject] = useState<ProjectPlus>();
+  const [summaryTypeSelection, setSummaryTypeSelection] = useState("Overall");
 
-  const [activeTaskLabel, setActiveTaskLabel] = useState<string>("Task 1");
+  const [activeTask, setActiveTask] = useState<Task>();
   const [summaryTimeSelector, setSummaryTimeSelector] = useState("Week 1");
+  useEffect(() => {
+    fetch(`/api/projects`)
+      .then((res) => res.json())
+      .then((projects) => {
+        setprojects(projects.projects as ProjectPlus[]);
+        setLoading(false);
+      });
+  }, []);
 
-  
+  useEffect(() => {
+    if (projects != null) {
+      setActiveProject(projects[0]);
+    }
+  }, [projects]);
 
-  // const [segmentSelected, setSegmentSelected] = useState(1);
-
-  // const selectSegment = (segment: number) => setSegmentSelected(segment)
+  if (isLoading || !activeProject) return <p>Loading...</p>;
+  if (!projects || !activeProject) {
+    console.log(projects, activeProject);
+    return <p>No profile projects</p>;
+  }
 
   return (
     <div className="page-container">
-      <ProjectSelector setActiveProject={setActiveProject} activeProject={{name: activeProject, id: activeProject}} projects={[{name: "Project 1", id: "project1"}, {name: "Project 2", id: "project2"}, {name: "Project 3", id: "project3"}]}/>
+      <ProjectSelector
+        setActiveProject={setActiveProject}
+        activeProject={activeProject}
+        projects={projects}
+      />
 
       <div className="page-config-container">
         <div className="button-container">
           <button
             className={summaryTypeSelection === "By Task" ? "active" : ""}
-            onClick={() => setSummaryTypeSelection("By Task")}
+            onClick={() => {
+              setSummaryTypeSelection("By Task");
+              setActiveTask(activeProject.trelloCards[0]);
+            }}
           >
             By Task
           </button>
           <button
             className={summaryTypeSelection === "Overall" ? "active" : ""}
-            onClick={() => setSummaryTypeSelection("Overall")}
+            onClick={() => {
+              setSummaryTypeSelection("Overall");
+              setActiveTask(undefined);
+            }}
           >
             Overall
           </button>
@@ -173,31 +220,51 @@ const Page: NextPageWithLayout = () => {
 
         {summaryTypeSelection !== "Overall" && (
           <div className="task-selector">
-            <NavigationBar activeItem={activeTaskLabel} setActiveItem={setActiveTaskLabel} selectionItems={tasks} labelStyle="label-task"/>
+            <NavigationBar
+              activeItem={activeTask!.taskName}
+              setActiveItem={(taskName) =>
+                setActiveTask(
+                  activeProject.trelloCards.find(
+                    (card) => card.taskName == taskName
+                  )!
+                )
+              }
+              selectionItems={activeProject.trelloCards.map(
+                (task) => task.taskName
+              )}
+              labelStyle="label-task"
+            />
           </div>
         )}
 
         <div className="time-selector">
-          <NavigationBar activeItem={summaryTimeSelector} setActiveItem={setSummaryTimeSelector} selectionItems={weeks} labelStyle="label-week"/>
+          <NavigationBar
+            activeItem={summaryTimeSelector}
+            setActiveItem={setSummaryTimeSelector}
+            selectionItems={weeks}
+            labelStyle="label-week"
+          />
         </div>
       </div>
       <div className="flex-container">
-          <EmotionSummaryModule data={summaryTypeSelection === "Overall" ? data.Overall : data[activeTaskLabel]} />
-          <TaskInfoModule data={{taskID: 12345, taskName: activeTaskLabel}} />
+        <EmotionSummaryModule project={activeProject} card={activeTask} />
+        {activeTask && <TaskInfoModule id={activeTask?.id} />}
       </div>
+<<<<<<< HEAD
       <div className="metricGraph">
         <MetricGraphs metric={metric} />
         <MetricGraphs metric={metric} />
         <MetricGraphs metric={metric} />
       </div>
   </div>
+=======
+    </div>
+>>>>>>> origin/ellen/connect-db
   );
 };
 
 Page.getLayout = function getLayout(page: ReactElement) {
-  return (
-    <Layout>{page}</Layout>
-  );
+  return <Layout>{page}</Layout>;
 };
 
 export default Page;
