@@ -1,14 +1,24 @@
-<<<<<<< HEAD
-import { Layout } from '@/components/layout/layout';
-import { ReactElement} from 'react';
-import type { NextPageWithLayout } from './_app';
-import React, {useState} from 'react';
-import {GraphData} from '@/components/graph/horizontalBarGraph';
-import { EmotionSummaryModule } from '@/components/modules/emotionSummaryModule';
-import { TaskInfoModule } from '@/components/modules/taskInfoModule';
-import { NavigationBar } from '@/components/navigationBar/navigationBar';
-import { ProjectSelector } from '@/components/ProjectSelector/projectSelector';
+import { Layout } from "@/components/layout/layout";
+import { ReactElement, useEffect } from "react";
+import type { NextPageWithLayout } from "./_app";
+import React, { useState } from "react";
+import { EmotionSummaryModule } from "@/components/modules/emotionSummaryModule";
+import { TaskInfoModule } from "@/components/modules/taskInfoModule";
+import { NavigationBar } from "@/components/navigationBar/navigationBar";
+import { ProjectSelector } from "@/components/ProjectSelector/projectSelector";
+import { Project, TrelloCard } from "@prisma/client";
 import MetricGraphs from '@/components/GraphByLevel/MetricGraphs';
+
+
+
+export interface ProjectPlus extends Project {
+  trelloCards: Task[];
+}
+export interface Task {
+  id: string;
+  taskName: string;
+}
+
 
 //dummy data for metricsGraphp
 const metric = {
@@ -47,117 +57,7 @@ const metric = {
 const tasks = ["Task 1", "Task 2", "Task 3"];
 const weeks = ["Week 1", "Week 2", "Week 3"];
 
-// dummy data for graphs
-const data: {[key in string]: GraphData[]} = {
-  "Task 1": [
-    {
-      emotionName: "anxious",
-      emotionAv: 20
-    },
-    {
-      emotionName: "angry",
-      emotionAv: 9
-    }, 
-    {
-      emotionName: "neutral",
-      emotionAv: 2
-    },
-    {
-      emotionName: "happy",
-      emotionAv: 13
-    },
-    {
-      emotionName: "excited",
-      emotionAv: 1
-    },
-  ],
-  "Task 2": [
-    {
-      emotionName: "anxious",
-      emotionAv: 2
-    },
-    {
-      emotionName: "angry",
-      emotionAv: 5
-    }, 
-    {
-      emotionName: "neutral",
-      emotionAv: 7
-    },
-    {
-      emotionName: "happy",
-      emotionAv: 20
-    },
-    {
-      emotionName: "excited",
-      emotionAv: 19
-    },
-  ],
-  "Task 3": [
-    {
-      emotionName: "anxious",
-      emotionAv: 10
-    },
-    {
-      emotionName: "angry",
-      emotionAv: 11
-    }, 
-    {
-      emotionName: "neutral",
-      emotionAv: 12
-    },
-    {
-      emotionName: "happy",
-      emotionAv: 9
-    },
-    {
-      emotionName: "excited",
-      emotionAv: 10
-    },
-  ],
-  "Overall": [
-    {
-      emotionName: "anxious",
-      emotionAv: 23
-    },
-    {
-      emotionName: "angry",
-      emotionAv: 40
-    }, 
-    {
-      emotionName: "neutral",
-      emotionAv: 23
-    },
-    {
-      emotionName: "happy",
-      emotionAv: 19
-    },
-    {
-      emotionName: "excited",
-      emotionAv: 30
-    },
-  ]
-=======
-import { Layout } from "@/components/layout/layout";
-import { ReactElement, useEffect } from "react";
-import type { NextPageWithLayout } from "./_app";
-import React, { useState } from "react";
-import { EmotionSummaryModule } from "@/components/modules/emotionSummaryModule";
-import { TaskInfoModule } from "@/components/modules/taskInfoModule";
-import { NavigationBar } from "@/components/navigationBar/navigationBar";
-import { ProjectSelector } from "@/components/ProjectSelector/projectSelector";
-import { Project, TrelloCard } from "@prisma/client";
 
-export interface ProjectPlus extends Project {
-  trelloCards: Task[];
-}
-export interface Task {
-  id: string;
-  taskName: string;
->>>>>>> origin/ellen/connect-db
-}
-// dummy projects for selectors
-const weeks = ["Week 1", "Week 2", "Week 3"];
 
 const Page: NextPageWithLayout = () => {
   const [projects, setprojects] = useState<ProjectPlus[] | null>(null);
@@ -250,16 +150,12 @@ const Page: NextPageWithLayout = () => {
         <EmotionSummaryModule project={activeProject} card={activeTask} />
         {activeTask && <TaskInfoModule id={activeTask?.id} />}
       </div>
-<<<<<<< HEAD
       <div className="metricGraph">
         <MetricGraphs metric={metric} />
         <MetricGraphs metric={metric} />
         <MetricGraphs metric={metric} />
       </div>
   </div>
-=======
-    </div>
->>>>>>> origin/ellen/connect-db
   );
 };
 
