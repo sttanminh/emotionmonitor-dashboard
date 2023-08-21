@@ -24,7 +24,7 @@ export const TaskInfoModule: FC<Props> = ({ id }: Props) => {
     data && (
       <div className="task-info-container">
         <h2>{data.taskName}</h2>
-        <p>{`${data.description}`}</p>
+        <p>{`${data.description ?? "description of " + data.taskName}`}</p>
       </div>
     )
   );
