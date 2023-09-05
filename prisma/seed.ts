@@ -1,5 +1,4 @@
 import { PrismaClient } from "@prisma/client";
-import { ObjectId } from "bson";
 
 const prisma = new PrismaClient();
 async function main() {
@@ -192,7 +191,6 @@ async function main() {
       id: objectId,
       name: "Dev insights project",
       source: "TRELLO",
-      levelLabel: "level",
       referenceNumber: 7,
       metricIds: [complexity.id, difficulty.id, workload.id],
     },
