@@ -50,112 +50,110 @@ export async function getProject(projectId: string) {
   })
 }
 
-/*
-Metric cannot be renamed. User can only remove metrics and add new metrics. If rename is allowed, all other projects using
-the same metrics will be affected
-update:
-Get a list of all current metrics
-Disconnect to all other metrics connected to project that's not in the current metric list
-If metric is new (id doesn't) -> check if any other metrics with the same name
-If yes, connect to project, else create new metric, connect to project
-Delete all current levels for the same project id
-Insert new levels
-Update project with new metrics and levels
-
-*/
 export async function configureProject(projectData: ProjectProps) {
   var projectId = projectData.projectid
-  var newMetricData: any[] = []
-  var existingMetricIds: any[] = []
-  // Check if any new metrics already exists in metric table
-  var newMetricNames = projectData.metrics.map(metric => metric.metricName)
-  var existingMetrics = await prisma.metric.findMany({
-    select: {
-      id: true,
-      name: true
-    },
+  var newMetrics: any[] = []
+  var pastMetrics: any[] = []
+  var existingMetrics: any[] = []
+
+  var allMetrics = await prisma.metric.findMany({
     where: {
-      name: {
-        in: newMetricNames
-      }
+      projectId: projectId
     }
   })
-  var existingMetricsNames = existingMetrics.map(metric => metric.name)
+  var metricNameArray = allMetrics.map(metricObject => metricObject.name)
+
+  // Sort incoming metrics
   projectData.metrics.forEach(metric => {
-    if ((!metric.metricId || metric.metricId === '') && !existingMetricsNames.includes({"name": metric.metricName})) {
-      newMetricData.push({
-        name: metric.metricName
-      })
+    if (metric.metricId && metric.metricId != '') {
+      existingMetrics.push(metric)
+    } else if (metricNameArray.includes(metric.metricName)) {
+      pastMetrics.push(metric)
     } else {
-      existingMetricIds.push(metric.metricId)
+      newMetrics.push(metric)
     }
   })
-  existingMetricIds.push.apply(existingMetrics.map(metric => metric.id))
-  //Disconnect project to all metrics
-  await prisma.project.update({
+
+  // Deactivate all metrics
+  await prisma.metric.updateMany({
     where: {
-      id: projectId,
+      projectId: projectId
     },
     data: {
-      metrics: {
-        set: []
+      active: false
+    }
+  })
+  // Create new metrics
+  if (newMetrics.length > 0) {
+    var newMetricData = newMetrics.map(metric => {
+      return {
+        name: metric.metricName,
+        projectId: projectId
+      }
+    })
+    await prisma.$transaction([
+      prisma.metric.deleteMany({ where: { name: {
+        in: newMetrics.map(metric => metric.name)
+      } } }),
+      prisma.metric.createMany({
+        data: newMetricData
+      }),
+    ])
+  }
+  
+
+  // Reinstate existing metrics
+  for await (var metric of existingMetrics){
+    await prisma.metric.update({
+      where: {
+        id: metric.metricId
+      },
+      data: {
+        name: metric.metricName,
+        active: true
+      }
+    })
+  }
+
+  // Update past metrics
+  var pastMetricNames = pastMetrics.map(metric => metric.metricName)
+  await prisma.metric.updateMany({
+    where: {
+      name: {
+        in: pastMetricNames
       }
     },
+    data: {
+      active: true
+    }
   })
   
-  // Create new metrics
-  await prisma.$transaction([
-    prisma.metric.deleteMany({ where: { name: {
-      in: newMetricData.map(metric => metric.name)
-    } } }),
-    prisma.metric.createMany({
-      data: newMetricData
-    }),
-  ])
-  var newlyCreatedMetrics = await prisma.metric.findMany({
+  var activeMetrics = await prisma.metric.findMany({
     where: {
-      name: {
-        in : newMetricData.map(metric => metric.name)
-      }
+      projectId: projectId,
+      active: true
     }
   })
-  var newlyCreatedMetricIds = newlyCreatedMetrics.map(metric => metric.id)
-  var newlyCreatedMetricIdObj: any = {}
-  newlyCreatedMetrics.forEach(metric => newlyCreatedMetricIdObj[metric.name] = metric.id)
-  var allMetricIds = existingMetricIds
-  allMetricIds.push.apply(allMetricIds, newlyCreatedMetricIds)
-  var connectVar = allMetricIds.map(id => {return {"id": id}})
-
-  //Connect project to metrics
-  await prisma.project.update({
-    where: {
-      id: projectId,
-    },
-    data: {
-      metricIds: allMetricIds,
-      metrics: {
-        connect: connectVar
-      }
-    }
+  var activeMetricsDictionary: any = {}
+  activeMetrics.forEach(metric => {
+    activeMetricsDictionary[metric.name] = metric.id
   })
-
   // Delete existing levels linked to project
   await prisma.level.deleteMany({where: {projectId: projectId}})
   // Add new levels
-  var levelObjects: any[] = []
+  var levelData: any[] = []
   projectData.metrics.forEach(metric => {
-    console.log(metric)
     metric.levels.forEach(level => {
-      levelObjects.push({
+      levelData.push({
         levelLabel: level.levelLabel,
         levelOrder: level.levelOrder,
-        metricId: !metric.metricId || metric.metricId === ''? newlyCreatedMetricIdObj[metric.metricName] : metric.metricId,
+        metricId: activeMetricsDictionary[metric.metricName],
         projectId: projectId
       })
     })
   })
   await prisma.level.createMany({
-    data: levelObjects
+    data: levelData
   })
 }
 

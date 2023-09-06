@@ -28,7 +28,7 @@ export type ProjectProps = {
 // dummy projects for selectors
 const weeks = ["Week 1", "Week 2", "Week 3"];
 
-const Page: NextPageWithLayout = () => {
+function Page(data: ProjectProps) {
   const [projects, setprojects] = useState<ProjectPlus[] | null>(null);
   const [isLoading, setLoading] = useState(true);
   const [activeProject, setActiveProject] = useState<ProjectPlus>();
@@ -125,92 +125,81 @@ const Page: NextPageWithLayout = () => {
 
 export async function getServerSideProps() {
   var projectId = '643d2f9487baeec2c1c0c2d1'
-  var projectData: ProjectProps = {
-    projectid: '643d2f9487baeec2c1c0c2d1',
-    metrics: [
-      {
-        metricName: 'Complexity',
-        levels: [
-          {
-            levelLabel: "Low",
-            levelOrder: 1
-          }, {
-            levelLabel: "Medium",
-            levelOrder: 2
-          }, {
-            levelLabel: "High",
-            levelOrder: 3
-          }
-        ],
-        metricId: '64f6c424d4c684fa3223598d'
-      },
-      {
-        metricName: 'Teamwork',
-        levels: [
-          {
-            levelLabel: "Low",
-            levelOrder: 1
-          }, {
-            levelLabel: "Medium",
-            levelOrder: 2
-          }, {
-            levelLabel: "High",
-            levelOrder: 3
-          }
-        ],
-        metricId: ''
-      },
-      {
-        metricName: 'Difficulty',
-        levels: [
-          {
-            levelLabel: "Low",
-            levelOrder: 1
-          }, {
-            levelLabel: "Medium",
-            levelOrder: 2
-          }, {
-            levelLabel: "High",
-            levelOrder: 3
-          }
-        ],
-        metricId: ''
-      }
-    ]
-  }
-  await configureProject(projectData)
-  console.log('Done')
-  // var project = await getProject(projectId)
   // var projectData: ProjectProps = {
-  //   projectid: projectId,
-  //   metrics: []
+  //   projectid: '643d2f9487baeec2c1c0c2d1',
+  //   metrics: [
+  //     {
+  //       metricName: 'Complexity',
+  //       levels: [
+  //         {
+  //           levelLabel: "Low",
+  //           levelOrder: 1
+  //         }, {
+  //           levelLabel: "Medium",
+  //           levelOrder: 2
+  //         }, {
+  //           levelLabel: "High",
+  //           levelOrder: 3
+  //         }
+  //       ],
+  //       metricId: '64f81eb71be0b30d89e77680'
+  //     },
+  //     {
+  //       metricName: 'Difficulty',
+  //       levels: [
+  //         {
+  //           levelLabel: "Low",
+  //           levelOrder: 1
+  //         }, {
+  //           levelLabel: "Medium",
+  //           levelOrder: 2
+  //         }
+  //       ],
+  //       metricId: ''
+  //     },
+  //     {
+  //       metricName: 'Research required',
+  //       levels: [
+  //         {
+  //           levelLabel: "Low",
+  //           levelOrder: 1
+  //         }, {
+  //           levelLabel: "Medium",
+  //           levelOrder: 2
+  //         }, {
+  //           levelLabel: "High",
+  //           levelOrder: 3
+  //         }
+  //       ],
+  //       metricId: ''
+  //     }
+  //   ]
   // }
-  // var metricArray = []
-  // var metricsObject: {
-  //   [metricId: string]: {
-  //     metricName: string,
-  //     levels: {}[]
-  //   }
-  // } = {}
+  // await configureProject(projectData)
+  var project = await getProject(projectId)
+  var projectData: ProjectProps = {
+    projectid: projectId,
+    metrics: []
+  }
+  var metricArray = []
+  var metricDictionary: any = {}
 
-  // project?.metrics.forEach(metric => metricsObject[metric.id] = {
-  //   metricName: metric.name,
-  //   levels: []
-  // })
-  // project?.levels.forEach(level => {
-  //   metricsObject[level.metricId].levels.push({
-  //     levelLabel: level.levelLabel,
-  //     levelOrder: level.levelOrder
-  //   })
-  // })
-  // for (let key in metricsObject) {
-  //   metricArray.push({...metricsObject[key], metricId: key})
-  // }
-  // projectData.metrics = metricArray
+  project?.metrics.forEach(metric => metricDictionary[metric.id] = {
+    metricName: metric.name,
+    levels: []
+  })
+  project?.levels.forEach(level => {
+    metricDictionary[level.metricId].levels.push({
+      levelLabel: level.levelLabel,
+      levelOrder: level.levelOrder
+    })
+  })
+  for (let key in metricDictionary) {
+    metricArray.push({...metricDictionary[key], metricId: key})
+  }
+  projectData.metrics = metricArray
   return {
-    props: {
-      // data: projectData
-    }
+    props: projectData
   }
 }
 
