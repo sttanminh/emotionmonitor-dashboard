@@ -34,6 +34,14 @@ function MetricGraphs({ metric }: MetricGraphsProps) {
   };
 
   useEffect(() => {
+    // Calculate the maximum value across all graphs
+    let maxMetricValue = 0;
+    Object.keys(metric).forEach((emoji) => {
+      const levels = Object.keys(metric[emoji]);
+      const maxLevelValue = Math.max(...levels.map((level) => metric[emoji][level]));
+      maxMetricValue = Math.max(maxMetricValue, maxLevelValue);
+    });
+
     // Clear the existing chart containers
     Object.keys(chartContainerRefs.current).forEach((emoji) => {
       const chartContainer = chartContainerRefs.current[emoji];
@@ -59,14 +67,17 @@ function MetricGraphs({ metric }: MetricGraphsProps) {
       };
 
       const options = {
-        indexAxis: 'y' as const, // Set indexAxis to "y"
+        indexAxis: 'y' as const,
         scales: {
           x: {
             display: false,
+            min: 0,  // Set the minimum value for the y-axis
+            max: 5, 
             beginAtZero: true,
           },
           y: {
-            beginAtZero: true,
+            min: 0,  // Set the minimum value for the y-axis
+            max: 5,  // Set the maximum value for the y-axis
           },
         },
         plugins: {
@@ -77,6 +88,18 @@ function MetricGraphs({ metric }: MetricGraphsProps) {
             callbacks: {
               title: () => '', // Disable tooltip title
             },
+          },
+          annotation: {  // Add annotation for reference line
+            annotations: [
+              {
+                type: 'line',
+                mode: 'horizontal',
+                scaleID: 'y',
+                value: 2,  // Set the reference value
+                borderColor: 'red',  // Color of the reference line
+                borderWidth: 2,  // Width of the reference line
+              },
+            ],
           },
         },
       };
@@ -96,11 +119,23 @@ function MetricGraphs({ metric }: MetricGraphsProps) {
   }, [metric]);
 
   return (
-    <div style={{ overflow: 'hidden', border: '0px solid black', padding: '10px', height: '150px', width: "fit-content" }}>
+    <div style={{ overflow: 'hidden', border: '0px solid black', padding: '10px', height: '150px', width: 'fit-content' }}>
       <div style={{ display: 'flex', overflowX: 'auto' }}>
+        {/* New column for card names */}
+        <div style={{ display: 'flex', flexDirection: 'column', marginRight: '10px', minWidth: '100px', paddingRight: "20px", marginTop: '10px' }}>
+          <h2> Card Name</h2>
+        </div>
+        {/* New column for level labels */}
+        <div style={{ display: 'flex', flexDirection: 'column', marginRight: '10px' }}>
+          {[1, 2, 3].map((level) => (
+            <div key={level} style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '28px' }}>
+              <p style={{ margin: '0' }}>{`Level ${level}`}</p>
+            </div>
+          ))}
+        </div>
+        {/* Graph containers */}
         {Object.keys(metric).map((emoji) => (
           <div key={emoji} style={{ marginBottom: '20px', margin: '0 10px', paddingRight: '10px' }}>
-            <h3>Emoji:</h3>
             <div ref={(ref) => (chartContainerRefs.current[emoji] = ref)} style={{ height: '250px', width: '180px' }}></div>
             <div style={{ display: 'flex', justifyContent: 'center', marginTop: '5px' }}>
               <p style={{ margin: '0' }}>Level</p>

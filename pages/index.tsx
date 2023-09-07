@@ -67,6 +67,67 @@ const Page: NextPageWithLayout = () => {
 
   const [activeTask, setActiveTask] = useState<Task>();
   const [summaryTimeSelector, setSummaryTimeSelector] = useState("Week 1");
+  const [ratings, setRatings] = useState([]);
+  const [metricGraphData, setMetricGraphData] = useState({metric});
+
+
+  useEffect(() => {
+    if (activeProject) {
+     let projectId = activeProject.id
+     let trelloCards = activeProject.trelloCards
+     console.log(trelloCards)
+     console.log(projectId) 
+      fetch(`/api/ratings?getRatingsByProject=${projectId}`)
+        .then((response) => response.json())
+        .then((data) => {
+          setRatings(data.ratings);
+          console.log(ratings)
+          
+          // Initialize an empty object to store the aggregated metric
+        const metric: Record<
+        string,
+        Record<string, Record<string, number>>
+      > = {};
+
+      // Loop through the ratings and aggregate the values and count
+      ratings.forEach((rating) => {
+        const { metricId, emoScore, level } = rating;
+        if (!metric[metricId]) {
+          metric[metricId] = {};
+        }
+        if (!metric[metricId][`emo${emoScore + 1}`]) {
+          metric[metricId][`emo${emoScore + 1}`] = {};
+        }
+        metric[metricId][`emo${emoScore + 1}`][`level${level + 1}`] =
+          (metric[metricId][`emo${emoScore + 1}`][`level${level + 1}`] || 0) + 1;
+      });
+
+      // Fill in missing levels and emojis with 0
+      for (const metricId in metric) {
+        for (let emoScore = 0; emoScore < 6; emoScore++) {
+          if (!metric[metricId][`emo${emoScore + 1}`]) {
+            metric[metricId][`emo${emoScore + 1}`] = {};
+          }
+          for (let level = 1; level <= 3; level++) {
+            if (!metric[metricId][`emo${emoScore + 1}`][`level${level}`]) {
+              metric[metricId][`emo${emoScore + 1}`][`level${level}`] = 0;
+            }
+          }
+        }
+      }
+
+      console.log(metric);
+        
+          
+          setMetricGraphData(metric);
+}
+        )
+        .catch((error) => {
+          console.error("Error fetching ratings:", error);
+        });
+    }
+  }, [activeProject]);
+
   useEffect(() => {
     fetch(`/api/projects`)
       .then((res) => res.json())
@@ -95,7 +156,6 @@ const Page: NextPageWithLayout = () => {
         activeProject={activeProject}
         projects={projects}
       />
-
       <div className="page-config-container">
         <div className="button-container">
           <button
@@ -150,10 +210,18 @@ const Page: NextPageWithLayout = () => {
         <EmotionSummaryModule project={activeProject} card={activeTask} />
         {activeTask && <TaskInfoModule id={activeTask?.id} />}
       </div>
-      <div className="metricGraph">
-        <MetricGraphs metric={metric} />
-        <MetricGraphs metric={metric} />
-        <MetricGraphs metric={metric} />
+<div className="metricGraph">
+      {Object.keys(metricGraphData).map((cardName) => (
+        <MetricGraphs key={cardName} metric={metricGraphData[cardName]} />
+      ))}
+    </div>
+      {/* Emoji indicators */}
+      <div className="emoji-indicators" style={{ marginLeft:'190px',marginTop: '-50px',display: 'flex', background: 'transparent', padding: '5px 0' }}>
+        {Object.keys(metric).map((emoji) => (
+          <div key={emoji} className="emoji-indicator" style={{ marginLeft: '13px',flex: '1', textAlign: 'center',maxWidth: '200px' }}>
+            {emoji}
+          </div>
+        ))}
       </div>
   </div>
   );
