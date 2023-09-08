@@ -8,6 +8,8 @@ import { NavigationBar } from "@/components/navigationBar/navigationBar";
 import { ProjectSelector } from "@/components/ProjectSelector/projectSelector";
 import { Project, TrelloCard } from "@prisma/client";
 import MetricGraphs from '@/components/GraphByLevel/MetricGraphs';
+import { css } from "@emotion/react"; // Import css from react-spinners
+import { ClipLoader } from "react-spinners"; // Import the ClipLoader component
 
 
 
@@ -18,7 +20,7 @@ export interface Task {
   id: string;
   taskName: string;
 }
-
+const availableEmojis = ["😔", "😢", "😐", "😊", "😀", "🤔"];
 
 //dummy data for metricsGraphp
 const metric = {
@@ -70,6 +72,20 @@ const Page: NextPageWithLayout = () => {
   const [ratings, setRatings] = useState([]);
   const [metricGraphData, setMetricGraphData] = useState({metric});
 
+  const [allMetrics, setAllMetrics] = useState<any[]>([]); // Define a state variable to store all metrics
+
+  // Add a new useEffect block to fetch all metrics
+  useEffect(() => {
+    fetch(`/api/metrics`) // Assuming this is the endpoint to fetch all metrics
+      .then((response) => response.json())
+      .then((data) => {
+        setAllMetrics(data); // Set the fetched metrics in the state variable
+        console.log(data)
+      })
+      .catch((error) => {
+        console.error("Error fetching all metrics:", error);
+      });
+  }, []); 
 
   useEffect(() => {
     if (activeProject) {
@@ -128,6 +144,11 @@ const Page: NextPageWithLayout = () => {
     }
   }, [activeProject]);
 
+
+
+
+
+
   useEffect(() => {
     fetch(`/api/projects`)
       .then((res) => res.json())
@@ -148,6 +169,8 @@ const Page: NextPageWithLayout = () => {
     console.log(projects, activeProject);
     return <p>No profile projects</p>;
   }
+
+  
 
   return (
     <div className="page-container">
@@ -212,14 +235,14 @@ const Page: NextPageWithLayout = () => {
       </div>
 <div className="metricGraph">
       {Object.keys(metricGraphData).map((cardName) => (
-        <MetricGraphs key={cardName} metric={metricGraphData[cardName]} />
+        <MetricGraphs key={cardName} metricName={cardName} metric={metricGraphData[cardName]} allMetric={allMetrics} />
       ))}
     </div>
       {/* Emoji indicators */}
       <div className="emoji-indicators" style={{ marginLeft:'190px',marginTop: '-50px',display: 'flex', background: 'transparent', padding: '5px 0' }}>
-        {Object.keys(metric).map((emoji) => (
+        {Object.keys(availableEmojis).map((emoji,i) => (
           <div key={emoji} className="emoji-indicator" style={{ marginLeft: '13px',flex: '1', textAlign: 'center',maxWidth: '200px' }}>
-            {emoji}
+            {availableEmojis[i]}
           </div>
         ))}
       </div>

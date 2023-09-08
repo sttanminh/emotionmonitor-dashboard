@@ -1,7 +1,8 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef,useState} from 'react';
 import { Chart, registerables } from 'chart.js';
 import { Bar } from 'react-chartjs-2';
 import style from 'styled-jsx/style';
+
 Chart.register(...registerables);
 
 interface MetricData {
@@ -10,10 +11,13 @@ interface MetricData {
 
 interface MetricGraphsProps {
   metric: Record<string, MetricData>;
+  metricName: String
+  allMetric: Record<string, any>; 
 }
 
-function MetricGraphs({ metric }: MetricGraphsProps) {
+function MetricGraphs({ metric, metricName, allMetric }: MetricGraphsProps) {
   const chartContainerRefs = useRef<Record<string, HTMLDivElement | null>>({});
+  const [metricActualName, setMetricName] = useState();
 
   // Function to generate random background colors for each graph
   const getBackgroundColor = (): string[] => {
@@ -32,6 +36,16 @@ function MetricGraphs({ metric }: MetricGraphsProps) {
     }
     return color;
   };
+
+  useEffect(()=>{
+    Object.keys(allMetric).forEach((i,index) => {
+      console.log(allMetric[i])
+      if (metricName == allMetric[i]['id']){
+        console.log("yes")
+        setMetricName(allMetric[i]['name'])
+      }
+    })
+  },[])
 
   useEffect(() => {
     // Calculate the maximum value across all graphs
@@ -123,7 +137,7 @@ function MetricGraphs({ metric }: MetricGraphsProps) {
       <div style={{ display: 'flex', overflowX: 'auto' }}>
         {/* New column for card names */}
         <div style={{ display: 'flex', flexDirection: 'column', marginRight: '10px', minWidth: '100px', paddingRight: "20px", marginTop: '10px' }}>
-          <h2> Card Name</h2>
+          <h2> {metricActualName}</h2>
         </div>
         {/* New column for level labels */}
         <div style={{ display: 'flex', flexDirection: 'column', marginRight: '10px' }}>
