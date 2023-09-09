@@ -85,24 +85,26 @@
   }
   
   .label-task {
+    margin-top: -2px;
     border-radius: 5px;
     border: 1px solid black;
-    padding: 8px;
-    width: 150%;
-    height: 40px;
-    padding-left: 300px;
-    padding-right: 300px;
+    /* padding: 8px; */
+    width: auto;
+    height: auto;
+    padding: 5px;
     text-align: center;
     background: rgb(233, 233, 233);
+    
   }
 
   .label-week {
+    margin-top: -1px;
     border-radius: 5px;
     border: 1px solid black;
-    padding: 8px;
-    padding-left: 100px;
-    padding-right: 100px;
-    width: 200%;
+    padding: 4px;
+    padding-left: 50px;
+    padding-right: 50px;
+    width: auto;
     text-align: center;
     background: rgb(233, 233, 233);
   }

@@ -8,8 +8,9 @@ import { NavigationBar } from "@/components/navigationBar/navigationBar";
 import { ProjectSelector } from "@/components/ProjectSelector/projectSelector";
 import { Project, TrelloCard } from "@prisma/client";
 import MetricGraphs from '@/components/GraphByLevel/MetricGraphs';
-import { css } from "@emotion/react"; // Import css from react-spinners
-import { ClipLoader } from "react-spinners"; // Import the ClipLoader component
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import DateRangeSelector from '@/components/datePicker';
 
 
 
@@ -66,13 +67,30 @@ const Page: NextPageWithLayout = () => {
   const [isLoading, setLoading] = useState(true);
   const [activeProject, setActiveProject] = useState<ProjectPlus>();
   const [summaryTypeSelection, setSummaryTypeSelection] = useState("Overall");
-
+  const [selectedDate, setSelectedDate] = useState(null);
   const [activeTask, setActiveTask] = useState<Task>();
   const [summaryTimeSelector, setSummaryTimeSelector] = useState("Week 1");
   const [ratings, setRatings] = useState([]);
   const [metricGraphData, setMetricGraphData] = useState({metric});
 
   const [allMetrics, setAllMetrics] = useState<any[]>([]); // Define a state variable to store all metrics
+
+
+  // Default start date to 1 week ago
+  const oneWeekAgo = new Date();
+  oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+
+  // Default end date to today
+  const today = new Date();
+
+  const [selectedStartDate, setSelectedStartDate] = useState<Date | null>(oneWeekAgo);
+  const [selectedEndDate, setSelectedEndDate] = useState<Date | null>(today);
+
+  const handleDateRangeSelect = (startDate: Date, endDate: Date) => {
+    setSelectedStartDate(startDate);
+    setSelectedEndDate(endDate);
+    console.log(selectedStartDate,selectedEndDate)
+  };
 
   // Add a new useEffect block to fetch all metrics
   useEffect(() => {
@@ -170,7 +188,7 @@ const Page: NextPageWithLayout = () => {
     return <p>No profile projects</p>;
   }
 
-  
+
 
   return (
     <div className="page-container">
@@ -219,7 +237,7 @@ const Page: NextPageWithLayout = () => {
             />
           </div>
         )}
-
+        <DateRangeSelector onSelectDateRange={handleDateRangeSelect} />
         <div className="time-selector">
           <NavigationBar
             activeItem={summaryTimeSelector}

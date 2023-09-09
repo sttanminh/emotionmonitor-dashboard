@@ -1,0 +1,26 @@
+.datePicker{
+    /* background-color: aliceblue; */
+    
+    width: fit-content;
+    margin-left: 20px;
+    margin-top: 9.5px;
+    display: flex;
+
+}
+.preSet{
+    background: rgb(233, 233, 233);
+    padding: 5px;
+    display: flex;
+    font-size: 15px;
+    height: fit-content;
+    border-radius: 7px;
+}
+
+.dataPickerCus{
+    background: rgb(233, 233, 233);
+    display: flex;
+    height: fit-content;
+    margin-top: 4px;
+    margin-left: 10px;
+    margin-right: 10px;
+}
