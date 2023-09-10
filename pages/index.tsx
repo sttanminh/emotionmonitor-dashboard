@@ -6,13 +6,10 @@ import { EmotionSummaryModule } from "@/components/modules/emotionSummaryModule"
 import { TaskInfoModule } from "@/components/modules/taskInfoModule";
 import { NavigationBar } from "@/components/navigationBar/navigationBar";
 import { ProjectSelector } from "@/components/ProjectSelector/projectSelector";
-import { Project, TrelloCard } from "@prisma/client";
-import MetricGraphs from '@/components/GraphByLevel/MetricGraphs';
-import DatePicker from "react-datepicker";
+import { Metric, Project } from "@prisma/client";
 import "react-datepicker/dist/react-datepicker.css";
-import DateRangeSelector from '@/components/datePicker';
-
-
+import DateRangeSelector from "@/components/datePicker";
+import { MetricGraphModule } from "@/components/modules/metricGraphModule";
 
 export interface ProjectPlus extends Project {
   trelloCards: Task[];
@@ -21,60 +18,27 @@ export interface Task {
   id: string;
   taskName: string;
 }
-const availableEmojis = ["😔", "😢", "😐", "😊", "😀", "🤔"];
 
-//dummy data for metricsGraphp
-const metric = {
-  emo1: {
-    level1: 10,
-    level2: 20,
-    level3: 15,
-  },
-  emo2: {
-    level1: 10,
-    level2: 20,
-    level3: 15,
-  },
-  emo3: {
-    level1: 10,
-    level2: 20,
-    level3: 15,
-  },
-  emo4: {
-    level1: 10,
-    level2: 20,
-    level3: 15,
-  },
-  emo5: {
-    level1: 10,
-    level2: 20,
-    level3: 15,
-  },
-  emo6: {
-    level1: 10,
-    level2: 2,
-    level3: 15,
-  },
-};
-// dummy data for selectors
-const tasks = ["Task 1", "Task 2", "Task 3"];
-const weeks = ["Week 1", "Week 2", "Week 3"];
+export interface Rating {
+  id: string;
+  emoScore: number;
+  level: number;
+  metric: {
+    name: string;
+    levels: { levelLabel: string; levelOrder: number }[];
+  };
+}
 
-
+export const availableEmojis = ["😔", "😢", "😐", "😊", "😀", "🤔"];
 
 const Page: NextPageWithLayout = () => {
   const [projects, setprojects] = useState<ProjectPlus[] | null>(null);
   const [isLoading, setLoading] = useState(true);
+  const [isRatingsLoading, setRatingsLoading] = useState(true);
   const [activeProject, setActiveProject] = useState<ProjectPlus>();
   const [summaryTypeSelection, setSummaryTypeSelection] = useState("Overall");
-  const [selectedDate, setSelectedDate] = useState(null);
   const [activeTask, setActiveTask] = useState<Task>();
-  const [summaryTimeSelector, setSummaryTimeSelector] = useState("Week 1");
-  const [ratings, setRatings] = useState([]);
-  const [metricGraphData, setMetricGraphData] = useState({metric});
-
-  const [allMetrics, setAllMetrics] = useState<any[]>([]); // Define a state variable to store all metrics
-
+  const [ratings, setRatings] = useState<Rating[]>();
 
   // Default start date to 1 week ago
   const oneWeekAgo = new Date();
@@ -83,89 +47,36 @@ const Page: NextPageWithLayout = () => {
   // Default end date to today
   const today = new Date();
 
-  const [selectedStartDate, setSelectedStartDate] = useState<Date | null>(oneWeekAgo);
+  const [selectedStartDate, setSelectedStartDate] = useState<Date | null>(
+    oneWeekAgo
+  );
   const [selectedEndDate, setSelectedEndDate] = useState<Date | null>(today);
 
   const handleDateRangeSelect = (startDate: Date, endDate: Date) => {
     setSelectedStartDate(startDate);
     setSelectedEndDate(endDate);
-    console.log(selectedStartDate,selectedEndDate)
+    console.log(selectedStartDate, selectedEndDate);
   };
-
-  // Add a new useEffect block to fetch all metrics
-  useEffect(() => {
-    fetch(`/api/metrics`) // Assuming this is the endpoint to fetch all metrics
-      .then((response) => response.json())
-      .then((data) => {
-        setAllMetrics(data); // Set the fetched metrics in the state variable
-        console.log(data)
-      })
-      .catch((error) => {
-        console.error("Error fetching all metrics:", error);
-      });
-  }, []); 
 
   useEffect(() => {
     if (activeProject) {
-     let projectId = activeProject.id
-     let trelloCards = activeProject.trelloCards
-     console.log(trelloCards)
-     console.log(projectId) 
-      fetch(`/api/ratings?getRatingsByProject=${projectId}`)
-        .then((response) => response.json())
-        .then((data) => {
-          setRatings(data.ratings);
-          console.log(ratings)
-          
-          // Initialize an empty object to store the aggregated metric
-        const metric: Record<
-        string,
-        Record<string, Record<string, number>>
-      > = {};
-
-      // Loop through the ratings and aggregate the values and count
-      ratings.forEach((rating) => {
-        const { metricId, emoScore, level } = rating;
-        if (!metric[metricId]) {
-          metric[metricId] = {};
-        }
-        if (!metric[metricId][`emo${emoScore + 1}`]) {
-          metric[metricId][`emo${emoScore + 1}`] = {};
-        }
-        metric[metricId][`emo${emoScore + 1}`][`level${level + 1}`] =
-          (metric[metricId][`emo${emoScore + 1}`][`level${level + 1}`] || 0) + 1;
-      });
-
-      // Fill in missing levels and emojis with 0
-      for (const metricId in metric) {
-        for (let emoScore = 0; emoScore < 6; emoScore++) {
-          if (!metric[metricId][`emo${emoScore + 1}`]) {
-            metric[metricId][`emo${emoScore + 1}`] = {};
-          }
-          for (let level = 1; level <= 3; level++) {
-            if (!metric[metricId][`emo${emoScore + 1}`][`level${level}`]) {
-              metric[metricId][`emo${emoScore + 1}`][`level${level}`] = 0;
-            }
-          }
-        }
-      }
-
-      console.log(metric);
-        
-          
-          setMetricGraphData(metric);
-}
-        )
+      setRatingsLoading(true);
+      const projectId = activeProject.id;
+      const cardId = activeTask?.id;
+      console.log("fetching ratings with cardId", cardId);
+      fetch(
+        `/api/ratings?projectId=${projectId}&startDate=${selectedStartDate}&endDate=${selectedEndDate}${
+          cardId ? "&cardId=" + cardId : ""
+        }`
+      )
+        .then((res) => res.json())
+        .then((data) => setRatings(data.ratings))
         .catch((error) => {
           console.error("Error fetching ratings:", error);
         });
+      setRatingsLoading(false);
     }
-  }, [activeProject]);
-
-
-
-
-
+  }, [activeProject, activeTask, selectedStartDate, selectedEndDate]);
 
   useEffect(() => {
     fetch(`/api/projects`)
@@ -184,11 +95,8 @@ const Page: NextPageWithLayout = () => {
 
   if (isLoading || !activeProject) return <p>Loading...</p>;
   if (!projects || !activeProject) {
-    console.log(projects, activeProject);
     return <p>No profile projects</p>;
   }
-
-
 
   return (
     <div className="page-container">
@@ -238,33 +146,20 @@ const Page: NextPageWithLayout = () => {
           </div>
         )}
         <DateRangeSelector onSelectDateRange={handleDateRangeSelect} />
-        <div className="time-selector">
-          <NavigationBar
-            activeItem={summaryTimeSelector}
-            setActiveItem={setSummaryTimeSelector}
-            selectionItems={weeks}
-            labelStyle="label-week"
-          />
-        </div>
       </div>
-      <div className="flex-container">
-        <EmotionSummaryModule project={activeProject} card={activeTask} />
-        {activeTask && <TaskInfoModule id={activeTask?.id} />}
-      </div>
-<div className="metricGraph">
-      {Object.keys(metricGraphData).map((cardName) => (
-        <MetricGraphs key={cardName} metricName={cardName} metric={metricGraphData[cardName]} allMetric={allMetrics} />
-      ))}
-    </div>
-      {/* Emoji indicators */}
-      <div className="emoji-indicators" style={{ marginLeft:'190px',marginTop: '-50px',display: 'flex', background: 'transparent', padding: '5px 0' }}>
-        {Object.keys(availableEmojis).map((emoji,i) => (
-          <div key={emoji} className="emoji-indicator" style={{ marginLeft: '13px',flex: '1', textAlign: 'center',maxWidth: '200px' }}>
-            {availableEmojis[i]}
+      {!isRatingsLoading && ratings && (
+        <div>
+          <div className="flex-container">
+            <EmotionSummaryModule
+              ratings={ratings}
+              isLoading={isRatingsLoading}
+            />
+            {activeTask && <TaskInfoModule id={activeTask?.id} />}
           </div>
-        ))}
-      </div>
-  </div>
+          <MetricGraphModule ratings={ratings} isLoading={isRatingsLoading} />
+        </div>
+      )}
+    </div>
   );
 };
 

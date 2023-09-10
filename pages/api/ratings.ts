@@ -13,9 +13,11 @@ async function handler(req: NextApiRequest, res: NextApiResponse<Data>) {
   if (req.method === "GET") {
     try {
       const query = req.query;
-      const { projectId, cardId, metricId } = query;
+      const { projectId, cardId, metricId, startDate, endDate } = query;
       const ratings = await getRatings(
         projectId as string,
+        new Date(startDate as string),
+        new Date(endDate as string),
         (cardId as string) ?? undefined,
         (metricId as string) ?? undefined
       );
@@ -31,6 +33,8 @@ async function handler(req: NextApiRequest, res: NextApiResponse<Data>) {
 
 async function getRatings(
   projectId: string,
+  startDate: Date,
+  endDate: Date,
   cardId?: string,
   metricId?: string
 ) {
@@ -44,9 +48,23 @@ async function getRatings(
         where: { ...(cardId ? { id: cardId } : {}) },
         include: {
           submissions: {
+            where: {
+              timestamp: {
+                lte: endDate,
+                gte: startDate,
+              },
+            },
             include: {
               ratings: {
                 where: { ...(metricId ? { metricId: metricId } : {}) },
+                include: {
+                  metric: {
+                    select: {
+                      name: true,
+                      levels: true,
+                    },
+                  },
+                },
               },
             },
           },

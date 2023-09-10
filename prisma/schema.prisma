@@ -44,22 +44,32 @@ model Project {
   name            String
   emojis          String[]
   referenceNumber Int?
-  levelLabel      String?
-  metricIds       String[]     @db.ObjectId
-  metrics         Metric[]     @relation(fields: [metricIds], references: [id])
+  metrics         Metric[]
   adminIds        String[]     @db.ObjectId
   adminList       User[]       @relation(fields: [adminIds], references: [id])
   trelloCards     TrelloCard[]
   jiraCards       JiraCard[]
+  levels          Level[]
 }
 
 model Metric {
-  id         String    @id @default(auto()) @map("_id") @db.ObjectId
-  name       String    @unique
-  default    Boolean   @default(false)
-  projectIds String[]  @db.ObjectId
-  Projects   Project[] @relation(fields: [projectIds], references: [id])
-  ratings    Rating[]
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  name      String   @unique
+  active    Boolean  @default(true)
+  projectId String   @db.ObjectId
+  Project   Project? @relation(fields: [projectId], references: [id])
+  ratings   Rating[]
+  levels    Level[]
+}
+
+model Level {
+  id         String  @id @default(auto()) @map("_id") @db.ObjectId
+  levelLabel String
+  levelOrder Int
+  metricId   String  @db.ObjectId
+  metric     Metric  @relation(fields: [metricId], references: [id])
+  projectId  String  @db.ObjectId
+  project    Project @relation(fields: [projectId], references: [id])
 }
 
 model Submission {
