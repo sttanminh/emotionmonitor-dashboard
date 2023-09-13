@@ -19,6 +19,7 @@ export interface Task {
 }
 
 export type ProjectProps = {
+  //TODO: Update this to also contain a list of emojis and a reference number
   projectid: string,
   metrics: { metricId: string; metricName: string; levels: {
     levelLabel: string,
@@ -123,9 +124,39 @@ function Page(data: ProjectProps) {
   );
 };
 
+// This function retrieves data from the DB and returns an object, which will be used to display info in config landing page
+// TODO: update this function to also retrieve the string of emojis and the reference number. 
+//The type of emojis is an array of string at the moment. If that doesn't work, feel free to update schema.prisma to reflect the right data type
 export async function getServerSideProps() {
   var projectId = '643d2f9487baeec2c1c0c2d1'
-  // var projectData: ProjectProps = {
+  var project = await getProject(projectId)
+  var projectData: ProjectProps = {
+    projectid: projectId,
+    metrics: []
+  }
+  var metricArray = []
+  var metricDictionary: any = {}
+
+  project?.metrics.forEach(metric => metricDictionary[metric.id] = {
+    metricName: metric.name,
+    levels: []
+  })
+  project?.levels.forEach(level => {
+    metricDictionary[level.metricId].levels.push({
+      levelLabel: level.levelLabel,
+      levelOrder: level.levelOrder
+    })
+  })
+  for (let key in metricDictionary) {
+    metricArray.push({...metricDictionary[key], metricId: key})
+  }
+  projectData.metrics = metricArray
+  return {
+    props: projectData
+  }
+}
+// An example of the returned project Data right now (without emojis and reference number)
+// var projectData: ProjectProps = {
   //   projectid: '643d2f9487baeec2c1c0c2d1',
   //   metrics: [
   //     {
@@ -175,33 +206,6 @@ export async function getServerSideProps() {
   //     }
   //   ]
   // }
-  // await configureProject(projectData)
-  var project = await getProject(projectId)
-  var projectData: ProjectProps = {
-    projectid: projectId,
-    metrics: []
-  }
-  var metricArray = []
-  var metricDictionary: any = {}
-
-  project?.metrics.forEach(metric => metricDictionary[metric.id] = {
-    metricName: metric.name,
-    levels: []
-  })
-  project?.levels.forEach(level => {
-    metricDictionary[level.metricId].levels.push({
-      levelLabel: level.levelLabel,
-      levelOrder: level.levelOrder
-    })
-  })
-  for (let key in metricDictionary) {
-    metricArray.push({...metricDictionary[key], metricId: key})
-  }
-  projectData.metrics = metricArray
-  return {
-    props: projectData
-  }
-}
 
 Page.getLayout = function getLayout(page: ReactElement) {
   return <Layout>{page}</Layout>;

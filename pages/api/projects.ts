@@ -50,7 +50,13 @@ export async function getProject(projectId: string) {
   })
 }
 
+//TODO: update this function to configure emojis and reference number
 export async function configureProject(projectData: ProjectProps) {
+  await configureMetricsAndLevels(projectData)
+  //Add your code here
+}
+
+async function configureMetricsAndLevels(projectData:ProjectProps) {
   var projectId = projectData.projectid
   var newMetrics: any[] = []
   var pastMetrics: any[] = []
