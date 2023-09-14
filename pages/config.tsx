@@ -63,9 +63,10 @@ const ConfigurationPage = () => {
             <p>This page allow you to manage the content shown in the Trello PowerUp, including modifying, adding, or removing metrics and adjusting emoji for each level.</p>
             <h2>Manage Metrics</h2>
             {
-                // metric is the current element of the projectData.metrics array, index is the index of the current element in the projectData.metrics array
+ 
                 projectData.metrics.map((metric, index) => (
-                    <MetricsSetting metricName={metric.metricName}/>
+                    
+                    <MetricsSetting metric={metric}/>
                 ))
             }
         </div>
