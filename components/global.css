@@ -1,5 +1,9 @@
 body {
-    margin: 0;
-  }
-  
-  
+  margin: 0;
+}
+
+.body-config {
+  margin: 20px;
+  font-family: "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande",
+    "Lucida Sans", Arial, sans-serif;
+}
