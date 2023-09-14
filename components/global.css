@@ -3,7 +3,6 @@ body {
 }
 
 .body-config {
-  margin: 20px;
-  font-family: "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande",
-    "Lucida Sans", Arial, sans-serif;
+  margin: 50px 50px 50px 50px;
+  font-family: Tahoma, Verdana, sans-serif;
 }
