@@ -1,8 +1,7 @@
 import React, { useState } from "react"
 import styles from "./metricsSetting.module.css"; // Import the CSS module
 import Link from 'next/link';
-import { FaEdit, FaRegTrashAlt } from 'react-icons/fa';
-import { Button } from "semantic-ui-react";
+import { FaEdit, FaRegTrashAlt, FaSave, FaRegStopCircle } from 'react-icons/fa';
 
 // represent an element in the level array. Consist of a label and the order
 interface MetricLevel {
@@ -33,16 +32,11 @@ const MetricsSetting: React.FC<MetricsSettingProps> = ({ metric }) => {
         setIsEditing(false);
     }
 
-    const saveButtonClick = () => {
-        setIsEditing(false);
-    }
-
-
     return (
         <div className={styles.metricContainer}>
             {isEditing ? (
                 // if the user is in editing mode
-                <input type="text" placeholder={metric.metricName} onChange={(e) => { }} />
+                <input className={styles.textBox} type="text" placeholder={metric.metricName} />
             ) : (
                 // if the user is not in editing mode
                 <b>{metric.metricName}</b>
@@ -60,7 +54,7 @@ const MetricsSetting: React.FC<MetricsSettingProps> = ({ metric }) => {
                         <div key={index} className={styles.level}>
                             {isEditing ? (
                                 // if the user is in editing mode
-                                <input type="text" placeholder={level.levelLabel} onChange={(e) => { }} />
+                                <input className={styles.textBox} type="text" placeholder={level.levelLabel} />
                             ) : (
                                 // if the user is not in eiditing mode
                                 level.levelLabel
@@ -73,8 +67,12 @@ const MetricsSetting: React.FC<MetricsSettingProps> = ({ metric }) => {
                 // add a save and cancel button is the user is in editing mode
                 isEditing &&
                 <div>
-                    <button onClick={cancelButtonClick}>Cancel</button>
-                    <button onClick={saveButtonClick}>Save</button>
+                    <button onClick={cancelButtonClick} className={styles.button}>
+                        <FaRegStopCircle size={18} style={{ color: "#EE4B2B", marginTop: "10px" }} />
+                    </button>
+                    <button className={styles.button}>
+                        <FaSave size={18} style={{ color: "#0096FF" }} />
+                    </button>
                 </div>
             }
         </div >
