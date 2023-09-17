@@ -17,3 +17,13 @@
 .level {
     margin: 0 0 5px 0;
 }
+
+.button {
+    background: transparent;
+    border: none;
+    outline: none;
+}
+
+.button:hover {
+    cursor: pointer;
+}
