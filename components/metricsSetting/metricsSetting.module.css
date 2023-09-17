@@ -29,6 +29,9 @@
 }
 
 .textBox {
-    width: 100px;
+    width: 125px;
+    height: 25px;
     font-size: 20px;
+    border-radius: 8px;
+    padding: 5px 5px 5px 15px;
 }
