@@ -16,12 +16,14 @@ interface Metric {
     metricId: string
 }
 
-// determine what will be passed to the component. In this case, a metric object
+// determine what will be passed to the component
 interface MetricsSettingProps {
     metric: Metric
+    index: number
+    onDeleteButtonClick: () => void
 }
 
-const MetricsSetting: React.FC<MetricsSettingProps> = ({ metric }) => {
+const MetricsSetting: React.FC<MetricsSettingProps> = ({ metric, index, onDeleteButtonClick }) => {
     const [isEditing, setIsEditing] = useState(false);
 
     const editButtonClick = () => {
@@ -30,6 +32,12 @@ const MetricsSetting: React.FC<MetricsSettingProps> = ({ metric }) => {
 
     const cancelButtonClick = () => {
         setIsEditing(false);
+    }
+
+    // deleteButtonClick called onDeleteButtonClick(), which called deleteMetric() in config.tsx
+    // onDeleteButtonClick() didn't need to pass any index as "onDeleteButtonClick={() => deleteMetric(index)}" in config.tsx already passed the index
+    const deleteButtonClick = () => {
+        onDeleteButtonClick();
     }
 
     return (
@@ -44,7 +52,7 @@ const MetricsSetting: React.FC<MetricsSettingProps> = ({ metric }) => {
             <button onClick={editButtonClick} className={styles.button}>
                 <FaEdit size={18} style={{ color: "#50C878", marginLeft: "5px" }} />
             </button>
-            <button className={styles.button}>
+            <button onClick={deleteButtonClick} className={styles.button}>
                 <FaRegTrashAlt size={18} style={{ color: "#EE4B2B" }} />
             </button>
             <div className={styles.levelsContainer}>
@@ -53,7 +61,7 @@ const MetricsSetting: React.FC<MetricsSettingProps> = ({ metric }) => {
                     metric.levels.map((level, index) => (
                         <div key={index} className={styles.level}>
                             {isEditing ? (
-                                // if the user is in editing mode
+                                // if the user is in editing mode display the level as textboxs
                                 <input className={styles.textBox} type="text" placeholder={level.levelLabel} />
                             ) : (
                                 // if the user is not in eiditing mode
@@ -64,13 +72,13 @@ const MetricsSetting: React.FC<MetricsSettingProps> = ({ metric }) => {
                 }
             </div>
             {
-                // add a save and cancel button is the user is in editing mode
+                // add a Save and Cancel button if the user is in editing mode
                 isEditing &&
                 <div>
                     <button onClick={cancelButtonClick} className={styles.button}>
                         <FaRegStopCircle size={18} style={{ color: "#EE4B2B", marginTop: "10px" }} />
                     </button>
-                    <button className={styles.button}>
+                    <button className={styles.button} >
                         <FaSave size={18} style={{ color: "#0096FF" }} />
                     </button>
                 </div>
