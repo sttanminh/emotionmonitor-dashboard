@@ -1,3 +1,4 @@
+import { MenuItem, Select, SelectChangeEvent } from "@mui/material";
 import React, { useState, useEffect } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -7,14 +8,12 @@ type DateRangeSelectorProps = {
 };
 
 function DateRangeSelector({ onSelectDateRange }: DateRangeSelectorProps) {
-  const [selectedOption, setSelectedOption] = useState<string>("week");
+  const [selectedMenuItem, setSelectedMenuItem] = useState<string>("week");
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
 
-  const handleDateRangeChange = (
-    event: React.ChangeEvent<HTMLSelectElement>
-  ) => {
-    setSelectedOption(event.target.value);
+  const handleDateRangeChange = (event: SelectChangeEvent<string>) => {
+    setSelectedMenuItem(event.target.value);
   };
 
   const handleStartDateChange = (date: Date | null) => {
@@ -27,7 +26,7 @@ function DateRangeSelector({ onSelectDateRange }: DateRangeSelectorProps) {
 
   useEffect(() => {
     const today = new Date();
-    switch (selectedOption) {
+    switch (selectedMenuItem) {
       case "week":
         const oneWeekAgo = new Date();
         oneWeekAgo.setDate(today.getDate() - 7);
@@ -55,7 +54,7 @@ function DateRangeSelector({ onSelectDateRange }: DateRangeSelectorProps) {
       default:
         break;
     }
-  }, [selectedOption]);
+  }, [selectedMenuItem]);
 
   useEffect(() => {
     // Call onSelectDateRange when startDate or endDate changes
@@ -70,18 +69,18 @@ function DateRangeSelector({ onSelectDateRange }: DateRangeSelectorProps) {
 
   return (
     <div className="datePicker">
-      <select
+      <Select
         className="preSet"
-        value={selectedOption}
+        value={selectedMenuItem}
         onChange={handleDateRangeChange}
       >
-        <option value="week">1 Week</option>
-        <option value="month">1 Month</option>
-        <option value="year">1 Year</option>
-        <option value="custom">Custom</option>
-      </select>
+        <MenuItem value="week">1 Week</MenuItem>
+        <MenuItem value="month">1 Month</MenuItem>
+        <MenuItem value="year">1 Year</MenuItem>
+        <MenuItem value="custom">Custom</MenuItem>
+      </Select>
 
-      {selectedOption === "custom" && (
+      {selectedMenuItem === "custom" && (
         <div className="dataPickerCus">
           <DatePicker
             selected={startDate}

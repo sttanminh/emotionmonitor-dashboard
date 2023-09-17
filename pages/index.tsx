@@ -10,6 +10,17 @@ import { Metric, Project } from "@prisma/client";
 import "react-datepicker/dist/react-datepicker.css";
 import DateRangeSelector from "@/components/datePicker";
 import { MetricGraphModule } from "@/components/modules/metricGraphModule";
+import Button from "@mui/material/Button";
+import {
+  ButtonGroup,
+  InputAdornment,
+  InputLabel,
+  ListSubheader,
+  MenuItem,
+  Select,
+  TextField,
+} from "@mui/material";
+import { Search } from "@mui/icons-material";
 
 export interface ProjectPlus extends Project {
   trelloCards: Task[];
@@ -51,6 +62,8 @@ const Page: NextPageWithLayout = () => {
     oneWeekAgo
   );
   const [selectedEndDate, setSelectedEndDate] = useState<Date | null>(today);
+
+  const [taskSearchText, settaskSearchText] = useState("");
 
   const handleDateRangeSelect = (startDate: Date, endDate: Date) => {
     setSelectedStartDate(startDate);
@@ -97,7 +110,6 @@ const Page: NextPageWithLayout = () => {
   if (!projects || !activeProject) {
     return <p>No profile projects</p>;
   }
-
   return (
     <div className="page-container">
       <ProjectSelector
@@ -106,43 +118,92 @@ const Page: NextPageWithLayout = () => {
         projects={projects}
       />
       <div className="page-config-container">
-        <div className="button-container">
-          <button
-            className={summaryTypeSelection === "By Task" ? "active" : ""}
+        <ButtonGroup variant="contained">
+          <Button
             onClick={() => {
               setSummaryTypeSelection("By Task");
               setActiveTask(activeProject.trelloCards[0]);
             }}
+            area-disabled={summaryTypeSelection === "By Task"}
+            variant={
+              (summaryTypeSelection === "By Task" ? "contained" : undefined) ||
+              "outlined"
+            }
           >
             By Task
-          </button>
-          <button
-            className={summaryTypeSelection === "Overall" ? "active" : ""}
+          </Button>
+          <Button
             onClick={() => {
               setSummaryTypeSelection("Overall");
               setActiveTask(undefined);
             }}
+            area-disabled={summaryTypeSelection === "Overall"}
+            variant={
+              (summaryTypeSelection === "Overall" ? "contained" : undefined) ||
+              "outlined"
+            }
           >
             Overall
-          </button>
-        </div>
+          </Button>
+        </ButtonGroup>
 
         {summaryTypeSelection !== "Overall" && (
           <div className="task-selector">
-            <NavigationBar
-              activeItem={activeTask!.taskName}
-              setActiveItem={(taskName) =>
+            {
+              //Select component with searchable input inspired by this codesandbox codehttps://codesandbox.io/s/react-mui-searchable-select-nm3vw?file=/src/App.js:777-807
+            }
+            <Select
+              value={activeTask?.id}
+              label={"Task"}
+              onChange={(event) => {
+                console.log("active task", activeTask);
+                const taskId = event.target.value;
                 setActiveTask(
-                  activeProject.trelloCards.find(
-                    (card) => card.taskName == taskName
-                  )!
+                  activeProject.trelloCards.find((card) => card.id == taskId)!
+                );
+              }}
+              // Disables auto focus on MenuItems and allows TextField to be in focus
+              MenuProps={{ autoFocus: false }}
+              id="task-search-select"
+              onClose={() => settaskSearchText("")}
+              // This prevents rendering empty string in Select's value
+              // if search text would exclude currently selected option.
+              renderValue={() => activeTask?.taskName}
+            >
+              {/* TextField is put into ListSubheader so that it doesn't
+              act as a selectable item in the menu
+              i.e. we can click the TextField without triggering any selection.*/}
+              <ListSubheader>
+                <TextField
+                  size="small"
+                  // Autofocus on textfield
+                  autoFocus
+                  placeholder="Type to search..."
+                  fullWidth
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <Search />
+                      </InputAdornment>
+                    ),
+                  }}
+                  onChange={(e) => settaskSearchText(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key !== "Escape") {
+                      // Prevents autoselecting item while typing (default Select behaviour)
+                      e.stopPropagation();
+                    }
+                  }}
+                />
+              </ListSubheader>
+              {activeProject.trelloCards
+                .filter((card) =>
+                  card.taskName.toLowerCase().includes(taskSearchText)
                 )
-              }
-              selectionItems={activeProject.trelloCards.map(
-                (task) => task.taskName
-              )}
-              labelStyle="label-task"
-            />
+                .map((card) => (
+                  <MenuItem value={card.id}>{card.taskName}</MenuItem>
+                ))}
+            </Select>
           </div>
         )}
         <DateRangeSelector onSelectDateRange={handleDateRangeSelect} />
