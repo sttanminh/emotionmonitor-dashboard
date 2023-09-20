@@ -2,9 +2,15 @@ body {
   margin: 0;
 }
 
+/* CSS for configuration page */
 .body-config {
   margin: 50px 50px 50px 50px;
   font-family: Tahoma, Verdana, sans-serif;
+}
+
+.header-container {
+  display: flex;
+  flex-direction: row;
 }
 
 .metric-container {
@@ -12,6 +18,17 @@ body {
   flex-wrap: wrap;
   flex-direction: row;
   justify-content: space-around;
+}
+
+.trans-button {
+  background: transparent;
+  border: none;
+  outline: none;
+  margin: 0 0 0 10px;
+}
+
+button:hover {
+  cursor: pointer;
 }
 
 /* Only allow 5 metric per row */
