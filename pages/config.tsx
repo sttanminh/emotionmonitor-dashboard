@@ -149,30 +149,32 @@ const ConfigurationPage = () => {
 
     return (
         <div className="body-config">
-            <h1>Emotimonitor Configuration</h1>
-            <p>This page allow you to manage the content shown in the Trello PowerUp, including modifying, adding, or removing metrics and adjusting emoji for each level.</p>
-            <div className="header-container">
-                <h2>Manage Metrics</h2>
-                <button className="trans-button" onClick={addMetric}>
-                    <FaPlusCircle size={18} style={{ color: "#50C878" }} />
-                </button>
-            </div>
-            <div className='metric-container'>
-                {
-                    // for each element in the metrics array we add a MetricsSetting component using map()
-                    projectData.metrics.map((metric, index) => (
-                        // metric is the current element of the projectData.metrics array, index is the index of the current element in the projectData.metrics array
-                        <MetricsSetting
-                            key={index}
-                            index={index}
-                            metric={metric}
-                            onDeleteButtonClick={() => deleteMetric(index)}
-                            onAddLevelButtonClick={() => addLevel(index)} 
-                            // deleteLevel takes 2 arg, one of which need to be passed from the component hence: (levelIndex: number)
-                            onDeleteLevelButtonClick={(levelIndex: number) => deleteLevel(index, levelIndex)}/> 
-                    ))
-                }
-            </div>
+            <section className='background'>
+                <h1>Emotimonitor Configuration</h1>
+                <p>This page allow you to manage the content shown in the Trello PowerUp, including modifying, adding, or removing metrics and adjusting emoji for each level.</p>
+                <div className="header-container">
+                    <h2>Manage Metrics</h2>
+                    <button className="trans-button" onClick={addMetric}>
+                        <FaPlusCircle size={18} style={{ color: "#50C878" }} />
+                    </button>
+                </div>
+                <div className='metric-container'>
+                    {
+                        // for each element in the metrics array we add a MetricsSetting component using map()
+                        projectData.metrics.map((metric, index) => (
+                            // metric is the current element of the projec tData.metrics array, index is the index of the current element in the projectData.metrics array
+                            <MetricsSetting
+                                key={index}
+                                index={index}
+                                metric={metric}
+                                onDeleteButtonClick={() => deleteMetric(index)}
+                                onAddLevelButtonClick={() => addLevel(index)}
+                                // deleteLevel takes 2 arg, one of which need to be passed from the component hence: (levelIndex: number)
+                                onDeleteLevelButtonClick={(levelIndex: number) => deleteLevel(index, levelIndex)} />
+                        ))
+                    }
+                </div>
+            </section>
         </div>
     );
 
