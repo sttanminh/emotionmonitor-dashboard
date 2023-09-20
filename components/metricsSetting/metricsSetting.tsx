@@ -1,7 +1,7 @@
 import React, { useState } from "react"
 import styles from "./metricsSetting.module.css"; // Import the CSS module
 import Link from 'next/link';
-import { FaEdit, FaRegTrashAlt, FaSave, FaRegStopCircle } from 'react-icons/fa';
+import { FaEdit, FaRegTrashAlt, FaSave, FaRegStopCircle, FaPlusCircle } from 'react-icons/fa';
 
 // represent an element in the level array. Consist of a label and the order
 interface MetricLevel {
@@ -21,9 +21,10 @@ interface MetricsSettingProps {
     metric: Metric
     index: number
     onDeleteButtonClick: () => void
+    onAddLevelButtonClick: () => void
 }
 
-const MetricsSetting: React.FC<MetricsSettingProps> = ({ metric, index, onDeleteButtonClick }) => {
+const MetricsSetting: React.FC<MetricsSettingProps> = ({ metric, index, onDeleteButtonClick, onAddLevelButtonClick }) => {
     const [isEditing, setIsEditing] = useState(false);
 
     const editButtonClick = () => {
@@ -38,6 +39,11 @@ const MetricsSetting: React.FC<MetricsSettingProps> = ({ metric, index, onDelete
     // onDeleteButtonClick() didn't need to pass any index as "onDeleteButtonClick={() => deleteMetric(index)}" in config.tsx already passed the index
     const deleteButtonClick = () => {
         onDeleteButtonClick();
+    }
+
+    // addLevelButtonClick called onAddLevelButtonClick(), which called deleteMetric() in config.tsx
+    const addLevelButtonClick = () => {
+        onAddLevelButtonClick();
     }
 
     return (
@@ -72,11 +78,14 @@ const MetricsSetting: React.FC<MetricsSettingProps> = ({ metric, index, onDelete
                 }
             </div>
             {
-                // add a Save and Cancel button if the user is in editing mode
+                // add a Save, Add and Cancel button if the user is in editing mode
                 isEditing &&
                 <div>
                     <button onClick={cancelButtonClick} className={styles.button}>
                         <FaRegStopCircle size={18} style={{ color: "#EE4B2B", marginTop: "10px" }} />
+                    </button>
+                    <button onClick={addLevelButtonClick} className={styles.button} >
+                        <FaPlusCircle size={18} style={{ color: "#50C878" }} />
                     </button>
                     <button className={styles.button} >
                         <FaSave size={18} style={{ color: "#0096FF" }} />

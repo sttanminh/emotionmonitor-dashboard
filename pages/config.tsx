@@ -5,7 +5,7 @@ import { FaEdit, FaRegTrashAlt } from 'react-icons/fa';
 
 const ConfigurationPage = () => {
 
-    const initialProjectData  = {
+    const initialProjectData = {
         projectid: '643d2f9487baeec2c1c0c2d1',
         metrics: [
             {
@@ -82,14 +82,27 @@ const ConfigurationPage = () => {
     const [projectData, setProjectData] = useState(initialProjectData)
 
     // function to delete a metric from the project data
-    const deleteMetric = ( indexToDelete: number ) => {
+    const deleteMetric = (indexToDelete: number) => {
         // create a new object that contains the modified data
-        const updatedData = {...projectData}
-        updatedData.metrics.splice(indexToDelete, 1)
+        const updatedData = { ...projectData };
+        updatedData.metrics.splice(indexToDelete, 1);
         // update the state with the new object to triggers re-render of component
-        setProjectData({ ...updatedData});
-        console.log(projectData.metrics)
+        setProjectData({ ...updatedData });
+        console.log(projectData.metrics);
     }
+
+    const addLevel = (metricIndex: number) => {
+        // create a level object
+        const newLevel = {
+            levelLabel: "New Level",
+            levelOrder: projectData.metrics[metricIndex].levels.length + 1,
+        }
+        // create a new object that contains the modified data
+        const updatedData = { ...projectData };
+        updatedData.metrics[metricIndex].levels.push(newLevel);
+        // update the state with the new object to triggers re-render of component
+        setProjectData({ ...updatedData });
+    } 
 
     return (
         <div className="body-config">
@@ -101,7 +114,7 @@ const ConfigurationPage = () => {
                     // for each element in the metrics array we add a MetricsSetting component using map()
                     projectData.metrics.map((metric, index) => (
                         // metric is the current element of the projectData.metrics array, index is the index of the current element in the projectData.metrics array
-                        <MetricsSetting index={index} metric={metric} onDeleteButtonClick={() => deleteMetric(index)} />
+                        <MetricsSetting index={index} metric={metric} onDeleteButtonClick={() => deleteMetric(index)} onAddLevelButtonClick={() => addLevel(index)} />
                     ))
                 }
             </div>
