@@ -13,3 +13,8 @@ body {
   flex-direction: row;
   justify-content: space-around;
 }
+
+/* Only allow 5 metric per row */
+.metric-container > * {
+  flex-basis: calc(20%);
+}
