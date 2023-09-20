@@ -1,7 +1,7 @@
 import React, { useState } from "react"
 import styles from "./metricsSetting.module.css"; // Import the CSS module
 import Link from 'next/link';
-import { FaEdit, FaRegTrashAlt, FaSave, FaRegStopCircle, FaPlusCircle } from 'react-icons/fa';
+import { FaEdit, FaRegTrashAlt, FaSave, FaRegStopCircle, FaPlusCircle, FaMinusCircle } from 'react-icons/fa';
 
 // represent an element in the level array. Consist of a label and the order
 interface MetricLevel {
@@ -22,9 +22,11 @@ interface MetricsSettingProps {
     index: number
     onDeleteButtonClick: () => void
     onAddLevelButtonClick: () => void
+    // onDeleteLevelButtonClick needs levelIndex so it can pass to deleteLevel in config.tsx
+    onDeleteLevelButtonClick: (levelIndex: number) => void 
 }
 
-const MetricsSetting: React.FC<MetricsSettingProps> = ({ metric, index, onDeleteButtonClick, onAddLevelButtonClick }) => {
+const MetricsSetting: React.FC<MetricsSettingProps> = ({ metric, index, onDeleteButtonClick, onAddLevelButtonClick, onDeleteLevelButtonClick}) => {
     const [isEditing, setIsEditing] = useState(false);
 
     const editButtonClick = () => {
@@ -35,15 +37,21 @@ const MetricsSetting: React.FC<MetricsSettingProps> = ({ metric, index, onDelete
         setIsEditing(false);
     }
 
-    // deleteButtonClick called onDeleteButtonClick(), which called deleteMetric() in config.tsx
-    // onDeleteButtonClick() didn't need to pass any index as "onDeleteButtonClick={() => deleteMetric(index)}" in config.tsx already passed the index
+    // deleteButtonClick called onDeleteButtonClick(), which called deleteMetric in config.tsx
+    // onDeleteButtonClick() didn't need to pass any arg as "onDeleteButtonClick={() => deleteMetric(index)}" in config.tsx already passed the index
     const deleteButtonClick = () => {
         onDeleteButtonClick();
     }
 
-    // addLevelButtonClick called onAddLevelButtonClick(), which called deleteMetric() in config.tsx
+    // addLevelButtonClick called onAddLevelButtonClick(), which called addLevel in config.tsx
     const addLevelButtonClick = () => {
         onAddLevelButtonClick();
+    }
+
+    // deleteLevelButtonClick called onDeleteLevelButtonClick(), which called deleteLevel in config.tsx
+    // deleteLevelButtonClick get the levelIndex, pass it to onDeleteLevelButtonClick(), which is then pass to deleteLevel in config.tsx
+    const deleteLevelButtonClick = (levelIndex: number) => {
+        onDeleteLevelButtonClick(levelIndex);
     }
 
     return (
@@ -67,8 +75,13 @@ const MetricsSetting: React.FC<MetricsSettingProps> = ({ metric, index, onDelete
                     metric.levels.map((level, index) => (
                         <div key={index} className={styles.level}>
                             {isEditing ? (
-                                // if the user is in editing mode display the level as textboxs
-                                <input className={styles.textBox} type="text" placeholder={level.levelLabel} />
+                                // if the user is in editing mode display the level as textboxs and allow removing level
+                                <div>
+                                    <input className={styles.textBox} type="text" placeholder={level.levelLabel} />
+                                    <button onClick={() => deleteLevelButtonClick(index)} className={styles.button}>
+                                        <FaMinusCircle size={18} style={{ color: "#EE4B2B", marginTop: "10px" }} />
+                                    </button>
+                                </div>
                             ) : (
                                 // if the user is not in eiditing mode
                                 level.levelLabel

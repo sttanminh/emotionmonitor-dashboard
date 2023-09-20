@@ -106,6 +106,7 @@ const ConfigurationPage = () => {
         console.log(projectData.metrics);
     }
 
+    // function to add a new metric
     const addMetric = () => {
         // create a metric object
         const newMetric = {
@@ -132,6 +133,20 @@ const ConfigurationPage = () => {
         console.log(projectData.metrics);
     }
 
+    // function to delete a levels
+    const deleteLevel = (metricIndex: number, levelIndex: number) => {
+        // create a new object that contains the modified data
+        const updatedData = { ...projectData };
+        updatedData.metrics[metricIndex].levels.splice(levelIndex, 1);
+        // reset the level order after deletion
+        updatedData.metrics[metricIndex].levels.forEach((level, index) => {
+            level.levelOrder = index + 1;
+        });
+        // update the state with the new object to triggers re-render of component
+        setProjectData({ ...updatedData });
+        console.log(projectData.metrics)
+    }
+
     return (
         <div className="body-config">
             <h1>Emotimonitor Configuration</h1>
@@ -147,7 +162,14 @@ const ConfigurationPage = () => {
                     // for each element in the metrics array we add a MetricsSetting component using map()
                     projectData.metrics.map((metric, index) => (
                         // metric is the current element of the projectData.metrics array, index is the index of the current element in the projectData.metrics array
-                        <MetricsSetting index={index} metric={metric} onDeleteButtonClick={() => deleteMetric(index)} onAddLevelButtonClick={() => addLevel(index)} />
+                        <MetricsSetting
+                            key={index}
+                            index={index}
+                            metric={metric}
+                            onDeleteButtonClick={() => deleteMetric(index)}
+                            onAddLevelButtonClick={() => addLevel(index)} 
+                            // deleteLevel takes 2 arg, one of which need to be passed from the component hence: (levelIndex: number)
+                            onDeleteLevelButtonClick={(levelIndex: number) => deleteLevel(index, levelIndex)}/> 
                     ))
                 }
             </div>
