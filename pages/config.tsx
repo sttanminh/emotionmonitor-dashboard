@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import MetricsSetting from "../components/metricsSetting/metricsSetting"
 import Link from 'next/link';
-import { FaEdit, FaRegTrashAlt } from 'react-icons/fa';
+import { FaPlusCircle } from 'react-icons/fa';
 
 const ConfigurationPage = () => {
 
@@ -78,7 +78,7 @@ const ConfigurationPage = () => {
         ]
     }
 
-    // maintain projectDate so the UI re-render when changes happen
+    // maintain projectData so the UI re-render when changes happen
     const [projectData, setProjectData] = useState(initialProjectData)
 
     // function to delete a metric from the project data
@@ -91,6 +91,7 @@ const ConfigurationPage = () => {
         console.log(projectData.metrics);
     }
 
+    // function to add a level to a metric
     const addLevel = (metricIndex: number) => {
         // create a level object
         const newLevel = {
@@ -102,13 +103,45 @@ const ConfigurationPage = () => {
         updatedData.metrics[metricIndex].levels.push(newLevel);
         // update the state with the new object to triggers re-render of component
         setProjectData({ ...updatedData });
-    } 
+        console.log(projectData.metrics);
+    }
+
+    const addMetric = () => {
+        // create a metric object
+        const newMetric = {
+            metricName: 'New Metric',
+            levels: [
+                {
+                    levelLabel: "Short",
+                    levelOrder: 1
+                }, {
+                    levelLabel: "Reasonable",
+                    levelOrder: 2
+                }, {
+                    levelLabel: "Long",
+                    levelOrder: 3
+                }
+            ],
+            metricId: ''
+        }
+        // create a new object that contains the modified data
+        const updatedData = { ...projectData };
+        updatedData.metrics.push(newMetric);
+        // update the state with the new object to triggers re-render of component
+        setProjectData({ ...updatedData });
+        console.log(projectData.metrics);
+    }
 
     return (
         <div className="body-config">
             <h1>Emotimonitor Configuration</h1>
             <p>This page allow you to manage the content shown in the Trello PowerUp, including modifying, adding, or removing metrics and adjusting emoji for each level.</p>
-            <h2>Manage Metrics</h2>
+            <div className="header-container">
+                <h2>Manage Metrics</h2>
+                <button className="trans-button" onClick={addMetric}>
+                    <FaPlusCircle size={18} style={{ color: "#50C878" }} />
+                </button>
+            </div>
             <div className='metric-container'>
                 {
                     // for each element in the metrics array we add a MetricsSetting component using map()
