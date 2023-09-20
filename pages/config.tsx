@@ -112,13 +112,13 @@ const ConfigurationPage = () => {
             metricName: 'New Metric',
             levels: [
                 {
-                    levelLabel: "Short",
+                    levelLabel: "Low",
                     levelOrder: 1
                 }, {
-                    levelLabel: "Reasonable",
+                    levelLabel: "Medium",
                     levelOrder: 2
                 }, {
-                    levelLabel: "Long",
+                    levelLabel: "High",
                     levelOrder: 3
                 }
             ],
