@@ -24,15 +24,11 @@ async function handler(req: NextApiRequest, res: NextApiResponse<Data>) {
     }
   } else if (req.method === "PUT") {
     try {
-      const query = req.query;
-      const { projectData } = query;
-      await configureProject(projectData as ProjectProps)
-      res
-        .status(200)
-        .setHeader("Content-Type", "application/json")
-        .json({ message: "ratings retrieved", ...projects });
+      const { projectData } = req.body
+      await configureProject(projectData)
+      res.status(201).json({ message: "Project configured!" });
     } catch (error: any) {
-      res.status(500).json({ message: error.message });
+      res.status(500).json({ message: error.message })
     }
   }
 }

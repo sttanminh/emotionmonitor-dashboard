@@ -19,13 +19,14 @@ const ConfigurationPage = (initialProjectData: ProjectProps) => {
     const [projectData, setProjectData] = useState(initialProjectData)
 
     // function to delete a metric from the project data
-    const deleteMetric = (indexToDelete: number) => {
+    const deleteMetric = async (indexToDelete: number) => {
         // create a new object that contains the modified data
         const updatedData = { ...projectData };
         updatedData.metrics.splice(indexToDelete, 1);
         // update the state with the new object to triggers re-render of component
         setProjectData({ ...updatedData });
-        console.log(projectData.metrics);
+        await saveToBackEnd()
+        // console.log(projectData.metrics);
     }
 
     // function to add a level to a metric
@@ -40,7 +41,7 @@ const ConfigurationPage = (initialProjectData: ProjectProps) => {
         updatedData.metrics[metricIndex].levels.push(newLevel);
         // update the state with the new object to triggers re-render of component
         setProjectData({ ...updatedData });
-        console.log(projectData.metrics);
+        // console.log(projectData.metrics);
     }
 
     // function to add a new metric
@@ -67,7 +68,7 @@ const ConfigurationPage = (initialProjectData: ProjectProps) => {
         updatedData.metrics.push(newMetric);
         // update the state with the new object to triggers re-render of component
         setProjectData({ ...updatedData });
-        console.log(projectData.metrics);
+        // console.log(projectData.metrics);
     }
 
     // function to delete a levels
@@ -81,7 +82,7 @@ const ConfigurationPage = (initialProjectData: ProjectProps) => {
         });
         // update the state with the new object to triggers re-render of component
         setProjectData({ ...updatedData });
-        console.log(projectData.metrics)
+        // console.log(projectData.metrics)
     }
 
     // function to rename the level
@@ -102,8 +103,19 @@ const ConfigurationPage = (initialProjectData: ProjectProps) => {
         setProjectData({ ...updatedData });
     }
 
-    const saveToBackEnd = () => {
-
+    const saveToBackEnd =  async () => {
+        console.log("In save to back end")
+        console.log(projectData)
+        const response = await fetch('/api/projects', {
+			method: 'PUT',
+			body: JSON.stringify({
+				projectData: projectData
+			}),
+			headers: {
+				'Content-Type': 'application/json'
+			}
+		})
+        console.log(response)
     }
 
 
@@ -132,7 +144,7 @@ const ConfigurationPage = (initialProjectData: ProjectProps) => {
                                 onAddLevelButtonClick={() => addLevel(index)}
                                 // levelIndex need to be passed from the component hence: (levelIndex: number)
                                 onDeleteLevelButtonClick={(levelIndex: number) => deleteLevel(index, levelIndex)} 
-                                onSaveButtonClick={() => saveToBackEnd}
+                                onSaveButtonClick={() => saveToBackEnd()}
                                 onMetricNameChange={(updatedMetricName: string) => updateMetricName(index, updatedMetricName)}
                                 onLevelLabelChange={(levelIndex: number, updatedLvLabel: string) => updateLvLabel(index, levelIndex, updatedLvLabel)}/>
                         ))
@@ -154,7 +166,7 @@ export async function getServerSideProps() {
     var metricArray = []
     var metricDictionary: any = {}
   
-    project?.metrics.forEach(metric => metricDictionary[metric.id] = {
+    project?.metrics.filter((metric) => metric.active).forEach(metric => metricDictionary[metric.id] = {
       metricName: metric.name,
       levels: []
     })
@@ -168,6 +180,7 @@ export async function getServerSideProps() {
       metricArray.push({...metricDictionary[key], metricId: key})
     }
     projectData.metrics = metricArray
+    // console.log(projectData)
     return {
       props: projectData
     }
