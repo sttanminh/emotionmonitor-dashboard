@@ -2,6 +2,16 @@ import React, { useState } from 'react';
 import MetricsSetting from "../components/metricsSetting/metricsSetting"
 import Link from 'next/link';
 import { FaPlusCircle } from 'react-icons/fa';
+import { getProject, configureProject } from "./api/projects";
+
+export type ProjectProps = {
+    //TODO: Update this to also contain a list of emojis and a reference number
+    projectid: string,
+    metrics: { metricId: string; metricName: string; levels: {
+      levelLabel: string,
+      levelOrder: Number
+    }[] }[]
+}
 
 const ConfigurationPage = () => {
 
@@ -189,5 +199,34 @@ const ConfigurationPage = () => {
     );
 
 };
+
+export async function getServerSideProps() {
+    var projectId = '643d2f9487baeec2c1c0c2d1'
+    var project = await getProject(projectId)
+    var projectData: ProjectProps = {
+      projectid: projectId,
+      metrics: []
+    }
+    var metricArray = []
+    var metricDictionary: any = {}
+  
+    project?.metrics.forEach(metric => metricDictionary[metric.id] = {
+      metricName: metric.name,
+      levels: []
+    })
+    project?.levels.forEach(level => {
+      metricDictionary[level.metricId].levels.push({
+        levelLabel: level.levelLabel,
+        levelOrder: level.levelOrder
+      })
+    })
+    for (let key in metricDictionary) {
+      metricArray.push({...metricDictionary[key], metricId: key})
+    }
+    projectData.metrics = metricArray
+    return {
+      props: projectData
+    }
+}
 
 export default ConfigurationPage;
