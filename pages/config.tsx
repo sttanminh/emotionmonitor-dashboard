@@ -93,9 +93,20 @@ const ConfigurationPage = (initialProjectData: ProjectProps) => {
         setProjectData({ ...updatedData });
     }
 
+    // function to rename the metric name
+    const updateMetricName = (metricIndex: number, newMetricName: string) => {
+        // create a new object that contains the modified data
+        const updatedData = { ...projectData };
+        updatedData.metrics[metricIndex].metricName = newMetricName
+        // update the state with the new object to triggers re-render of component
+        setProjectData({ ...updatedData });
+    }
+
     const saveToBackEnd = () => {
 
     }
+
+
 
     return (
         <div className="body-config">
@@ -122,6 +133,7 @@ const ConfigurationPage = (initialProjectData: ProjectProps) => {
                                 // levelIndex need to be passed from the component hence: (levelIndex: number)
                                 onDeleteLevelButtonClick={(levelIndex: number) => deleteLevel(index, levelIndex)} 
                                 onSaveButtonClick={() => saveToBackEnd}
+                                onMetricNameChange={(updatedMetricName: string) => updateMetricName(index, updatedMetricName)}
                                 onLevelLabelChange={(levelIndex: number, updatedLvLabel: string) => updateLvLabel(index, levelIndex, updatedLvLabel)}/>
                         ))
                     }

@@ -25,10 +25,11 @@ interface MetricsSettingProps {
     // onDeleteLevelButtonClick needs levelIndex so it can pass to deleteLevel in config.tsx
     onDeleteLevelButtonClick: (levelIndex: number) => void 
     onLevelLabelChange: (levelIndex: number, updatedLvLabel: string) => void
-    onSaveButtonClick: () => void;
+    onMetricNameChange: (updatedMetricName: string) => void
+    onSaveButtonClick: () => void
 }
 
-const MetricsSetting: React.FC<MetricsSettingProps> = ({ metric, index, onDeleteButtonClick, onSaveButtonClick, onAddLevelButtonClick, onDeleteLevelButtonClick, onLevelLabelChange}) => {
+const MetricsSetting: React.FC<MetricsSettingProps> = ({ metric, index, onDeleteButtonClick, onMetricNameChange, onSaveButtonClick, onAddLevelButtonClick, onDeleteLevelButtonClick, onLevelLabelChange}) => {
     const [isEditing, setIsEditing] = useState(false);
     
     const editButtonClick = () => {
@@ -63,11 +64,16 @@ const MetricsSetting: React.FC<MetricsSettingProps> = ({ metric, index, onDelete
         onLevelLabelChange(levelIndex, updatedLvLabel);
     }
 
+    const handleMetricChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const updateMetricName = event.target.value;
+        onMetricNameChange(updateMetricName);
+    }
+
     return (
         <div className={styles.metricContainer}>
             {isEditing ? (
                 // if the user is in editing mode
-                <input className={styles.textBox} type="text" placeholder={metric.metricName} />
+                <input onChange={(event) => handleMetricChange(event)} className={styles.textBox} type="text" placeholder={metric.metricName} />
             ) : (
                 // if the user is not in editing mode
                 <b>{metric.metricName}</b>
