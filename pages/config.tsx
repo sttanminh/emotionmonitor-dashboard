@@ -147,6 +147,15 @@ const ConfigurationPage = () => {
         console.log(projectData.metrics)
     }
 
+    // function to rename the level
+    const updateLvLabel = (metricIndex: number, levelIndex: number, newLvLabel: string) => {
+        // create a new object that contains the modified data
+        const updatedData = { ...projectData };
+        updatedData.metrics[metricIndex].levels[levelIndex].levelLabel = newLvLabel;
+        // update the state with the new object to triggers re-render of component
+        setProjectData({ ...updatedData });
+    }
+
     return (
         <div className="body-config">
             <section className='background'>
@@ -169,8 +178,9 @@ const ConfigurationPage = () => {
                                 metric={metric}
                                 onDeleteButtonClick={() => deleteMetric(index)}
                                 onAddLevelButtonClick={() => addLevel(index)}
-                                // deleteLevel takes 2 arg, one of which need to be passed from the component hence: (levelIndex: number)
-                                onDeleteLevelButtonClick={(levelIndex: number) => deleteLevel(index, levelIndex)} />
+                                // levelIndex need to be passed from the component hence: (levelIndex: number)
+                                onDeleteLevelButtonClick={(levelIndex: number) => deleteLevel(index, levelIndex)} 
+                                onLevelLabelChange={(levelIndex: number, updatedLvLabel: string) => updateLvLabel(index, levelIndex, updatedLvLabel)}/>
                         ))
                     }
                 </div>

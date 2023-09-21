@@ -24,16 +24,17 @@ interface MetricsSettingProps {
     onAddLevelButtonClick: () => void
     // onDeleteLevelButtonClick needs levelIndex so it can pass to deleteLevel in config.tsx
     onDeleteLevelButtonClick: (levelIndex: number) => void 
+    onLevelLabelChange: (levelIndex: number, updatedLvLabel: string) => void
 }
 
-const MetricsSetting: React.FC<MetricsSettingProps> = ({ metric, index, onDeleteButtonClick, onAddLevelButtonClick, onDeleteLevelButtonClick}) => {
+const MetricsSetting: React.FC<MetricsSettingProps> = ({ metric, index, onDeleteButtonClick, onAddLevelButtonClick, onDeleteLevelButtonClick, onLevelLabelChange}) => {
     const [isEditing, setIsEditing] = useState(false);
-
+    
     const editButtonClick = () => {
         setIsEditing(true);
     }
 
-    const cancelButtonClick = () => {
+    const saveButtonClick = () => {
         setIsEditing(false);
     }
 
@@ -52,6 +53,12 @@ const MetricsSetting: React.FC<MetricsSettingProps> = ({ metric, index, onDelete
     // deleteLevelButtonClick get the levelIndex, pass it to onDeleteLevelButtonClick(), which is then pass to deleteLevel in config.tsx
     const deleteLevelButtonClick = (levelIndex: number) => {
         onDeleteLevelButtonClick(levelIndex);
+    }
+
+    // handleLevelChange called onLevelLabelChange(), which called updateLvLabel in config.tsx
+    const handleLevelChange = (levelIndex: number, event: React.ChangeEvent<HTMLInputElement>) => {
+        const updatedLvLabel = event.target.value;
+        onLevelLabelChange(levelIndex, updatedLvLabel);
     }
 
     return (
@@ -77,7 +84,7 @@ const MetricsSetting: React.FC<MetricsSettingProps> = ({ metric, index, onDelete
                             {isEditing ? (
                                 // if the user is in editing mode display the level as textboxs and allow removing level
                                 <div>
-                                    <input className={styles.textBox} type="text" placeholder={level.levelLabel} />
+                                    <input className={styles.textBox} onChange={(event) => handleLevelChange(index, event)} type="text" placeholder={level.levelLabel} />
                                     <button onClick={() => deleteLevelButtonClick(index)} className={styles.button}>
                                         <FaMinusCircle size={18} style={{ color: "#EE4B2B", marginTop: "10px" }} />
                                     </button>
@@ -94,14 +101,11 @@ const MetricsSetting: React.FC<MetricsSettingProps> = ({ metric, index, onDelete
                 // add a Save, Add and Cancel button if the user is in editing mode
                 isEditing &&
                 <div>
-                    <button onClick={cancelButtonClick} className={styles.button}>
-                        <FaRegStopCircle size={18} style={{ color: "#EE4B2B", marginTop: "10px" }} />
+                    <button onClick={saveButtonClick} className={styles.button}>
+                        <FaSave size={18} style={{ color: "#0096FF", marginTop: "10px" }} />
                     </button>
                     <button onClick={addLevelButtonClick} className={styles.button} >
                         <FaPlusCircle size={18} style={{ color: "#50C878" }} />
-                    </button>
-                    <button className={styles.button} >
-                        <FaSave size={18} style={{ color: "#0096FF" }} />
                     </button>
                 </div>
             }
