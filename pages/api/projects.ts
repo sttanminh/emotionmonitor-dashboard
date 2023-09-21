@@ -1,7 +1,7 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
 import prisma from "@/lib/prisma";
-import { ProjectProps } from "..";
+import { ProjectProps } from "../config";
 
 const apiKey = process.env.API_KEY!;
 const apiToken = process.env.API_TOKEN!;
@@ -15,6 +15,18 @@ async function handler(req: NextApiRequest, res: NextApiResponse<Data>) {
     try {
       const query = req.query;
       const projects = await getProjects();
+      res
+        .status(200)
+        .setHeader("Content-Type", "application/json")
+        .json({ message: "ratings retrieved", ...projects });
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  } else if (req.method === "PUT") {
+    try {
+      const query = req.query;
+      const { projectData } = query;
+      await configureProject(projectData as ProjectProps)
       res
         .status(200)
         .setHeader("Content-Type", "application/json")

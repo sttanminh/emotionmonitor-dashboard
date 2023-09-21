@@ -9,84 +9,11 @@ export type ProjectProps = {
     projectid: string,
     metrics: { metricId: string; metricName: string; levels: {
       levelLabel: string,
-      levelOrder: Number
+      levelOrder: number
     }[] }[]
 }
 
-const ConfigurationPage = () => {
-
-    const initialProjectData = {
-        projectid: '643d2f9487baeec2c1c0c2d1',
-        metrics: [
-            {
-                metricName: 'Complexity',
-                levels: [
-                    {
-                        levelLabel: "Low",
-                        levelOrder: 1
-                    }, {
-                        levelLabel: "Medium",
-                        levelOrder: 2
-                    }, {
-                        levelLabel: "High",
-                        levelOrder: 3
-                    }
-                ],
-                metricId: '64f6c424d4c684fa3223598d'
-            },
-            {
-                metricName: 'Teamwork',
-                levels: [
-                    {
-                        levelLabel: "Low",
-                        levelOrder: 1
-                    }, {
-                        levelLabel: "Medium",
-                        levelOrder: 2
-                    }, {
-                        levelLabel: "High",
-                        levelOrder: 3
-                    }
-                ],
-                metricId: ''
-            },
-            {
-                metricName: 'Difficulty',
-                levels: [
-                    {
-                        levelLabel: "Low",
-                        levelOrder: 1
-                    }, {
-                        levelLabel: "Medium",
-                        levelOrder: 2
-                    }, {
-                        levelLabel: "High",
-                        levelOrder: 3
-                    }, {
-                        levelLabel: "Extreme",
-                        levelOrder: 3
-                    }
-                ],
-                metricId: ''
-            },
-            {
-                metricName: 'Timespan',
-                levels: [
-                    {
-                        levelLabel: "Short",
-                        levelOrder: 1
-                    }, {
-                        levelLabel: "Reasonable",
-                        levelOrder: 2
-                    }, {
-                        levelLabel: "Long",
-                        levelOrder: 3
-                    }
-                ],
-                metricId: ''
-            }
-        ]
-    }
+const ConfigurationPage = (initialProjectData: ProjectProps) => {
 
     // maintain projectData so the UI re-render when changes happen
     const [projectData, setProjectData] = useState(initialProjectData)
@@ -166,6 +93,10 @@ const ConfigurationPage = () => {
         setProjectData({ ...updatedData });
     }
 
+    const saveToBackEnd = () => {
+
+    }
+
     return (
         <div className="body-config">
             <section className='background'>
@@ -190,6 +121,7 @@ const ConfigurationPage = () => {
                                 onAddLevelButtonClick={() => addLevel(index)}
                                 // levelIndex need to be passed from the component hence: (levelIndex: number)
                                 onDeleteLevelButtonClick={(levelIndex: number) => deleteLevel(index, levelIndex)} 
+                                onSaveButtonClick={() => saveToBackEnd}
                                 onLevelLabelChange={(levelIndex: number, updatedLvLabel: string) => updateLvLabel(index, levelIndex, updatedLvLabel)}/>
                         ))
                     }

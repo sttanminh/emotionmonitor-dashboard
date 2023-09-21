@@ -25,9 +25,10 @@ interface MetricsSettingProps {
     // onDeleteLevelButtonClick needs levelIndex so it can pass to deleteLevel in config.tsx
     onDeleteLevelButtonClick: (levelIndex: number) => void 
     onLevelLabelChange: (levelIndex: number, updatedLvLabel: string) => void
+    onSaveButtonClick: () => void;
 }
 
-const MetricsSetting: React.FC<MetricsSettingProps> = ({ metric, index, onDeleteButtonClick, onAddLevelButtonClick, onDeleteLevelButtonClick, onLevelLabelChange}) => {
+const MetricsSetting: React.FC<MetricsSettingProps> = ({ metric, index, onDeleteButtonClick, onSaveButtonClick, onAddLevelButtonClick, onDeleteLevelButtonClick, onLevelLabelChange}) => {
     const [isEditing, setIsEditing] = useState(false);
     
     const editButtonClick = () => {
@@ -36,6 +37,7 @@ const MetricsSetting: React.FC<MetricsSettingProps> = ({ metric, index, onDelete
 
     const saveButtonClick = () => {
         setIsEditing(false);
+        onSaveButtonClick();
     }
 
     // deleteButtonClick called onDeleteButtonClick(), which called deleteMetric in config.tsx
