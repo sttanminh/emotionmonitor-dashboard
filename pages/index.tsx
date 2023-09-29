@@ -111,7 +111,7 @@ const Page: NextPageWithLayout = () => {
     return <p>No profile projects</p>;
   }
   return (
-    <div className="page-container">
+    <div className="page-container background">
       <ProjectSelector
         setActiveProject={setActiveProject}
         activeProject={activeProject}
