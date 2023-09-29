@@ -37,11 +37,11 @@ button:hover {
 
 .background::after {
   content: "";
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
   width: 100%;
-  height: 100%;
+  height: 100vh;
   background-image: linear-gradient(120deg, #f6ea41, #bb5dff);
   opacity: 0.7;
   z-index: 1; 

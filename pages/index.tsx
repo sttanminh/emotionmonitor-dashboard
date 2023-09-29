@@ -11,6 +11,9 @@ import "react-datepicker/dist/react-datepicker.css";
 import DateRangeSelector from "@/components/datePicker";
 import { MetricGraphModule } from "@/components/modules/metricGraphModule";
 import Button from "@mui/material/Button";
+import Link from 'next/link';
+import SettingsIcon from '@mui/icons-material/Settings'; 
+import { Typography } from "@mui/material";
 import {
   ButtonGroup,
   InputAdornment,
@@ -110,8 +113,14 @@ const Page: NextPageWithLayout = () => {
   if (!projects || !activeProject) {
     return <p>No profile projects</p>;
   }
+
   return (
     <div className="page-container background">
+       <div className="settings-button-container">
+        <Link href="/config">
+          <SettingsIcon fontSize="large" color="primary" />
+        </Link>
+      </div>
       <ProjectSelector
         setActiveProject={setActiveProject}
         activeProject={activeProject}
@@ -129,6 +138,7 @@ const Page: NextPageWithLayout = () => {
               (summaryTypeSelection === "By Task" ? "contained" : undefined) ||
               "outlined"
             }
+            className="custom-button" 
           >
             By Task
           </Button>
@@ -142,6 +152,7 @@ const Page: NextPageWithLayout = () => {
               (summaryTypeSelection === "Overall" ? "contained" : undefined) ||
               "outlined"
             }
+            className="custom-button" 
           >
             Overall
           </Button>

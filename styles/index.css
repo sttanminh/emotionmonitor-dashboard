@@ -67,6 +67,7 @@
     padding: 10px;
     margin: 0 0;
     width: max-content;
+    height: 70px;
   }
 
   .time-selector {
@@ -110,6 +111,9 @@
     text-align: center;
     background: rgb(233, 233, 233);
   }
+  .headerTitle{
+    position: relative;
+  }
   
   .flex-container {
     display: flex;
@@ -136,8 +140,16 @@
   }
 
   .selections-container {
-    display: flex;
+    display: flex; 
     justify-content: space-between;
     align-items: center;
   }
-  
+
+  .settings-button-container {
+    position: absolute;
+    top: 10px; /* Adjust the top distance as needed */
+    right: 10px; /* Adjust the right distance as needed */
+  }
+
+
+
