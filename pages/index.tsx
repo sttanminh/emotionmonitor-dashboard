@@ -20,10 +20,14 @@ export interface Task {
 
 export type ProjectProps = {
   projectid: string,
-  metrics: { metricId: string; metricName: string; levels: {
-    levelLabel: string,
-    levelOrder: Number
-  }[] }[]
+  metrics: {
+    metricId: string; metricName: string; levels: {
+      levelLabel: string,
+      levelOrder: Number
+    }[]
+  }[],
+  emojis: string[],
+  referenceNumber: number | null
 }
 // dummy projects for selectors
 const weeks = ["Week 1", "Week 2", "Week 3"];
@@ -124,7 +128,7 @@ function Page(data: ProjectProps) {
 };
 
 export async function getServerSideProps() {
-  var projectId = '643d2f9487baeec2c1c0c2d1'
+  const projectId = '64ee90e9232dd06b42a59a2c'
   // var projectData: ProjectProps = {
   //   projectid: '643d2f9487baeec2c1c0c2d1',
   //   metrics: [
@@ -176,11 +180,19 @@ export async function getServerSideProps() {
   //   ]
   // }
   // await configureProject(projectData)
-  var project = await getProject(projectId)
+  const project = await getProject(projectId)
+  if (!project) {
+    return {
+      notFound: true
+    };
+  }
   var projectData: ProjectProps = {
     projectid: projectId,
-    metrics: []
+    metrics: [],
+    emojis: project.emojis,
+    referenceNumber: project.referenceNumber
   }
+  console.log(projectData.referenceNumber)
   var metricArray = []
   var metricDictionary: any = {}
 
@@ -195,7 +207,7 @@ export async function getServerSideProps() {
     })
   })
   for (let key in metricDictionary) {
-    metricArray.push({...metricDictionary[key], metricId: key})
+    metricArray.push({ ...metricDictionary[key], metricId: key })
   }
   projectData.metrics = metricArray
   return {
@@ -206,5 +218,7 @@ export async function getServerSideProps() {
 Page.getLayout = function getLayout(page: ReactElement) {
   return <Layout>{page}</Layout>;
 };
+
+
 
 export default Page;

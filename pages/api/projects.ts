@@ -92,18 +92,22 @@ export async function configureProject(projectData: ProjectProps) {
       }
     })
     await prisma.$transaction([
-      prisma.metric.deleteMany({ where: { name: {
-        in: newMetrics.map(metric => metric.name)
-      } } }),
+      prisma.metric.deleteMany({
+        where: {
+          name: {
+            in: newMetrics.map(metric => metric.name)
+          }
+        }
+      }),
       prisma.metric.createMany({
         data: newMetricData
       }),
     ])
   }
-  
+
 
   // Reinstate existing metrics
-  for await (var metric of existingMetrics){
+  for await (var metric of existingMetrics) {
     await prisma.metric.update({
       where: {
         id: metric.metricId
@@ -127,7 +131,7 @@ export async function configureProject(projectData: ProjectProps) {
       active: true
     }
   })
-  
+
   var activeMetrics = await prisma.metric.findMany({
     where: {
       projectId: projectId,
@@ -139,7 +143,7 @@ export async function configureProject(projectData: ProjectProps) {
     activeMetricsDictionary[metric.name] = metric.id
   })
   // Delete existing levels linked to project
-  await prisma.level.deleteMany({where: {projectId: projectId}})
+  await prisma.level.deleteMany({ where: { projectId: projectId } })
   // Add new levels
   var levelData: any[] = []
   projectData.metrics.forEach(metric => {
