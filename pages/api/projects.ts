@@ -23,6 +23,26 @@ async function handler(req: NextApiRequest, res: NextApiResponse<Data>) {
       res.status(500).json({ message: error.message });
     }
   }
+  else if (req.method == "PUT") {
+    const { projectId, emojis, referenceNumber } = req.body;
+    try {
+      const updatedProject = await updateProjectEmojisAndReference(projectId, emojis, referenceNumber);
+      return res.status(200).json({ message: "Project emoji and Reference number updated" });
+    } catch (error: any) {
+      return res.status(500).json({ message: error.message });
+    }
+  }
+}
+async function updateProjectEmojisAndReference(projectId: string, emojis: string[], referenceNumber?: number) {
+  return await prisma.project.update({
+    where: {
+      id: projectId,
+    },
+    data: {
+      emojis: emojis,
+      referenceNumber: referenceNumber
+    }
+  });
 }
 
 async function getProjects() {
