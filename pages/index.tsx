@@ -192,7 +192,6 @@ export async function getServerSideProps() {
     emojis: project.emojis,
     referenceNumber: project.referenceNumber
   }
-  console.log(projectData.referenceNumber)
   var metricArray = []
   var metricDictionary: any = {}
 
