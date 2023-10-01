@@ -4,20 +4,16 @@ import type { NextPageWithLayout } from "./_app";
 import React, { useState } from "react";
 import { EmotionSummaryModule } from "@/components/modules/emotionSummaryModule";
 import { TaskInfoModule } from "@/components/modules/taskInfoModule";
-import { NavigationBar } from "@/components/navigationBar/navigationBar";
 import { ProjectSelector } from "@/components/ProjectSelector/projectSelector";
-import { Metric, Project } from "@prisma/client";
+import { Project } from "@prisma/client";
 import "react-datepicker/dist/react-datepicker.css";
 import DateRangeSelector from "@/components/datePicker";
 import { MetricGraphModule } from "@/components/modules/metricGraphModule";
 import Button from "@mui/material/Button";
-import Link from 'next/link';
-import SettingsIcon from '@mui/icons-material/Settings'; 
 import { Typography } from "@mui/material";
 import {
   ButtonGroup,
   InputAdornment,
-  InputLabel,
   ListSubheader,
   MenuItem,
   Select,
@@ -43,7 +39,7 @@ export interface Rating {
   };
 }
 
-export const availableEmojis = ["😔", "😢", "😐", "😊", "😀", "🤔"];
+export const availableEmojis = ["😔", "😢", "😐", "😊", "😀"];
 
 const Page: NextPageWithLayout = () => {
   const [projects, setprojects] = useState<ProjectPlus[] | null>(null);
@@ -109,18 +105,14 @@ const Page: NextPageWithLayout = () => {
     }
   }, [projects]);
 
-  if (isLoading || !activeProject) return <p>Loading...</p>;
+  if (isLoading || !activeProject)
+    return <Typography variant="body1">Loading...</Typography>;
   if (!projects || !activeProject) {
-    return <p>No profile projects</p>;
+    return <Typography variant="body1">No profile projects</Typography>;
   }
 
   return (
     <div className="page-container background">
-       <div className="settings-button-container">
-        <Link href={`/config?data=${activeProject.id}`}>
-          <SettingsIcon fontSize="large" color="primary" />
-        </Link>
-      </div>
       <ProjectSelector
         setActiveProject={setActiveProject}
         activeProject={activeProject}
@@ -138,7 +130,7 @@ const Page: NextPageWithLayout = () => {
               (summaryTypeSelection === "By Task" ? "contained" : undefined) ||
               "outlined"
             }
-            className="custom-button" 
+            className="custom-button"
           >
             By Task
           </Button>
@@ -152,20 +144,21 @@ const Page: NextPageWithLayout = () => {
               (summaryTypeSelection === "Overall" ? "contained" : undefined) ||
               "outlined"
             }
-            className="custom-button" 
+            className="custom-button"
           >
             Overall
           </Button>
         </ButtonGroup>
-
+        <DateRangeSelector onSelectDateRange={handleDateRangeSelect} />
         {summaryTypeSelection !== "Overall" && (
-          <div className="task-selector">
+          <>
             {
               //Select component with searchable input inspired by this codesandbox codehttps://codesandbox.io/s/react-mui-searchable-select-nm3vw?file=/src/App.js:777-807
             }
             <Select
               value={activeTask?.id}
               label={"Task"}
+              variant="filled"
               onChange={(event) => {
                 console.log("active task", activeTask);
                 const taskId = event.target.value;
@@ -173,6 +166,8 @@ const Page: NextPageWithLayout = () => {
                   activeProject.trelloCards.find((card) => card.id == taskId)!
                 );
               }}
+              style={{ padding: "12px", width: "400px", marginLeft: "10px" }}
+              fullWidth={true}
               // Disables auto focus on MenuItems and allows TextField to be in focus
               MenuProps={{ autoFocus: false }}
               id="task-search-select"
@@ -212,9 +207,8 @@ const Page: NextPageWithLayout = () => {
                   <MenuItem value={card.id}>{card.taskName}</MenuItem>
                 ))}
             </Select>
-          </div>
+          </>
         )}
-        <DateRangeSelector onSelectDateRange={handleDateRangeSelect} />
       </div>
       {!isRatingsLoading && ratings && (
         <div>

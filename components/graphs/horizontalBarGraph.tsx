@@ -1,6 +1,7 @@
 import { FC } from "react";
 import { VictoryBar, VictoryChart, VictoryTheme } from "victory";
 import { Rating, availableEmojis } from "@/pages";
+import { Typography } from "@mui/material";
 
 interface Props {
   ratings: Rating[];
@@ -19,6 +20,7 @@ const getGraph = (graphData: GraphData[]) => {
         theme={VictoryTheme.material}
         domainPadding={10}
         width={800}
+        height={300}
         padding={{ left: 60, bottom: 20 }}
         animate={false}
       >
@@ -69,8 +71,11 @@ export const HorizontalBarGraph: FC<Props> = ({ ratings, isLoading }) => {
     graphData.push({ x: emoji, y: emojiData[emoji] || 0 })
   );
 
-  if (isLoading || !graphData) return <p>Loading...</p>;
+  if (isLoading || !graphData)
+    return <Typography variant="body1">Loading...</Typography>;
   if (!ratings || ratings.length < 1)
-    return <p>No rating for this time period</p>;
+    return (
+      <Typography variant="body1">No rating for this time period</Typography>
+    );
   return <>{getGraph(graphData)}</>;
 };

@@ -68,9 +68,10 @@ function DateRangeSelector({ onSelectDateRange }: DateRangeSelectorProps) {
   };
 
   return (
-    <div className="datePicker">
+    <>
       <Select
-        className="preSet"
+        variant="filled"
+        style={{ padding: "10px", marginLeft: "10px" }}
         value={selectedMenuItem}
         onChange={handleDateRangeChange}
       >
@@ -95,7 +96,7 @@ function DateRangeSelector({ onSelectDateRange }: DateRangeSelectorProps) {
           <button onClick={handleApplyClick}>Apply</button>
         </div>
       )}
-    </div>
+    </>
   );
 }
 

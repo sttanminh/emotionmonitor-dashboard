@@ -1,6 +1,7 @@
 import { FC } from "react";
 import { Rating, Task, availableEmojis } from "@/pages";
 import MetricGraphs from "../graphs/MetricGraphs";
+import { Typography } from "@mui/material";
 
 interface Props {
   ratings: Rating[];
@@ -55,13 +56,18 @@ export const MetricGraphModule: FC<Props> = ({ ratings, isLoading }) => {
   const metricGraphData = metricData;
   return (
     <div className="metricGraph">
-      {isLoading && <p>Loading data...</p>}
+      {isLoading && <Typography variant="body1">Loading data...</Typography>}
       {!isLoading && ratings.length == 0 && (
-        <p>No data for selected time period...</p>
+        <Typography variant="body1">
+          No data for selected time period...
+        </Typography>
       )}
       {!isLoading && ratings.length > 0 && (
         <>
-          {Object.keys(metricGraphData).map((metricName) => (
+          <Typography variant="h2" margin={"20px"}>
+            Metric Summary
+          </Typography>
+          {Object.keys(metricGraphData).map((metricName, index) => (
             <MetricGraphs
               key={metricName}
               metricName={metricName}
@@ -70,34 +76,9 @@ export const MetricGraphModule: FC<Props> = ({ ratings, isLoading }) => {
                 .find((rating) => rating.metric.name == metricName)!
                 .metric.levels.sort((a, b) => a.levelOrder - b.levelOrder)
                 .map((level) => level.levelLabel)}
+              displayEmojis={index === Object.keys(metricGraphData).length - 1}
             />
           ))}
-          <div
-            className="emoji-indicators"
-            style={{
-              marginLeft: "190px",
-              marginTop: "-50px",
-              display: "flex",
-              background: "transparent",
-              padding: "5px 0",
-            }}
-          >
-            {ratings.length > 0 &&
-              availableEmojis.map((emoji, i) => (
-                <div
-                  key={emoji}
-                  className="emoji-indicator"
-                  style={{
-                    marginLeft: "13px",
-                    flex: "1",
-                    textAlign: "center",
-                    maxWidth: "200px",
-                  }}
-                >
-                  {availableEmojis[i]}
-                </div>
-              ))}
-          </div>
         </>
       )}
     </div>

@@ -1,3 +1,4 @@
+import { Typography } from "@mui/material";
 import { TrelloCard } from "@prisma/client";
 import { FC, useEffect, useState } from "react";
 
@@ -18,13 +19,13 @@ export const TaskInfoModule: FC<Props> = ({ id }: Props) => {
       });
   }, [id]);
 
-  if (isLoading) return <p>Loading...</p>;
-  if (!data) return <p>No profile data</p>;
+  if (isLoading) return <Typography variant="body1">Loading...</Typography>;
+  if (!data) return <Typography variant="body1">No profile data</Typography>;
   return (
     data && (
       <div className="task-info-container">
-        <h2>{data.taskName}</h2>
-        <p>{`${data.description ?? "description of " + data.taskName}`}</p>
+        <Typography variant="h2">{data.taskName}</Typography>
+        <Typography variant="body1">{`${data.description}`}</Typography>
       </div>
     )
   );
