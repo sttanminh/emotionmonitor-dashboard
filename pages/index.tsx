@@ -6,8 +6,24 @@ import { EmotionSummaryModule } from "@/components/modules/emotionSummaryModule"
 import { TaskInfoModule } from "@/components/modules/taskInfoModule";
 import { NavigationBar } from "@/components/navigationBar/navigationBar";
 import { ProjectSelector } from "@/components/ProjectSelector/projectSelector";
-import { Project, TrelloCard } from "@prisma/client";
-import { config } from "dotenv";
+import { Metric, Project } from "@prisma/client";
+import "react-datepicker/dist/react-datepicker.css";
+import DateRangeSelector from "@/components/datePicker";
+import { MetricGraphModule } from "@/components/modules/metricGraphModule";
+import Button from "@mui/material/Button";
+import Link from 'next/link';
+import SettingsIcon from '@mui/icons-material/Settings'; 
+import { Typography } from "@mui/material";
+import {
+  ButtonGroup,
+  InputAdornment,
+  InputLabel,
+  ListSubheader,
+  MenuItem,
+  Select,
+  TextField,
+} from "@mui/material";
+import { Search } from "@mui/icons-material";
 
 export interface ProjectPlus extends Project {
   trelloCards: Task[];
@@ -17,18 +33,67 @@ export interface Task {
   taskName: string;
 }
 
+export interface Rating {
+  id: string;
+  emoScore: number;
+  level: number;
+  metric: {
+    name: string;
+    levels: { levelLabel: string; levelOrder: number }[];
+  };
+}
 
-// dummy projects for selectors
-const weeks = ["Week 1", "Week 2", "Week 3"];
+export const availableEmojis = ["😔", "😢", "😐", "😊", "😀", "🤔"];
 
 const Page: NextPageWithLayout = () => {
   const [projects, setprojects] = useState<ProjectPlus[] | null>(null);
   const [isLoading, setLoading] = useState(true);
+  const [isRatingsLoading, setRatingsLoading] = useState(true);
   const [activeProject, setActiveProject] = useState<ProjectPlus>();
   const [summaryTypeSelection, setSummaryTypeSelection] = useState("Overall");
-
   const [activeTask, setActiveTask] = useState<Task>();
-  const [summaryTimeSelector, setSummaryTimeSelector] = useState("Week 1");
+  const [ratings, setRatings] = useState<Rating[]>();
+
+  // Default start date to 1 week ago
+  const oneWeekAgo = new Date();
+  oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+
+  // Default end date to today
+  const today = new Date();
+
+  const [selectedStartDate, setSelectedStartDate] = useState<Date | null>(
+    oneWeekAgo
+  );
+  const [selectedEndDate, setSelectedEndDate] = useState<Date | null>(today);
+
+  const [taskSearchText, settaskSearchText] = useState("");
+
+  const handleDateRangeSelect = (startDate: Date, endDate: Date) => {
+    setSelectedStartDate(startDate);
+    setSelectedEndDate(endDate);
+    console.log(selectedStartDate, selectedEndDate);
+  };
+
+  useEffect(() => {
+    if (activeProject) {
+      setRatingsLoading(true);
+      const projectId = activeProject.id;
+      const cardId = activeTask?.id;
+      console.log("fetching ratings with cardId", cardId);
+      fetch(
+        `/api/ratings?projectId=${projectId}&startDate=${selectedStartDate}&endDate=${selectedEndDate}${
+          cardId ? "&cardId=" + cardId : ""
+        }`
+      )
+        .then((res) => res.json())
+        .then((data) => setRatings(data.ratings))
+        .catch((error) => {
+          console.error("Error fetching ratings:", error);
+        });
+      setRatingsLoading(false);
+    }
+  }, [activeProject, activeTask, selectedStartDate, selectedEndDate]);
+
   useEffect(() => {
     fetch(`/api/projects`)
       .then((res) => res.json())
@@ -46,72 +111,123 @@ const Page: NextPageWithLayout = () => {
 
   if (isLoading || !activeProject) return <p>Loading...</p>;
   if (!projects || !activeProject) {
-    console.log(projects, activeProject);
     return <p>No profile projects</p>;
   }
 
   return (
-    <div className="page-container">
+    <div className="page-container background">
+       <div className="settings-button-container">
+        <Link href={`/config?data=${activeProject.id}`}>
+          <SettingsIcon fontSize="large" color="primary" />
+        </Link>
+      </div>
       <ProjectSelector
         setActiveProject={setActiveProject}
         activeProject={activeProject}
         projects={projects}
       />
-
       <div className="page-config-container">
-        <div className="button-container">
-          <button
-            className={summaryTypeSelection === "By Task" ? "active" : ""}
+        <ButtonGroup variant="contained">
+          <Button
             onClick={() => {
               setSummaryTypeSelection("By Task");
               setActiveTask(activeProject.trelloCards[0]);
             }}
+            area-disabled={summaryTypeSelection === "By Task"}
+            variant={
+              (summaryTypeSelection === "By Task" ? "contained" : undefined) ||
+              "outlined"
+            }
+            className="custom-button" 
           >
             By Task
-          </button>
-          <button
-            className={summaryTypeSelection === "Overall" ? "active" : ""}
+          </Button>
+          <Button
             onClick={() => {
               setSummaryTypeSelection("Overall");
               setActiveTask(undefined);
             }}
+            area-disabled={summaryTypeSelection === "Overall"}
+            variant={
+              (summaryTypeSelection === "Overall" ? "contained" : undefined) ||
+              "outlined"
+            }
+            className="custom-button" 
           >
             Overall
-          </button>
-        </div>
+          </Button>
+        </ButtonGroup>
 
         {summaryTypeSelection !== "Overall" && (
           <div className="task-selector">
-            <NavigationBar
-              activeItem={activeTask!.taskName}
-              setActiveItem={(taskName) =>
+            {
+              //Select component with searchable input inspired by this codesandbox codehttps://codesandbox.io/s/react-mui-searchable-select-nm3vw?file=/src/App.js:777-807
+            }
+            <Select
+              value={activeTask?.id}
+              label={"Task"}
+              onChange={(event) => {
+                console.log("active task", activeTask);
+                const taskId = event.target.value;
                 setActiveTask(
-                  activeProject.trelloCards.find(
-                    (card) => card.taskName == taskName
-                  )!
+                  activeProject.trelloCards.find((card) => card.id == taskId)!
+                );
+              }}
+              // Disables auto focus on MenuItems and allows TextField to be in focus
+              MenuProps={{ autoFocus: false }}
+              id="task-search-select"
+              onClose={() => settaskSearchText("")}
+              // This prevents rendering empty string in Select's value
+              // if search text would exclude currently selected option.
+              renderValue={() => activeTask?.taskName}
+            >
+              <ListSubheader>
+                <TextField
+                  size="small"
+                  // Autofocus on textfield
+                  autoFocus
+                  placeholder="Type to search..."
+                  fullWidth
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <Search />
+                      </InputAdornment>
+                    ),
+                  }}
+                  onChange={(e) => settaskSearchText(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key !== "Escape") {
+                      // Prevents autoselecting item while typing (default Select behaviour)
+                      e.stopPropagation();
+                    }
+                  }}
+                />
+              </ListSubheader>
+              {activeProject.trelloCards
+                .filter((card) =>
+                  card.taskName.toLowerCase().includes(taskSearchText)
                 )
-              }
-              selectionItems={activeProject.trelloCards.map(
-                (task) => task.taskName
-              )}
-              labelStyle="label-task"
-            />
+                .map((card) => (
+                  <MenuItem value={card.id}>{card.taskName}</MenuItem>
+                ))}
+            </Select>
           </div>
         )}
-
-        <div className="time-selector">
-          <NavigationBar
-            activeItem={summaryTimeSelector}
-            setActiveItem={setSummaryTimeSelector}
-            selectionItems={weeks}
-            labelStyle="label-week"
-          />
+        <DateRangeSelector onSelectDateRange={handleDateRangeSelect} />
+      </div>
+      {!isRatingsLoading && ratings && (
+        <div>
+          <div className="flex-container">
+            <EmotionSummaryModule
+              ratings={ratings}
+              isLoading={isRatingsLoading}
+            />
+            {activeTask && <TaskInfoModule id={activeTask?.id} />}
+          </div>
+          <MetricGraphModule ratings={ratings} isLoading={isRatingsLoading} />
         </div>
-      </div>
-      <div className="flex-container">
-        <EmotionSummaryModule project={activeProject} card={activeTask} />
-        {activeTask && <TaskInfoModule id={activeTask?.id} />}
-      </div>
+      )}
     </div>
   );
 };

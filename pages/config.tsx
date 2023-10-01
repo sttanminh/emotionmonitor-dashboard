@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
+import { useRouter } from 'next/router';
 import MetricsSetting from "../components/metricsSetting/metricsSetting"
+import { GetServerSidePropsContext } from "next";
 import Link from 'next/link';
 import { FaPlusCircle } from 'react-icons/fa';
 import { getProject, configureProject } from "./api/projects";
@@ -7,18 +9,17 @@ import { getProject, configureProject } from "./api/projects";
 export type ProjectProps = {
     //TODO: Update this to also contain a list of emojis and a reference number
     projectid: string,
-    metrics: { 
-        metricId: string; 
-        metricName: string; 
+    metrics: {
+        metricId: string;
+        metricName: string;
         levels: {
             levelLabel: string,
             levelOrder: number
-        }[] 
+        }[]
     }[]
 }
 
 const ConfigurationPage = (initialProjectData: ProjectProps) => {
-
     // maintain projectData so the UI re-render when changes happen
     const [projectData, setProjectData] = useState(initialProjectData)
 
@@ -107,18 +108,18 @@ const ConfigurationPage = (initialProjectData: ProjectProps) => {
         setProjectData({ ...updatedData });
     }
 
-    const saveToBackEnd =  async () => {
+    const saveToBackEnd = async () => {
         console.log("In save to back end")
         console.log(projectData)
         const response = await fetch('/api/projects', {
-			method: 'PUT',
-			body: JSON.stringify({
-				projectData: projectData
-			}),
-			headers: {
-				'Content-Type': 'application/json'
-			}
-		})
+            method: 'PUT',
+            body: JSON.stringify({
+                projectData: projectData
+            }),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
         console.log(response)
     }
 
@@ -147,10 +148,10 @@ const ConfigurationPage = (initialProjectData: ProjectProps) => {
                                 onDeleteButtonClick={() => deleteMetric(index)}
                                 onAddLevelButtonClick={() => addLevel(index)}
                                 // levelIndex need to be passed from the component hence: (levelIndex: number)
-                                onDeleteLevelButtonClick={(levelIndex: number) => deleteLevel(index, levelIndex)} 
+                                onDeleteLevelButtonClick={(levelIndex: number) => deleteLevel(index, levelIndex)}
                                 onSaveButtonClick={() => saveToBackEnd()}
                                 onMetricNameChange={(updatedMetricName: string) => updateMetricName(index, updatedMetricName)}
-                                onLevelLabelChange={(levelIndex: number, updatedLvLabel: string) => updateLvLabel(index, levelIndex, updatedLvLabel)}/>
+                                onLevelLabelChange={(levelIndex: number, updatedLvLabel: string) => updateLvLabel(index, levelIndex, updatedLvLabel)} />
                         ))
                     }
                 </div>
@@ -160,33 +161,37 @@ const ConfigurationPage = (initialProjectData: ProjectProps) => {
 
 };
 
-export async function getServerSideProps() {
-    var projectId = '643d2f9487baeec2c1c0c2d1'
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+    const { data } = context.query;
+    var projectId = data as string
+    console.log(context.query)
+    projectId = projectId.replaceAll('"', '')
+    console.log(projectId)
     var project = await getProject(projectId)
     var projectData: ProjectProps = {
-      projectid: projectId,
-      metrics: []
+        projectid: projectId,
+        metrics: []
     }
     var metricArray = []
     var metricDictionary: any = {}
-  
+
     project?.metrics.filter((metric) => metric.active).forEach(metric => metricDictionary[metric.id] = {
-      metricName: metric.name,
-      levels: []
+        metricName: metric.name,
+        levels: []
     })
     project?.levels.forEach(level => {
-      metricDictionary[level.metricId].levels.push({
-        levelLabel: level.levelLabel,
-        levelOrder: level.levelOrder
-      })
+        metricDictionary[level.metricId].levels.push({
+            levelLabel: level.levelLabel,
+            levelOrder: level.levelOrder
+        })
     })
     for (let key in metricDictionary) {
-      metricArray.push({...metricDictionary[key], metricId: key})
+        metricArray.push({ ...metricDictionary[key], metricId: key })
     }
     projectData.metrics = metricArray
     // console.log(projectData)
     return {
-      props: projectData
+        props: projectData
     }
 }
 
