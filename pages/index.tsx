@@ -116,62 +116,6 @@ const Page: NextPageWithLayout = () => {
   );
 };
 
-// This function retrieves data from the DB and returns an object, which will be used to display info in config landing page
-// TODO: update this function to also retrieve the string of emojis and the reference number. 
-//The type of emojis is an array of string at the moment. If that doesn't work, feel free to update schema.prisma to reflect the right data type
-
-// An example of the returned project Data right now (without emojis and reference number)
-// var projectData: ProjectProps = {
-  //   projectid: '643d2f9487baeec2c1c0c2d1',
-  //   metrics: [
-  //     {
-  //       metricName: 'Complexity',
-  //       levels: [
-  //         {
-  //           levelLabel: "Low",
-  //           levelOrder: 1
-  //         }, {
-  //           levelLabel: "Medium",
-  //           levelOrder: 2
-  //         }, {
-  //           levelLabel: "High",
-  //           levelOrder: 3
-  //         }
-  //       ],
-  //       metricId: '64f81eb71be0b30d89e77680'
-  //     },
-  //     {
-  //       metricName: 'Difficulty',
-  //       levels: [
-  //         {
-  //           levelLabel: "Low",
-  //           levelOrder: 1
-  //         }, {
-  //           levelLabel: "Medium",
-  //           levelOrder: 2
-  //         }
-  //       ],
-  //       metricId: ''
-  //     },
-  //     {
-  //       metricName: 'Research required',
-  //       levels: [
-  //         {
-  //           levelLabel: "Low",
-  //           levelOrder: 1
-  //         }, {
-  //           levelLabel: "Medium",
-  //           levelOrder: 2
-  //         }, {
-  //           levelLabel: "High",
-  //           levelOrder: 3
-  //         }
-  //       ],
-  //       metricId: ''
-  //     }
-  //   ]
-  // }
-
 Page.getLayout = function getLayout(page: ReactElement) {
   return <Layout>{page}</Layout>;
 };

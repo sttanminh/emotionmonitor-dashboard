@@ -7,10 +7,14 @@ import { getProject, configureProject } from "./api/projects";
 export type ProjectProps = {
     //TODO: Update this to also contain a list of emojis and a reference number
     projectid: string,
-    metrics: { metricId: string; metricName: string; levels: {
-      levelLabel: string,
-      levelOrder: number
-    }[] }[]
+    metrics: { 
+        metricId: string; 
+        metricName: string; 
+        levels: {
+            levelLabel: string,
+            levelOrder: number
+        }[] 
+    }[]
 }
 
 const ConfigurationPage = (initialProjectData: ProjectProps) => {
