@@ -11,6 +11,8 @@ import DateRangeSelector from "@/components/datePicker";
 import { MetricGraphModule } from "@/components/modules/metricGraphModule";
 import Button from "@mui/material/Button";
 import { Typography } from "@mui/material";
+import Link from "next/link";
+import SettingsIcon from "@mui/icons-material/Settings";
 import {
   ButtonGroup,
   InputAdornment,
@@ -113,6 +115,11 @@ const Page: NextPageWithLayout = () => {
 
   return (
     <div className="page-container background">
+      <div className="settings-button-container">
+        <Link href={`/config?data=${activeProject.id}`}>
+          <SettingsIcon fontSize="large" color="primary" />
+        </Link>
+      </div>
       <ProjectSelector
         setActiveProject={setActiveProject}
         activeProject={activeProject}
