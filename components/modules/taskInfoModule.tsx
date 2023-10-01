@@ -23,7 +23,6 @@ export const TaskInfoModule: FC<Props> = ({ id }: Props) => {
   return (
     data && (
       <div className="task-info-container">
-        
         <h2>{data.taskName}</h2>
         <p>{`${data.description}`}</p>
       </div>
