@@ -8,7 +8,7 @@ import { getProject, configureProject } from "./api/projects";
 
 export type ProjectProps = {
     //TODO: Update this to also contain a list of emojis and a reference number
-    projectid: string,
+    projectId: string,
     metrics: {
         metricId: string;
         metricName: string;
@@ -161,7 +161,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     projectId = projectId.replaceAll('"', '')
     var project = await getProject(projectId)
     var projectData: ProjectProps = {
-        projectid: projectId,
+        projectId: projectId,
         metrics: []
     }
     var metricArray = []
@@ -174,7 +174,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
                 metricName: metric.name,
                 levels: []
             }
-            metric.levels.forEach((level: any )=> {
+            metric.levels.forEach((level: any) => {
                 metricDictionary[metric.id].levels.push({
                     levelLabel: level.levelLabel,
                     levelOrder: level.levelOrder
