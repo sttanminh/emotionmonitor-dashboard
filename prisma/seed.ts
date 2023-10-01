@@ -15,10 +15,8 @@ async function main() {
       referenceNumber: 7,
     },
   });
-  const complexity = await prisma.metric.upsert({
-    where: { name: "Complexity" },
-    update: {},
-    create: {
+  const complexity = await prisma.metric.create({
+    data: {
       name: "Complexity",
       active: true,
       projectId: project.id,
@@ -29,7 +27,6 @@ async function main() {
     data: {
       levelLabel: "low",
       levelOrder: 1,
-      projectId: project.id,
       metricId: complexity.id,
     },
   });
@@ -37,7 +34,6 @@ async function main() {
     data: {
       levelLabel: "medium",
       levelOrder: 2,
-      projectId: project.id,
       metricId: complexity.id,
     },
   });
@@ -45,14 +41,11 @@ async function main() {
     data: {
       levelLabel: "high",
       levelOrder: 3,
-      projectId: project.id,
       metricId: complexity.id,
     },
   });
-  const difficulty = await prisma.metric.upsert({
-    where: { name: "Difficulty" },
-    update: {},
-    create: {
+  const difficulty = await prisma.metric.create({
+    data: {
       name: "Difficulty",
       active: true,
       projectId: project.id,
@@ -62,7 +55,6 @@ async function main() {
     data: {
       levelLabel: "easy",
       levelOrder: 1,
-      projectId: project.id,
       metricId: difficulty.id,
     },
   });
@@ -70,7 +62,6 @@ async function main() {
     data: {
       levelLabel: "medium",
       levelOrder: 2,
-      projectId: project.id,
       metricId: difficulty.id,
     },
   });
@@ -78,14 +69,11 @@ async function main() {
     data: {
       levelLabel: "hard",
       levelOrder: 3,
-      projectId: project.id,
       metricId: difficulty.id,
     },
   });
-  const workload = await prisma.metric.upsert({
-    where: { name: "Workload" },
-    update: {},
-    create: {
+  const workload = await prisma.metric.create({
+    data: {
       name: "Workload",
       active: false,
       projectId: project.id,
@@ -95,7 +83,6 @@ async function main() {
     data: {
       levelLabel: "low",
       levelOrder: 1,
-      projectId: project.id,
       metricId: workload.id,
     },
   });
@@ -103,7 +90,6 @@ async function main() {
     data: {
       levelLabel: "medium",
       levelOrder: 2,
-      projectId: project.id,
       metricId: workload.id,
     },
   });
@@ -111,7 +97,6 @@ async function main() {
     data: {
       levelLabel: "high",
       levelOrder: 3,
-      projectId: project.id,
       metricId: workload.id,
     },
   });
