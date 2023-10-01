@@ -52,8 +52,11 @@ export async function getProject(projectId: string) {
       id: projectId
     },
     include: {
-      metrics: true,
-      levels: true
+      metrics: {
+        include: {
+          levels: true
+        }
+      }
     }
   })
 }
@@ -142,18 +145,21 @@ async function configureMetricsAndLevels(projectData:ProjectProps) {
     }
   })
   
-  var activeMetrics = await prisma.metric.findMany({
+  var allMetrics = await prisma.metric.findMany({
     where: {
-      projectId: projectId,
-      active: true
+      projectId: projectId
     }
   })
+  var allMetricIds = allMetrics.map(metric => metric.id)
+  var activeMetrics = allMetrics.filter(metric => metric.active)
   var activeMetricsDictionary: any = {}
   activeMetrics.forEach(metric => {
     activeMetricsDictionary[metric.name] = metric.id
   })
   // Delete existing levels linked to project
-  await prisma.level.deleteMany({where: {projectId: projectId}})
+  await prisma.level.deleteMany({where: {metricId: {
+    in: allMetricIds
+  }}})
   // Add new levels
   var levelData: any[] = []
   projectData.metrics.forEach(metric => {
@@ -161,8 +167,7 @@ async function configureMetricsAndLevels(projectData:ProjectProps) {
       levelData.push({
         levelLabel: level.levelLabel,
         levelOrder: level.levelOrder,
-        metricId: activeMetricsDictionary[metric.metricName],
-        projectId: projectId
+        metricId: activeMetricsDictionary[metric.metricName]
       })
     })
   })

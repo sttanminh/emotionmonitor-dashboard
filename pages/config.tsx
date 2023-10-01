@@ -31,7 +31,6 @@ const ConfigurationPage = (initialProjectData: ProjectProps) => {
         // update the state with the new object to triggers re-render of component
         setProjectData({ ...updatedData });
         await saveToBackEnd()
-        // console.log(projectData.metrics);
     }
 
     // function to add a level to a metric
@@ -46,7 +45,6 @@ const ConfigurationPage = (initialProjectData: ProjectProps) => {
         updatedData.metrics[metricIndex].levels.push(newLevel);
         // update the state with the new object to triggers re-render of component
         setProjectData({ ...updatedData });
-        // console.log(projectData.metrics);
     }
 
     // function to add a new metric
@@ -73,7 +71,6 @@ const ConfigurationPage = (initialProjectData: ProjectProps) => {
         updatedData.metrics.push(newMetric);
         // update the state with the new object to triggers re-render of component
         setProjectData({ ...updatedData });
-        // console.log(projectData.metrics);
     }
 
     // function to delete a levels
@@ -87,7 +84,6 @@ const ConfigurationPage = (initialProjectData: ProjectProps) => {
         });
         // update the state with the new object to triggers re-render of component
         setProjectData({ ...updatedData });
-        // console.log(projectData.metrics)
     }
 
     // function to rename the level
@@ -109,7 +105,6 @@ const ConfigurationPage = (initialProjectData: ProjectProps) => {
     }
 
     const saveToBackEnd = async () => {
-        console.log("In save to back end")
         console.log(projectData)
         const response = await fetch('/api/projects', {
             method: 'PUT',
@@ -120,7 +115,6 @@ const ConfigurationPage = (initialProjectData: ProjectProps) => {
                 'Content-Type': 'application/json'
             }
         })
-        console.log(response)
     }
 
 
@@ -164,9 +158,7 @@ const ConfigurationPage = (initialProjectData: ProjectProps) => {
 export async function getServerSideProps(context: GetServerSidePropsContext) {
     const { data } = context.query;
     var projectId = data as string
-    console.log(context.query)
     projectId = projectId.replaceAll('"', '')
-    console.log(projectId)
     var project = await getProject(projectId)
     var projectData: ProjectProps = {
         projectid: projectId,
@@ -175,21 +167,24 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     var metricArray = []
     var metricDictionary: any = {}
 
-    project?.metrics.filter((metric) => metric.active).forEach(metric => metricDictionary[metric.id] = {
-        metricName: metric.name,
-        levels: []
-    })
-    project?.levels.forEach(level => {
-        metricDictionary[level.metricId].levels.push({
-            levelLabel: level.levelLabel,
-            levelOrder: level.levelOrder
+    project?.metrics
+        .filter((metric) => metric.active)
+        .forEach(metric => {
+            metricDictionary[metric.id] = {
+                metricName: metric.name,
+                levels: []
+            }
+            metric.levels.forEach(level => {
+                metricDictionary[metric.id].levels.push({
+                    levelLabel: level.levelLabel,
+                    levelOrder: level.levelOrder
+                })
+            });
         })
-    })
     for (let key in metricDictionary) {
         metricArray.push({ ...metricDictionary[key], metricId: key })
     }
     projectData.metrics = metricArray
-    // console.log(projectData)
     return {
         props: projectData
     }
