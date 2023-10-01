@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Chart, registerables } from "chart.js";
 import { availableEmojis } from "@/pages";
+import { Typography } from "@mui/material";
 
 Chart.register(...registerables);
 
@@ -12,12 +13,14 @@ interface MetricGraphsProps {
   metricData: Record<string, MetricData>;
   metricName: string;
   orderedLevels: string[];
+  displayEmojis: boolean;
 }
 
 function MetricGraphs({
   metricData,
   metricName,
   orderedLevels,
+  displayEmojis,
 }: MetricGraphsProps) {
   const chartContainerRefs = useRef<Record<string, HTMLDivElement | null>>({});
 
@@ -150,12 +153,12 @@ function MetricGraphs({
             display: "flex",
             flexDirection: "column",
             marginRight: "10px",
-            minWidth: "100px",
+            width: "300px",
             paddingRight: "20px",
             marginTop: "10px",
           }}
         >
-          <h2> {metricName}</h2>
+          <Typography variant="h3"> {metricName}</Typography>
         </div>
         {/* New column for level labels */}
         <div
@@ -175,7 +178,7 @@ function MetricGraphs({
                 height: "28px",
               }}
             >
-              <p style={{ margin: "0" }}>{level}</p>
+              <Typography variant="subtitle1">{level}</Typography>
             </div>
           ))}
         </div>
@@ -191,17 +194,23 @@ function MetricGraphs({
           >
             <div
               ref={(ref) => (chartContainerRefs.current[emoji] = ref)}
-              style={{ height: "250px", width: "180px" }}
-            ></div>
-            <div
               style={{
-                display: "flex",
-                justifyContent: "center",
-                marginTop: "5px",
+                height: "fit-content",
+                maxHeight: "200px",
+                width: "180px",
               }}
-            >
-              <p style={{ margin: "0" }}>Level</p>
-            </div>
+            ></div>
+            {displayEmojis && (
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  marginTop: "5px",
+                }}
+              >
+                <p style={{ margin: "0" }}>{emoji}</p>
+              </div>
+            )}
           </div>
         ))}
       </div>
