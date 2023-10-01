@@ -11,21 +11,9 @@ model TrelloCard {
   id          String       @id @map("_id") @db.ObjectId
   taskName    String
   description String?
-  project     Project      @relation(fields: [projectId], references: [id])
+  project     Project      @relation(fields: [projectId], references: [id], onDelete: Cascade)
   projectId   String       @db.ObjectId
   submissions Submission[]
-}
-
-model JiraCard {
-  id         String   @id @map("_id") @db.ObjectId
-  task       String
-  label      String
-  timestamp  DateTime
-  reflection String
-  owner      User     @relation(fields: [ownerId], references: [id])
-  ownerId    String   @db.ObjectId
-  project    Project  @relation(fields: [projectId], references: [id])
-  projectId  String   @db.ObjectId
 }
 
 model User {
@@ -35,7 +23,6 @@ model User {
   submissions     Submission[]
   adminProjectIds String[]     @db.ObjectId
   adminProjects   Project[]    @relation(fields: [adminProjectIds], references: [id])
-  JiraCard        JiraCard[]
 }
 
 model Project {
@@ -48,16 +35,14 @@ model Project {
   adminIds        String[]     @db.ObjectId
   adminList       User[]       @relation(fields: [adminIds], references: [id])
   trelloCards     TrelloCard[]
-  jiraCards       JiraCard[]
-  levels          Level[]
 }
 
 model Metric {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  name      String   @unique
+  name      String
   active    Boolean  @default(true)
   projectId String   @db.ObjectId
-  Project   Project? @relation(fields: [projectId], references: [id])
+  Project   Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
   ratings   Rating[]
   levels    Level[]
 }
@@ -68,8 +53,6 @@ model Level {
   levelOrder Int
   metricId   String  @db.ObjectId
   metric     Metric  @relation(fields: [metricId], references: [id])
-  projectId  String  @db.ObjectId
-  project    Project @relation(fields: [projectId], references: [id])
 }
 
 model Submission {
