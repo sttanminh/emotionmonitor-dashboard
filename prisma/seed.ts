@@ -1,33 +1,106 @@
 import { PrismaClient } from "@prisma/client";
+import { ObjectId } from "bson";
 
 const prisma = new PrismaClient();
 async function main() {
-  const complexity = await prisma.metric.upsert({
-    where: { name: "Complexity" },
-    update: {},
-    create: {
-      name: "Complexity",
-      default: true,
-    },
-  });
-  const difficulty = await prisma.metric.upsert({
-    where: { name: "Difficulty" },
-    update: {},
-    create: {
-      name: "Difficulty",
-      default: true,
-    },
-  });
-  const workload = await prisma.metric.upsert({
-    where: { name: "Workload" },
-    update: {},
-    create: {
-      name: "Workload",
-      default: true,
-    },
-  });
   const objectId = "64424477e1b9b792905c2a68";
   const trelloCard2Id = "64524477e1b9b792905c2a68";
+  const project = await prisma.project.upsert({
+    where: { id: objectId },
+    update: {},
+    create: {
+      id: objectId,
+      name: "Dev insights project",
+      source: "TRELLO",
+      referenceNumber: 7,
+    },
+  });
+  const complexity = await prisma.metric.create({
+    data: {
+      name: "Complexity",
+      active: true,
+      projectId: project.id,
+    },
+  });
+
+  const level1 = await prisma.level.create({
+    data: {
+      levelLabel: "low",
+      levelOrder: 1,
+      metricId: complexity.id,
+    },
+  });
+  const level2 = await prisma.level.create({
+    data: {
+      levelLabel: "medium",
+      levelOrder: 2,
+      metricId: complexity.id,
+    },
+  });
+  const level3 = await prisma.level.create({
+    data: {
+      levelLabel: "high",
+      levelOrder: 3,
+      metricId: complexity.id,
+    },
+  });
+  const difficulty = await prisma.metric.create({
+    data: {
+      name: "Difficulty",
+      active: true,
+      projectId: project.id,
+    },
+  });
+  const difLevel1 = await prisma.level.create({
+    data: {
+      levelLabel: "easy",
+      levelOrder: 1,
+      metricId: difficulty.id,
+    },
+  });
+  const difLevel2 = await prisma.level.create({
+    data: {
+      levelLabel: "medium",
+      levelOrder: 2,
+      metricId: difficulty.id,
+    },
+  });
+  const difLevel3 = await prisma.level.create({
+    data: {
+      levelLabel: "hard",
+      levelOrder: 3,
+      metricId: difficulty.id,
+    },
+  });
+  const workload = await prisma.metric.create({
+    data: {
+      name: "Workload",
+      active: false,
+      projectId: project.id,
+    },
+  });
+  const workloadLevel1 = await prisma.level.create({
+    data: {
+      levelLabel: "low",
+      levelOrder: 1,
+      metricId: workload.id,
+    },
+  });
+  const workloadLevel2 = await prisma.level.create({
+    data: {
+      levelLabel: "medium",
+      levelOrder: 2,
+      metricId: workload.id,
+    },
+  });
+  const workloadLevel3 = await prisma.level.create({
+    data: {
+      levelLabel: "high",
+      levelOrder: 3,
+      metricId: workload.id,
+    },
+  });
+
   const trelloCard = await prisma.trelloCard.upsert({
     where: { id: objectId },
     update: {},
@@ -182,18 +255,6 @@ async function main() {
     where: { id: objectId },
     update: {},
     create: { id: objectId, name: "thisUser", email: "test@test.com" },
-  });
-
-  const project = await prisma.project.upsert({
-    where: { id: objectId },
-    update: {},
-    create: {
-      id: objectId,
-      name: "Dev insights project",
-      source: "TRELLO",
-      referenceNumber: 7,
-      metricIds: [complexity.id, difficulty.id, workload.id],
-    },
   });
 }
 main()

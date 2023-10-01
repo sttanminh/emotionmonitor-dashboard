@@ -4,10 +4,10 @@ services:
     build: ./mongodb_replica
     restart: always
     ports:
-      - 27017:27017
+      - 27018:27018
     environment:
       MONGO_INITDB_ROOT_USERNAME: admin
       MONGO_INITDB_ROOT_PASSWORD: secret
       MONGO_INITDB_DATABASE: dev_insights
       MONGO_REPLICA_HOST: localhost
-      MONGO_REPLICA_PORT: "27017"
+      MONGO_REPLICA_PORT: "27018"

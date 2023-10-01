@@ -1,17 +1,20 @@
 import { FC } from "react";
-import { HorizontalBarGraph } from "../graph/horizontalBarGraph";
-import { Project } from "@prisma/client";
-import { Task } from "@/pages";
+import { HorizontalBarGraph } from "../graphs/horizontalBarGraph";
+import { Rating } from "@/pages";
+import { Typography } from "@mui/material";
 
 interface Props {
-  project: Project;
-  card?: Task;
+  ratings: Rating[];
+  isLoading: boolean;
 }
 
-export const EmotionSummaryModule: FC<Props> = ({ project, card }) => {
+export const EmotionSummaryModule: FC<Props> = ({ ratings, isLoading }) => {
+  console.log("module ratings", ratings);
+
   return (
     <div className="graph-container">
-      <HorizontalBarGraph project={project} card={card} />
+      <Typography variant="h2">Emotion Summary</Typography>
+      <HorizontalBarGraph ratings={ratings} isLoading={isLoading} />
     </div>
   );
 };

@@ -1,7 +1,7 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
 import prisma from "@/lib/prisma";
-import { ProjectProps } from "..";
+import { ProjectProps } from "../config";
 
 const apiKey = process.env.API_KEY!;
 const apiToken = process.env.API_TOKEN!;
@@ -22,25 +22,24 @@ async function handler(req: NextApiRequest, res: NextApiResponse<Data>) {
     } catch (error: any) {
       res.status(500).json({ message: error.message });
     }
-  }
-  else if (req.method == "PUT") {
-    const { projectId, emojis, referenceNumber } = req.body;
+  } else if (req.method === "PUT") {
     try {
-      const updatedProject = await updateProjectEmojisAndReference(projectId, emojis, referenceNumber);
-      return res.status(200).json({ message: "Project emoji and Reference number updated" });
+      const { projectData } = req.body
+      await configureProject(projectData)
+      res.status(201).json({ message: "Project configured!" });
     } catch (error: any) {
-      return res.status(500).json({ message: error.message });
+      res.status(500).json({ message: error.message })
     }
   }
 }
-async function updateProjectEmojisAndReference(projectId: string, emojis: string[], referenceNumber?: number) {
+async function updateProjectEmojisAndReference(projectData: ProjectProps) {
   return await prisma.project.update({
     where: {
-      id: projectId,
+      id: projectData.projectId,
     },
     data: {
-      emojis: emojis,
-      referenceNumber: referenceNumber
+      emojis: projectData.emojis,
+      referenceNumber: projectData.referenceNumber
     }
   });
 }
@@ -64,14 +63,22 @@ export async function getProject(projectId: string) {
       id: projectId
     },
     include: {
-      metrics: true,
-      levels: true
+      metrics: {
+        include: {
+          levels: true
+        }
+      }
     }
   })
 }
 
 export async function configureProject(projectData: ProjectProps) {
-  var projectId = projectData.projectid
+  await configureMetricsAndLevels(projectData)
+  await updateProjectEmojisAndReference(projectData)
+}
+
+async function configureMetricsAndLevels(projectData: ProjectProps) {
+  var projectId = projectData.projectId
   var newMetrics: any[] = []
   var pastMetrics: any[] = []
   var existingMetrics: any[] = []
@@ -152,12 +159,13 @@ export async function configureProject(projectData: ProjectProps) {
     }
   })
 
-  var activeMetrics = await prisma.metric.findMany({
+  var allMetrics = await prisma.metric.findMany({
     where: {
-      projectId: projectId,
-      active: true
+      projectId: projectId
     }
   })
+  var allMetricIds = allMetrics.map(metric => metric.id)
+  var activeMetrics = allMetrics.filter(metric => metric.active)
   var activeMetricsDictionary: any = {}
   activeMetrics.forEach(metric => {
     activeMetricsDictionary[metric.name] = metric.id
@@ -171,8 +179,7 @@ export async function configureProject(projectData: ProjectProps) {
       levelData.push({
         levelLabel: level.levelLabel,
         levelOrder: level.levelOrder,
-        metricId: activeMetricsDictionary[metric.metricName],
-        projectId: projectId
+        metricId: activeMetricsDictionary[metric.metricName]
       })
     })
   })
