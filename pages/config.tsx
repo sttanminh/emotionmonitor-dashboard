@@ -174,7 +174,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
                 metricName: metric.name,
                 levels: []
             }
-            metric.levels.forEach(level => {
+            metric.levels.forEach((level: any )=> {
                 metricDictionary[metric.id].levels.push({
                     levelLabel: level.levelLabel,
                     levelOrder: level.levelOrder
