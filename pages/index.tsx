@@ -11,8 +11,8 @@ import "react-datepicker/dist/react-datepicker.css";
 import DateRangeSelector from "@/components/datePicker";
 import { MetricGraphModule } from "@/components/modules/metricGraphModule";
 import Button from "@mui/material/Button";
-import Link from 'next/link';
-import SettingsIcon from '@mui/icons-material/Settings'; 
+import Link from "next/link";
+import SettingsIcon from "@mui/icons-material/Settings";
 import { Typography } from "@mui/material";
 import {
   ButtonGroup,
@@ -116,11 +116,6 @@ const Page: NextPageWithLayout = () => {
 
   return (
     <div className="page-container background">
-       <div className="settings-button-container">
-        <Link href={`/config?data=${JSON.stringify(projects)}`}>
-          <SettingsIcon fontSize="large" color="primary" />
-        </Link>
-      </div>
       <ProjectSelector
         setActiveProject={setActiveProject}
         activeProject={activeProject}
@@ -138,7 +133,7 @@ const Page: NextPageWithLayout = () => {
               (summaryTypeSelection === "By Task" ? "contained" : undefined) ||
               "outlined"
             }
-            className="custom-button" 
+            className="custom-button"
           >
             By Task
           </Button>
@@ -152,7 +147,7 @@ const Page: NextPageWithLayout = () => {
               (summaryTypeSelection === "Overall" ? "contained" : undefined) ||
               "outlined"
             }
-            className="custom-button" 
+            className="custom-button"
           >
             Overall
           </Button>
