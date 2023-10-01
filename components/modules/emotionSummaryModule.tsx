@@ -12,7 +12,7 @@ export const EmotionSummaryModule: FC<Props> = ({ ratings, isLoading }) => {
 
   return (
     <div className="graph-container">
-      <h2>Emotion graph</h2>
+
       <HorizontalBarGraph ratings={ratings} isLoading={isLoading} />
     </div>
   );
