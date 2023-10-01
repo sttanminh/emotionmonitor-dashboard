@@ -117,7 +117,7 @@ const Page: NextPageWithLayout = () => {
   return (
     <div className="page-container background">
        <div className="settings-button-container">
-        <Link href="/config">
+        <Link href={`/config?data=${JSON.stringify(projects)}`}>
           <SettingsIcon fontSize="large" color="primary" />
         </Link>
       </div>

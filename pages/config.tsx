@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useRouter } from 'next/router';
 import MetricsSetting from "../components/metricsSetting/metricsSetting"
 import Link from 'next/link';
 import { FaPlusCircle } from 'react-icons/fa';
@@ -14,6 +15,9 @@ export type ProjectProps = {
 }
 
 const ConfigurationPage = (initialProjectData: ProjectProps) => {
+    const router = useRouter();
+    const { project } = router.query;
+    console.log(project)
 
     // maintain projectData so the UI re-render when changes happen
     const [projectData, setProjectData] = useState(initialProjectData)
