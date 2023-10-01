@@ -55,6 +55,7 @@ export const MetricGraphModule: FC<Props> = ({ ratings, isLoading }) => {
   const metricGraphData = metricData;
   return (
     <div className="metricGraph">
+      <h2>Advanced detail</h2>
       {isLoading && <p>Loading data...</p>}
       {!isLoading && ratings.length == 0 && (
         <p>No data for selected time period...</p>

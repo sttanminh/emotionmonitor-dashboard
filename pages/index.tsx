@@ -177,13 +177,8 @@ const Page: NextPageWithLayout = () => {
               MenuProps={{ autoFocus: false }}
               id="task-search-select"
               onClose={() => settaskSearchText("")}
-              // This prevents rendering empty string in Select's value
-              // if search text would exclude currently selected option.
               renderValue={() => activeTask?.taskName}
             >
-              {/* TextField is put into ListSubheader so that it doesn't
-              act as a selectable item in the menu
-              i.e. we can click the TextField without triggering any selection.*/}
               <ListSubheader>
                 <TextField
                   size="small"
