@@ -31,14 +31,14 @@ export interface Task {
   taskName: string;
 }
 
-export type ProjectProps = {
-  projectid: string,
-  metrics: {
-    metricId: string; metricName: string; levels: {
-      levelLabel: string,
-      levelOrder: Number
-    }[]
-  }[]
+export interface Rating {
+  id: string;
+  emoScore: number;
+  level: number;
+  metric: {
+    name: string;
+    levels: { levelLabel: string; levelOrder: number }[];
+  };
 }
 
 export const availableEmojis = ["😔", "😢", "😐", "😊", "😀"];
@@ -231,87 +231,6 @@ const Page: NextPageWithLayout = () => {
     </div>
   );
 };
-
-export async function getServerSideProps() {
-  var projectId = '643d2f9487baeec2c1c0c2d1'
-  // var projectData: ProjectProps = {
-  //   projectid: '643d2f9487baeec2c1c0c2d1',
-  //   metrics: [
-  //     {
-  //       metricName: 'Complexity',
-  //       levels: [
-  //         {
-  //           levelLabel: "Low",
-  //           levelOrder: 1
-  //         }, {
-  //           levelLabel: "Medium",
-  //           levelOrder: 2
-  //         }, {
-  //           levelLabel: "High",
-  //           levelOrder: 3
-  //         }
-  //       ],
-  //       metricId: '64f81eb71be0b30d89e77680'
-  //     },
-  //     {
-  //       metricName: 'Difficulty',
-  //       levels: [
-  //         {
-  //           levelLabel: "Low",
-  //           levelOrder: 1
-  //         }, {
-  //           levelLabel: "Medium",
-  //           levelOrder: 2
-  //         }
-  //       ],
-  //       metricId: ''
-  //     },
-  //     {
-  //       metricName: 'Research required',
-  //       levels: [
-  //         {
-  //           levelLabel: "Low",
-  //           levelOrder: 1
-  //         }, {
-  //           levelLabel: "Medium",
-  //           levelOrder: 2
-  //         }, {
-  //           levelLabel: "High",
-  //           levelOrder: 3
-  //         }
-  //       ],
-  //       metricId: ''
-  //     }
-  //   ]
-  // }
-  // await configureProject(projectData)
-  var project = await getProject(projectId)
-  var projectData: ProjectProps = {
-    projectid: projectId,
-    metrics: []
-  }
-  var metricArray = []
-  var metricDictionary: any = {}
-
-  project?.metrics.forEach(metric => metricDictionary[metric.id] = {
-    metricName: metric.name,
-    levels: []
-  })
-  project?.levels.forEach(level => {
-    metricDictionary[level.metricId].levels.push({
-      levelLabel: level.levelLabel,
-      levelOrder: level.levelOrder
-    })
-  })
-  for (let key in metricDictionary) {
-    metricArray.push({ ...metricDictionary[key], metricId: key })
-  }
-  projectData.metrics = metricArray
-  return {
-    props: projectData
-  }
-}
-
 Page.getLayout = function getLayout(page: ReactElement) {
   return <Layout>{page}</Layout>;
 };
