@@ -117,12 +117,15 @@ export default async function handler(
         const { data } = req.body
         try {
             var prompt = generatePrompt(data)
+            if (prompt == '') {
+                res.status(200).json({result: "No ratings for this card"})
+                return
+            }
             console.log(prompt)
             const completion = await openai.chat.completions.create({
                 messages: [{ role: "system", content:  prompt}],
                 model: "gpt-3.5-turbo"
             });
-            console.log(new Date())
             res.status(200).json({result: completion.choices[0].message.content})
         } catch (error: any) {
             if (error.response) {
@@ -154,15 +157,16 @@ function generatePrompt(data: any): string {
             levelStatsString = levelStatsString == '' ? levelStatsString : levelStatsString + ', '
             levelStatsString += `${levelPercentage}% ${levelLabel}`
         }
-
+        statsString += levelStatsString != '' ? `${metric} ratings: ${levelStatsString}. `: ''
         let emoStatsString = ""
         for (let emoScore in stats.emoScoreDict) {
             emoStatsString = emoStatsString == '' ? emoStatsString : emoStatsString + ', '
             var emoScorePercentage = Math.round(stats.emoScoreDict[emoScore] / stats.totalEmoRatings * 100)
             emoStatsString += `${emoScorePercentage}% ${emoScore}`
         }
-        statsString += `${metric} ratings: ${levelStatsString}. Emotions on ${metric}: ${emoStatsString}.\n`
+        statsString += emoStatsString != '' ? `Emotions on ${metric}: ${emoStatsString}.\n`: ''
     }
+    if (statsString == '') return statsString
     return `I am a team manager.  A user story of the project is: ${taskName}. Team members rated the story based on different metrics, and their emotion on the scale of 1 to 5, with 5 being very happy. The ratings are:
     ${statsString}Please provide tailored advice to manage the team working on this card in the next 2 weeks`;
 }
