@@ -1,0 +1,27 @@
+
+  
+
+  /* Add this CSS to your component's styles or a CSS file */
+.popup-container {
+    position: fixed;
+    top: 20%;
+    left: 25%;
+    width: 50%;
+    height: 50%;
+    background-color: rgba(158, 146, 146, 0.8); /* Semi-transparent background overlay */
+    display: flex;
+    justify-content: center; /* Horizontally center content */
+    align-items: center; /* Vertically center content */
+    z-index: 999; /* Ensure it's above other content */
+  }
+.close-button{
+    top: 5px;
+    right: 5px;
+    position: absolute;
+
+}
+  
+  .loader-container {
+    /* Add any styles you need to center the loader */
+  }
+  

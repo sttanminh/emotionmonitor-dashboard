@@ -13,6 +13,8 @@ import Button from "@mui/material/Button";
 import { Typography } from "@mui/material";
 import Link from "next/link";
 import SettingsIcon from "@mui/icons-material/Settings";
+import HamsterLoader from "@/components/hamsterLoader";
+import AIPopup from "@/components/AIPopUp";
 import {
   ButtonGroup,
   InputAdornment,
@@ -22,6 +24,7 @@ import {
   TextField,
 } from "@mui/material";
 import { Search } from "@mui/icons-material";
+import Loader from "@/components/hamsterLoader";
 
 export interface ProjectPlus extends Project {
   trelloCards: Task[];
@@ -51,6 +54,15 @@ const Page: NextPageWithLayout = () => {
   const [summaryTypeSelection, setSummaryTypeSelection] = useState("Overall");
   const [activeTask, setActiveTask] = useState<Task>();
   const [ratings, setRatings] = useState<Rating[]>();
+  const [showPopup, setShowPopup] = useState(false);
+
+  const handleAIButtonClick = () => {
+    setShowPopup(true);
+  };
+
+  const closePopUp = () => {
+    setShowPopup(false);
+  };
 
   // Default start date to 1 week ago
   const oneWeekAgo = new Date();
@@ -214,6 +226,8 @@ const Page: NextPageWithLayout = () => {
                   <MenuItem value={card.id}>{card.taskName}</MenuItem>
                 ))}
             </Select>
+            {activeTask && <button className="AIButton" onClick={handleAIButtonClick}> AI</button>}
+            
           </>
         )}
       </div>
@@ -229,6 +243,7 @@ const Page: NextPageWithLayout = () => {
           <MetricGraphModule ratings={ratings} isLoading={isRatingsLoading} />
         </div>
       )}
+      {showPopup && <AIPopup ratings={ratings}  onClose={closePopUp}/>}
     </div>
   );
 };

@@ -154,4 +154,10 @@
   }
 
 
-
+.AIButton{
+   width: 50px;
+   margin-left: 10px;
+   background-color: rgba(104, 104, 104, 0.2);
+   border: 0;
+   border-bottom: 0.5px solid black;
+}
