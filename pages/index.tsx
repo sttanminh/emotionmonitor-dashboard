@@ -79,7 +79,8 @@ const Page: NextPageWithLayout = () => {
       const cardId = activeTask?.id;
       console.log("fetching ratings with cardId", cardId);
       fetch(
-        `/api/ratings?projectId=${projectId}&startDate=${selectedStartDate}&endDate=${selectedEndDate}${cardId ? "&cardId=" + cardId : ""
+        `/api/ratings?projectId=${projectId}&startDate=${selectedStartDate}&endDate=${selectedEndDate}${
+          cardId ? "&cardId=" + cardId : ""
         }`
       )
         .then((res) => res.json())
@@ -231,10 +232,9 @@ const Page: NextPageWithLayout = () => {
     </div>
   );
 };
+
 Page.getLayout = function getLayout(page: ReactElement) {
   return <Layout>{page}</Layout>;
 };
-
-
 
 export default Page;

@@ -32,17 +32,6 @@ async function handler(req: NextApiRequest, res: NextApiResponse<Data>) {
     }
   }
 }
-async function updateProjectEmojisAndReference(projectData: ProjectProps) {
-  return await prisma.project.update({
-    where: {
-      id: projectData.projectId,
-    },
-    data: {
-      emojis: projectData.emojis,
-      referenceNumber: projectData.referenceNumber
-    }
-  });
-}
 
 async function getProjects() {
   //project includes cards name and id
@@ -122,7 +111,7 @@ async function configureMetricsAndLevels(projectData: ProjectProps) {
       prisma.metric.deleteMany({
         where: {
           name: {
-            in: newMetrics.map(metric => metric.name)
+            in: newMetricData.map(metric => metric.name)
           }
         }
       }),
@@ -171,7 +160,13 @@ async function configureMetricsAndLevels(projectData: ProjectProps) {
     activeMetricsDictionary[metric.name] = metric.id
   })
   // Delete existing levels linked to project
-  await prisma.level.deleteMany({ where: { projectId: projectId } })
+  await prisma.level.deleteMany({
+    where: {
+      metricId: {
+        in: allMetricIds
+      }
+    }
+  })
   // Add new levels
   var levelData: any[] = []
   projectData.metrics.forEach(metric => {
@@ -186,6 +181,18 @@ async function configureMetricsAndLevels(projectData: ProjectProps) {
   await prisma.level.createMany({
     data: levelData
   })
+}
+
+async function updateProjectEmojisAndReference(projectData: ProjectProps) {
+  return await prisma.project.updateMany({
+    where: {
+      id: projectData.projectId
+    },
+    data: {
+      emojis: projectData.emojis,
+      referenceNumber: projectData.referenceNumber
+    }
+  });
 }
 
 export default handler;
