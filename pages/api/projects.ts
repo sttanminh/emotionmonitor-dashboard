@@ -159,21 +159,25 @@ async function configureMetricsAndLevels(projectData: ProjectProps) {
   activeMetrics.forEach(metric => {
     activeMetricsDictionary[metric.name] = metric.id
   })
-  // Delete existing levels linked to project
-  await prisma.level.deleteMany({
+  // Deactive all existing levels linked to project
+  await prisma.level.updateMany({
     where: {
       metricId: {
         in: allMetricIds
       }
+    },
+    data: {
+      active: false
     }
   })
-  // Add new levels
+  // Add new levels 
   var levelData: any[] = []
   projectData.metrics.forEach(metric => {
     metric.levels.forEach(level => {
       levelData.push({
         levelLabel: level.levelLabel,
         levelOrder: level.levelOrder,
+        active: true,
         metricId: activeMetricsDictionary[metric.metricName]
       })
     })
