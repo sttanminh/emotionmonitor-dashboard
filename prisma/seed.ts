@@ -1,5 +1,4 @@
 import { PrismaClient } from "@prisma/client";
-import { ObjectId } from "bson";
 
 const prisma = new PrismaClient();
 async function main() {
@@ -75,7 +74,7 @@ async function main() {
   const workload = await prisma.metric.create({
     data: {
       name: "Workload",
-      active: false,
+      active: true,
       projectId: project.id,
     },
   });

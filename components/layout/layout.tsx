@@ -1,9 +1,6 @@
 import React, { FC } from "react";
 import { ReactNode } from "react";
-import Link from "next/link";
 import styles from "./layout.module.css"; // Import the CSS module
-import { FaTrello, FaJira, FaGitAlt } from "react-icons/fa";
-import { FaCog } from "react-icons/fa";
 
 interface Props {
   children: ReactNode;
