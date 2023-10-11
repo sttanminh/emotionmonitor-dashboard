@@ -1,13 +1,10 @@
 import React, { useState } from 'react';
-import { useRouter } from 'next/router';
 import MetricsSetting from "../components/metricsSetting/metricsSetting"
 import { GetServerSidePropsContext } from "next";
-import Link from 'next/link';
 import { FaPlusCircle } from 'react-icons/fa';
-import { getProject, configureProject } from "./api/projects";
+import { getProject } from "./api/projects";
 
 export type ProjectProps = {
-    //TODO: Update this to also contain a list of emojis and a reference number
     projectId: string,
     metrics: {
         metricId: string;
@@ -16,7 +13,9 @@ export type ProjectProps = {
             levelLabel: string,
             levelOrder: number
         }[]
-    }[]
+    }[],
+    emojis: string[],
+    referenceNumber: number
 }
 
 const ConfigurationPage = (initialProjectData: ProjectProps) => {
@@ -162,7 +161,9 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     var project = await getProject(projectId)
     var projectData: ProjectProps = {
         projectId: projectId,
-        metrics: []
+        metrics: [],
+        emojis: project?.emojis!,
+        referenceNumber: project?.referenceNumber!
     }
     var metricArray = []
     var metricDictionary: any = {}

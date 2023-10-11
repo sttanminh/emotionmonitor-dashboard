@@ -61,10 +61,9 @@ export async function getProject(projectId: string) {
   })
 }
 
-//TODO: update this function to configure emojis and reference number
 export async function configureProject(projectData: ProjectProps) {
   await configureMetricsAndLevels(projectData)
-  //Add your code here
+  await updateProjectEmojisAndReference(projectData)
 }
 
 async function configureMetricsAndLevels(projectData: ProjectProps) {
@@ -112,7 +111,7 @@ async function configureMetricsAndLevels(projectData: ProjectProps) {
       prisma.metric.deleteMany({
         where: {
           name: {
-            in: newMetrics.map(metric => metric.name)
+            in: newMetricData.map(metric => metric.name)
           }
         }
       }),
@@ -182,6 +181,18 @@ async function configureMetricsAndLevels(projectData: ProjectProps) {
   await prisma.level.createMany({
     data: levelData
   })
+}
+
+async function updateProjectEmojisAndReference(projectData: ProjectProps) {
+  return await prisma.project.updateMany({
+    where: {
+      id: projectData.projectId
+    },
+    data: {
+      emojis: projectData.emojis,
+      referenceNumber: projectData.referenceNumber
+    }
+  });
 }
 
 export default handler;
