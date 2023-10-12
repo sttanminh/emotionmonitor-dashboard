@@ -120,7 +120,8 @@ test.describe("Dashboard is configured as expected", () => {
     await expect(metricNameInput).toBeVisible();
     const testText = "TestMetric";
     await metricNameInput.fill(testText);
-    await (await page.getByTestId("save-button-New Metric")).click();
+    // test id is set to the value of the currently set name
+    await (await page.getByTestId(`save-button-${testText}`)).click();
 
     await new Promise((resolve) => setTimeout(resolve, 1000));
 
@@ -187,7 +188,8 @@ test.describe("Dashboard is configured as expected", () => {
     await expect(metricNameInput).toBeVisible();
 
     await metricNameInput.fill(targetMetric);
-    await (await page.getByTestId("save-button-New Metric")).click();
+    // name of test id on save button changes when metric name is filled
+    await (await page.getByTestId(`save-button-${targetMetric}`)).click();
   });
 
   test("renaming a level (that has ratings in the last week) should create a new level for that metric on the graph", async ({
