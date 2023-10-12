@@ -1,0 +1,43 @@
+
+  
+
+  /* Add this CSS to your component's styles or a CSS file */
+.popup-container {
+    position: fixed;
+    min-height: 60%;
+    top: 10%;
+    left: 20%;
+    width: 60%;
+    height: fit-content;
+    background-color: rgb(237, 237, 237); /* Semi-transparent background overlay */
+    display: flex;
+    justify-content: center; /* Horizontally center content */
+    align-items: center; /* Vertically center content */
+    z-index: 999; /* Ensure it's above other content */
+    font-size: 20px;
+    font-family: Tahoma, Verdana, sans-serif;
+    /* border: 1px solid rgb(71, 71, 71); */
+    border-radius: 13px;
+    box-shadow: 2px 2px 2px 2px rgb(111, 111, 111);
+  }
+.close-button{
+    top: 10px;
+    right: 10px;
+    position: absolute;
+    border: 12px;
+    font-size: 25px;
+
+}
+.AItext{
+  margin-left: 15px;
+  margin-right: 15px;
+  margin-top: 40px;
+  margin-bottom: 20px;
+  white-space: pre-wrap;
+  max-height: 70vh;
+  overflow-y: auto;
+}
+.hamster{
+  width: 100px;
+  height: 200px;
+}
