@@ -190,6 +190,13 @@ const ConfigurationPage = () => {
         setProjectData({ ...updatedData });
     };
 
+    const onEmojiChange = (emojiIndex: number, event: React.ChangeEvent<HTMLSelectElement>) => {
+        const updatedData = { ...projectData };
+        updatedData.emojis[emojiIndex] = event.target.value;
+        setProjectData({ ...updatedData });
+        console.log(projectData.emojis)
+    };
+
     const saveToBackEnd = async () => {
         const response = await fetch("/api/projects", {
             method: "PUT",
@@ -263,7 +270,7 @@ const ConfigurationPage = () => {
                 <div className="metric-container">
                     {
                         projectData.emojis.map((emoji, index) => (
-                            <select value={emoji}>
+                            <select value={emoji} onChange={(event) => onEmojiChange(index, event)}>
                                 {
                                     emojiRange.map((emojiInNumber) => (
                                         <option>
