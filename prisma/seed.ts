@@ -26,6 +26,7 @@ async function main() {
     data: {
       levelLabel: "low",
       levelOrder: 1,
+      active: true,
       metricId: complexity.id,
     },
   });
@@ -33,6 +34,7 @@ async function main() {
     data: {
       levelLabel: "medium",
       levelOrder: 2,
+      active: true,
       metricId: complexity.id,
     },
   });
@@ -40,6 +42,7 @@ async function main() {
     data: {
       levelLabel: "high",
       levelOrder: 3,
+      active: true,
       metricId: complexity.id,
     },
   });
@@ -54,6 +57,7 @@ async function main() {
     data: {
       levelLabel: "easy",
       levelOrder: 1,
+      active: true,
       metricId: difficulty.id,
     },
   });
@@ -61,6 +65,7 @@ async function main() {
     data: {
       levelLabel: "medium",
       levelOrder: 2,
+      active: true,
       metricId: difficulty.id,
     },
   });
@@ -68,6 +73,7 @@ async function main() {
     data: {
       levelLabel: "hard",
       levelOrder: 3,
+      active: true,
       metricId: difficulty.id,
     },
   });
@@ -82,6 +88,7 @@ async function main() {
     data: {
       levelLabel: "low",
       levelOrder: 1,
+      active: true,
       metricId: workload.id,
     },
   });
@@ -89,6 +96,7 @@ async function main() {
     data: {
       levelLabel: "medium",
       levelOrder: 2,
+      active: true,
       metricId: workload.id,
     },
   });
@@ -96,6 +104,7 @@ async function main() {
     data: {
       levelLabel: "high",
       levelOrder: 3,
+      active: true,
       metricId: workload.id,
     },
   });
