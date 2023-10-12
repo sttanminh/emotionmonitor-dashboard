@@ -48,11 +48,13 @@ model Metric {
 }
 
 model Level {
-  id         String  @id @default(auto()) @map("_id") @db.ObjectId
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
   levelLabel String
   levelOrder Int
-  metricId   String  @db.ObjectId
-  metric     Metric  @relation(fields: [metricId], references: [id])
+  active     Boolean  @default(true)
+  metricId   String   @db.ObjectId
+  metric     Metric   @relation(fields: [metricId], references: [id])
+  ratings    Rating[]
 }
 
 model Submission {
@@ -70,6 +72,8 @@ model Rating {
   id           String     @id @default(auto()) @map("_id") @db.ObjectId
   emoScore     Int
   level        Int
+  levelId      String     @db.ObjectId
+  levelObject  Level      @relation(fields: [levelId], references: [id])
   submissionId String     @db.ObjectId
   submission   Submission @relation(fields: [submissionId], references: [id])
   metricId     String     @db.ObjectId

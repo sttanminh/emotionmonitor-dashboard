@@ -1,10 +1,10 @@
 import { FC } from "react";
 import { VictoryBar, VictoryChart, VictoryTheme } from "victory";
-import { Rating, availableEmojis } from "@/pages";
+import { Ratings, availableEmojis } from "@/pages";
 import { Typography } from "@mui/material";
 
 interface Props {
-  ratings: Rating[];
+  ratings: Ratings;
   isLoading: boolean;
 }
 

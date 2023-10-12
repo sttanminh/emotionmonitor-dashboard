@@ -206,12 +206,14 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
         metricName: metric.name,
         levels: [],
       };
-      metric.levels.forEach((level: any) => {
-        metricDictionary[metric.id].levels.push({
-          levelLabel: level.levelLabel,
-          levelOrder: level.levelOrder,
+      metric.levels
+        .filter((level) => level.active)
+        .forEach((level: any) => {
+          metricDictionary[metric.id].levels.push({
+            levelLabel: level.levelLabel,
+            levelOrder: level.levelOrder,
+          });
         });
-      });
     });
   for (let key in metricDictionary) {
     metricArray.push({ ...metricDictionary[key], metricId: key });

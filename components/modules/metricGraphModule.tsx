@@ -1,11 +1,11 @@
 import { FC } from "react";
-import { Rating, Task, availableEmojis } from "@/pages";
+import { Ratings, availableEmojis } from "@/pages";
 import MetricGraphs from "../graphs/MetricGraphs";
 import { Typography } from "@mui/material";
-import { Level, Metric } from "@prisma/client";
+import { Level, Metric, Rating } from "@prisma/client";
 
 interface Props {
-  ratings: Rating[];
+  ratings: Ratings;
   activeMetrics: {
     id: string;
     name: string;
@@ -23,21 +23,32 @@ export const MetricGraphModule: FC<Props> = ({
 }) => {
   // Initialize an empty object to store the aggregated metric
   const metricData: Record<string, Record<string, Record<string, number>>> = {};
+  const usedLevels: { [key in string]: Level[] } = {};
   // Loop through the ratings and aggregate the values and count
   ratings.forEach((rating) => {
     const { metric: ratingMetric, emoScore, level } = rating;
     const metricName = ratingMetric.name;
     const emoLabel = availableEmojis[emoScore];
-    const levelLabel =
-      level > 0 &&
-      ratingMetric.levels.find((metricLevel) => metricLevel.levelOrder == level)
-        ?.levelLabel;
+    const thisLevel =
+      level > 0
+        ? ratingMetric.levels.find(
+            (metricLevel) => metricLevel.id == rating.levelId
+          )
+        : undefined;
+    const levelLabel = thisLevel?.levelLabel;
     if (levelLabel) {
       if (!metricData[metricName]) {
         metricData[metricName] = {};
       }
       if (!metricData[metricName][emoLabel]) {
         metricData[metricName][emoLabel] = {};
+      }
+      if (!metricData[metricName][emoLabel][levelLabel]) {
+        usedLevels[metricName]
+          ? !usedLevels[metricName].find(
+              (level) => level.id === thisLevel.id
+            ) && usedLevels[metricName].push(thisLevel)
+          : (usedLevels[metricName] = [thisLevel]);
       }
       metricData[metricName][emoLabel][levelLabel] =
         (metricData[metricName][emoLabel][levelLabel] || 0) + 1;
@@ -47,15 +58,16 @@ export const MetricGraphModule: FC<Props> = ({
   activeMetrics.forEach((metric) => {
     if (!metricData[metric.name]) metricData[metric.name] = {};
   });
-  for (const metricId in metricData) {
+  for (const metricName in metricData) {
     const ratingLevels = ratings.find(
-      (rating) => rating.metric.name == metricId
+      (rating) => rating.metric.name == metricName
     );
     const activeMetricLevels = activeMetrics.find(
-      (metric) => metric.name == metricId
+      (metric) => metric.name == metricName
     );
     const metricLevels =
-      (ratingLevels && ratingLevels.metric.levels) ??
+      (ratingLevels &&
+        ratingLevels.metric.levels.filter((level) => level.active)) ??
       (activeMetricLevels && activeMetricLevels.levels);
     if (!metricLevels) {
       console.error("something is very wrong with your metric data");
@@ -63,12 +75,17 @@ export const MetricGraphModule: FC<Props> = ({
     }
     for (let emoScore = 0; emoScore < availableEmojis.length; emoScore++) {
       const emoLabel = availableEmojis[emoScore];
-      if (!metricData[metricId][emoLabel]) {
-        metricData[metricId][emoLabel] = {};
+      if (!metricData[metricName][emoLabel]) {
+        metricData[metricName][emoLabel] = {};
       }
       metricLevels.forEach((level) => {
-        if (!metricData[metricId][emoLabel][level.levelLabel]) {
-          metricData[metricId][emoLabel][level.levelLabel] = 0;
+        if (!metricData[metricName][emoLabel][level.levelLabel]) {
+          usedLevels[metricName]
+            ? !usedLevels[metricName].find(
+                (usedLevel) => level.id === usedLevel.id
+              ) && usedLevels[metricName].push(level)
+            : (usedLevels[metricName] = [level]);
+          metricData[metricName][emoLabel][level.levelLabel] = 0;
         }
       });
     }
@@ -93,12 +110,7 @@ export const MetricGraphModule: FC<Props> = ({
               key={metricName}
               metricName={metricName}
               metricData={metricGraphData[metricName]}
-              orderedLevels={(ratings.find(
-                (rating) => rating.metric.name == metricName
-              )?.metric ??
-                activeMetrics.find(
-                  (metric) => metric.name == metricName
-                ))!.levels
+              orderedLevels={usedLevels[metricName]
                 .sort((a, b) => a.levelOrder - b.levelOrder)
                 .map((level) => level.levelLabel)}
               displayEmojis={index === Object.keys(metricGraphData).length - 1}

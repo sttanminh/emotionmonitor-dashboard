@@ -2,12 +2,21 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import prisma from "@/lib/prisma";
 import { ProjectProps } from "../config";
+import { Metric, Project } from "@prisma/client";
 
 const apiKey = process.env.API_KEY!;
 const apiToken = process.env.API_TOKEN!;
 
 type Data = {
   message: string;
+};
+
+type Level = {
+  id?: string;
+  levelLabel: string;
+  levelOrder: number;
+  active: boolean;
+  metricId: string;
 };
 
 async function handler(req: NextApiRequest, res: NextApiResponse<Data>) {
@@ -42,7 +51,7 @@ async function getProjects() {
       },
       metrics: {
         where: { active: true },
-        include: { levels: true },
+        include: { levels: { where: { active: true } } },
       },
     },
   });
@@ -50,7 +59,12 @@ async function getProjects() {
   return { projects: result };
 }
 
-export async function getProject(projectId: string) {
+export async function getProject(projectId: string): Promise<
+  | (Project & {
+      metrics: (Metric & { levels: Level[] })[];
+    })
+  | null
+> {
   return await prisma.project.findFirst({
     where: {
       id: projectId,
@@ -151,39 +165,76 @@ async function configureMetricsAndLevels(projectData: ProjectProps) {
     },
   });
 
-  var allMetrics = await prisma.metric.findMany({
+  var metrics: (Metric & { levels: Level[] })[] = await prisma.metric.findMany({
     where: {
       projectId: projectId,
     },
+    include: {
+      levels: true,
+    },
   });
-  var allMetricIds = allMetrics.map((metric) => metric.id);
-  var activeMetrics = allMetrics.filter((metric) => metric.active);
-  var activeMetricsDictionary: any = {};
-  activeMetrics.forEach((metric) => {
-    activeMetricsDictionary[metric.name] = metric.id;
-  });
-  // Delete existing levels linked to project
-  await prisma.level.deleteMany({
+  var allMetricIds = metrics.map((metric) => metric.id);
+  var activeMetrics = metrics.filter((metric) => metric.active);
+  // Deactive all existing levels linked to project
+  await prisma.level.updateMany({
     where: {
       metricId: {
         in: allMetricIds,
       },
     },
+    data: {
+      active: false,
+    },
   });
-  // Add new levels
-  var levelData: any[] = [];
+
+  // Sort incoming levels
+  var newLevels: Level[] = [];
+  var existingLevelIds: string[] = [];
+  var metricDictionary: { [metricName: string]: string } = {};
+  metrics.forEach((metric) => {
+    metricDictionary[metric.name] = metric.id;
+  });
+
+  var existingActiveLevels: Level[] = [];
+  activeMetrics.forEach((metric) => {
+    metric.levels.forEach((level) => existingActiveLevels.push(level));
+  });
   projectData.metrics.forEach((metric) => {
     metric.levels.forEach((level) => {
-      levelData.push({
-        levelLabel: level.levelLabel,
-        levelOrder: level.levelOrder,
-        metricId: activeMetricsDictionary[metric.metricName],
-      });
+      let check = existingActiveLevels.filter(
+        (existingLevel: any) =>
+          existingLevel.levelLabel == level.levelLabel &&
+          existingLevel.levelOrder == level.levelOrder &&
+          existingLevel.metricId == metricDictionary[metric.metricName]
+      );
+      if (check.length == 0) {
+        newLevels.push({
+          ...level,
+          active: true,
+          metricId: metricDictionary[metric.metricName],
+        });
+      } else {
+        existingLevelIds.push(check[0].id!);
+      }
     });
   });
-  await prisma.level.createMany({
-    data: levelData,
-  });
+  if (newLevels.length > 0) {
+    await prisma.level.createMany({
+      data: newLevels,
+    });
+  }
+  if (existingLevelIds.length > 0) {
+    await prisma.level.updateMany({
+      data: {
+        active: true,
+      },
+      where: {
+        id: {
+          in: existingLevelIds,
+        },
+      },
+    });
+  }
 }
 
 async function updateProjectEmojisAndReference(projectData: ProjectProps) {

@@ -26,6 +26,7 @@ async function main() {
     data: {
       levelLabel: "low",
       levelOrder: 1,
+      active: true,
       metricId: complexity.id,
     },
   });
@@ -33,13 +34,15 @@ async function main() {
     data: {
       levelLabel: "medium",
       levelOrder: 2,
+      active: true,
       metricId: complexity.id,
     },
   });
   const level3 = await prisma.level.create({
     data: {
-      levelLabel: "high",
+      levelLabel: "epic",
       levelOrder: 3,
+      active: true,
       metricId: complexity.id,
     },
   });
@@ -54,6 +57,7 @@ async function main() {
     data: {
       levelLabel: "easy",
       levelOrder: 1,
+      active: true,
       metricId: difficulty.id,
     },
   });
@@ -61,6 +65,7 @@ async function main() {
     data: {
       levelLabel: "medium",
       levelOrder: 2,
+      active: true,
       metricId: difficulty.id,
     },
   });
@@ -68,6 +73,7 @@ async function main() {
     data: {
       levelLabel: "hard",
       levelOrder: 3,
+      active: true,
       metricId: difficulty.id,
     },
   });
@@ -82,6 +88,7 @@ async function main() {
     data: {
       levelLabel: "low",
       levelOrder: 1,
+      active: true,
       metricId: workload.id,
     },
   });
@@ -89,6 +96,7 @@ async function main() {
     data: {
       levelLabel: "medium",
       levelOrder: 2,
+      active: true,
       metricId: workload.id,
     },
   });
@@ -96,6 +104,7 @@ async function main() {
     data: {
       levelLabel: "high",
       levelOrder: 3,
+      active: true,
       metricId: workload.id,
     },
   });
@@ -157,6 +166,7 @@ async function main() {
     data: {
       emoScore: 0,
       level: 1,
+      levelId: level1.id,
       metricId: complexity.id,
       submissionId: submissionOne.id,
     },
@@ -165,6 +175,7 @@ async function main() {
     data: {
       emoScore: 3,
       level: 3,
+      levelId: level3.id,
       metricId: complexity.id,
       submissionId: submissionTwo.id,
     },
@@ -173,6 +184,7 @@ async function main() {
     data: {
       emoScore: 2,
       level: 1,
+      levelId: difLevel1.id,
       metricId: difficulty.id,
       submissionId: submissionOne.id,
     },
@@ -181,6 +193,7 @@ async function main() {
     data: {
       emoScore: 0,
       level: 3,
+      levelId: difLevel3.id,
       metricId: difficulty.id,
       submissionId: submissionTwo.id,
     },
@@ -189,6 +202,7 @@ async function main() {
     data: {
       emoScore: 1,
       level: 1,
+      levelId: workloadLevel1.id,
       metricId: workload.id,
       submissionId: submissionOne.id,
     },
@@ -197,6 +211,7 @@ async function main() {
     data: {
       emoScore: 5,
       level: 3,
+      levelId: workloadLevel3.id,
       metricId: workload.id,
       submissionId: submissionTwo.id,
     },
@@ -205,6 +220,7 @@ async function main() {
     data: {
       emoScore: 5,
       level: 1,
+      levelId: level1.id,
       metricId: complexity.id,
       submissionId: submissionThree.id,
     },
@@ -213,6 +229,7 @@ async function main() {
     data: {
       emoScore: 2,
       level: 3,
+      levelId: level3.id,
       metricId: complexity.id,
       submissionId: submissionFour.id,
     },
@@ -221,6 +238,7 @@ async function main() {
     data: {
       emoScore: 0,
       level: 1,
+      levelId: difLevel1.id,
       metricId: difficulty.id,
       submissionId: submissionThree.id,
     },
@@ -229,6 +247,7 @@ async function main() {
     data: {
       emoScore: 4,
       level: 3,
+      levelId: difLevel3.id,
       metricId: difficulty.id,
       submissionId: submissionFour.id,
     },
@@ -237,6 +256,7 @@ async function main() {
     data: {
       emoScore: 2,
       level: 1,
+      levelId: workloadLevel1.id,
       metricId: workload.id,
       submissionId: submissionThree.id,
     },
@@ -245,6 +265,7 @@ async function main() {
     data: {
       emoScore: 1,
       level: 3,
+      levelId: workloadLevel3.id,
       metricId: workload.id,
       submissionId: submissionFour.id,
     },
