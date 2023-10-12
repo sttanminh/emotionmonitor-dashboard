@@ -59,12 +59,7 @@ async function getProjects() {
   return { projects: result };
 }
 
-export async function getProject(projectId: string): Promise<
-  | (Project & {
-      metrics: (Metric & { levels: Level[] })[];
-    })
-  | null
-> {
+export async function getProject(projectId: string) {
   return await prisma.project.findFirst({
     where: {
       id: projectId,
