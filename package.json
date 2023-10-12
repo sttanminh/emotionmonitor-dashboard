@@ -7,7 +7,8 @@
     "build": "prisma generate && next build",
     "start": "next start",
     "lint": "next lint",
-    "test": "jest"
+    "test": "jest",
+    "test:e2e": "playwright test"
   },
   "prisma": {
     "seed": "ts-node prisma/seed.ts"
@@ -46,6 +47,7 @@
     "victory": "^36.6.10"
   },
   "devDependencies": {
+    "@playwright/test": "^1.38.1",
     "@types/jest": "^29.5.1",
     "@types/node": "^20.4.5",
     "@types/react-datepicker": "^4.15.0",

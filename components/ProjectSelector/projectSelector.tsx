@@ -27,7 +27,7 @@ export const ProjectSelector: FC<Props> = ({
   const [projectSearchText, setProjectSearchText] = useState("");
 
   return (
-    <div className="select-container">
+    <div className="select-container" data-testid="projectSelector">
       <Select
         className="select-container"
         MenuProps={{

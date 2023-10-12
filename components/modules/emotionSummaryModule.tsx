@@ -9,8 +9,6 @@ interface Props {
 }
 
 export const EmotionSummaryModule: FC<Props> = ({ ratings, isLoading }) => {
-  console.log("module ratings", ratings);
-
   return (
     <div className="graph-container">
       <Typography variant="h2">Emotion Summary</Typography>

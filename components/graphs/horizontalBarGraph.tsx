@@ -28,6 +28,7 @@ const getGraph = (graphData: GraphData[]) => {
           horizontal={true}
           animate={false}
           cornerRadius={7.5}
+          data-testid="emotionSummaryGraph"
           style={{
             data: {
               fill: ({ datum }) => {
