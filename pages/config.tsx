@@ -169,13 +169,15 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     var metricDictionary: any = {}
 
     project?.metrics
-        .filter((metric) => metric.active)
+        .filter(metric => metric.active)
         .forEach(metric => {
             metricDictionary[metric.id] = {
                 metricName: metric.name,
                 levels: []
             }
-            metric.levels.forEach((level: any) => {
+            metric.levels
+            .filter(level => level.active)
+            .forEach((level: any) => {
                 metricDictionary[metric.id].levels.push({
                     levelLabel: level.levelLabel,
                     levelOrder: level.levelOrder

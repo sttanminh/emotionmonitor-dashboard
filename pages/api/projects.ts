@@ -10,6 +10,14 @@ type Data = {
   message: string;
 };
 
+type Level = {
+  id?: string,
+  levelLabel: string,
+  levelOrder: number,
+  active: boolean,
+  metricId: string
+}
+
 async function handler(req: NextApiRequest, res: NextApiResponse<Data>) {
   if (req.method === "GET") {
     try {
@@ -148,17 +156,16 @@ async function configureMetricsAndLevels(projectData: ProjectProps) {
     }
   })
 
-  var allMetrics = await prisma.metric.findMany({
+  var metrics = await prisma.metric.findMany({
     where: {
       projectId: projectId
+    },
+    include: {
+      levels: true
     }
   })
-  var allMetricIds = allMetrics.map(metric => metric.id)
-  var activeMetrics = allMetrics.filter(metric => metric.active)
-  var activeMetricsDictionary: any = {}
-  activeMetrics.forEach(metric => {
-    activeMetricsDictionary[metric.name] = metric.id
-  })
+  var allMetricIds = metrics.map(metric => metric.id)
+  var activeMetrics = metrics.filter(metric => metric.active)
   // Deactive all existing levels linked to project
   await prisma.level.updateMany({
     where: {
@@ -170,21 +177,49 @@ async function configureMetricsAndLevels(projectData: ProjectProps) {
       active: false
     }
   })
-  // Add new levels 
-  var levelData: any[] = []
+
+  // Sort incoming levels
+  var newLevels: Level[] = []
+  var existingLevelIds: string[] = []
+  var metricDictionary: { [metricName: string]: string } = {}
+  metrics.forEach(metric => {
+    metricDictionary[metric.name] = metric.id
+  })
+
+  var existingActiveLevels: Level[] = []
+  activeMetrics.forEach(metric => {
+    metric.levels.forEach(level => existingActiveLevels.push(level))
+  })
   projectData.metrics.forEach(metric => {
     metric.levels.forEach(level => {
-      levelData.push({
-        levelLabel: level.levelLabel,
-        levelOrder: level.levelOrder,
-        active: true,
-        metricId: activeMetricsDictionary[metric.metricName]
-      })
+      let check = existingActiveLevels.filter((existingLevel: any) =>
+        existingLevel.levelLabel == level.levelLabel && existingLevel.levelOrder == level.levelOrder && existingLevel.metricId == metricDictionary[metric.metricName])
+      if (check.length == 0) {
+        newLevels.push({ ...level, active: true, metricId: metricDictionary[metric.metricName] })
+      } else {
+        existingLevelIds.push(check[0].id!)
+      }
     })
   })
-  await prisma.level.createMany({
-    data: levelData
-  })
+  console.log(newLevels)
+  console.log(existingLevelIds)
+  if (newLevels.length > 0) {
+    await prisma.level.createMany({
+      data: newLevels
+    })
+  }
+  if (existingLevelIds.length > 0) {
+    await prisma.level.updateMany({
+      data: {
+        active: true
+      },
+      where: {
+        id: {
+          in: existingLevelIds
+        }
+      }
+    })
+  }
 }
 
 async function updateProjectEmojisAndReference(projectData: ProjectProps) {
