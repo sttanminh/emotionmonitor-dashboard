@@ -54,13 +54,13 @@ test.describe("Dashboard is configured as expected", () => {
 
     //navigate to config page
     await page.getByTestId("configButton").click();
-
+    const targetMetric = "Complexity";
     // Adding a level should add a level to the page
-    const metricEditButtons = await page.getByTestId(
-      new RegExp("edit-metric-")
+    const metricEditButton = await page.getByTestId(
+      `edit-metric-${targetMetric}`
     );
-    await metricEditButtons.first().click();
-    const addLevelButton = await page.getByTestId(new RegExp("add-level-"));
+    await metricEditButton.click();
+    const addLevelButton = await page.getByTestId(`add-level-${targetMetric}`);
     await addLevelButton.click();
     const levelInput = await page.getByPlaceholder("New Level", {
       exact: true,
@@ -68,7 +68,7 @@ test.describe("Dashboard is configured as expected", () => {
     await expect(levelInput).toBeVisible();
     const testText = "Test Level";
     await levelInput.fill(testText);
-    await page.getByTestId(new RegExp("save-button-")).first().click();
+    await (await page.getByTestId(`save-button-${targetMetric}`)).click();
 
     // go back to graph page
     await (await page.getByTestId("back-button")).click();
@@ -80,15 +80,15 @@ test.describe("Dashboard is configured as expected", () => {
 
     // clean up
     // navigate back to config page
-    await page.getByTestId("configButton").click();
+    await (await page.getByTestId("configButton")).click();
 
-    await (await page.getByTestId(new RegExp("edit-metric-"))).first().click();
+    await (await page.getByTestId(`edit-metric-${targetMetric}`)).click();
     const deleteLevelButton = await page.getByTestId(
       `delete-level-${testText}`
     );
     await expect(deleteLevelButton).toBeVisible();
     await deleteLevelButton.click();
-    await page.getByTestId(new RegExp("save-button-")).first().click();
+    await (await page.getByTestId(`save-button-${targetMetric}`)).click();
   });
 
   test("a metric is added to the project and is shown on the metric graph as it is active", async ({
@@ -98,7 +98,7 @@ test.describe("Dashboard is configured as expected", () => {
     await expect(page.getByText("Metric Summary")).toBeVisible();
 
     //navigate to config page
-    await page.getByTestId("configButton").click();
+    await (await page.getByTestId("configButton")).click();
 
     const addMetricButton = await page.getByTestId("add-metric-button");
 
@@ -111,10 +111,8 @@ test.describe("Dashboard is configured as expected", () => {
     await expect(newMetricConfig).toBeVisible();
 
     // Change name of new metric
-    const metricEditButtons = await page.getByTestId(
-      new RegExp("edit-metric-")
-    );
-    await metricEditButtons.last().click();
+    const metricEditButtons = await page.getByTestId("edit-metric-New Metric");
+    await metricEditButtons.click();
 
     const metricNameInput = await page.getByPlaceholder("New Metric", {
       exact: true,
@@ -122,14 +120,14 @@ test.describe("Dashboard is configured as expected", () => {
     await expect(metricNameInput).toBeVisible();
     const testText = "TestMetric";
     await metricNameInput.fill(testText);
-    await page.getByTestId(new RegExp("save-button-")).last().click();
+    await (await page.getByTestId("save-button-New Metric")).click();
 
     await new Promise((resolve) => setTimeout(resolve, 1000));
 
     // go back to graph page
     await (await page.getByTestId("back-button")).click();
 
-    expect(page.url()).toBe("http://localhost:3000/");
+    await expect(page.url()).toBe("http://localhost:3000/");
 
     // ensure metric graph is visible
     await expect(await page.getByText("Metric Summary")).toBeVisible();
@@ -138,69 +136,107 @@ test.describe("Dashboard is configured as expected", () => {
     await expect(await page.getByText(testText)).toBeVisible();
 
     // clean up
-    await page.getByTestId("configButton").click();
+    await (await page.getByTestId("configButton")).click();
 
     const deleteMetricButton = await page.getByTestId(`delete-${testText}`);
     await expect(deleteMetricButton).toBeVisible();
     await deleteMetricButton.click();
   });
 
-  // // todo: uncomment this test when level bug has been removed
-  // test("removing a metric (that has ratings in the last week) should not remove it from the metric graph (when level bug has been fixed)", async ({
-  //   page,
-  // }) => {
-  //   // ensure metric graph is visible
-  //   await expect(page.getByText("Metric Summary")).toBeVisible();
+  test("removing a metric (that has ratings in the last week) should not remove it from the metric graph", async ({
+    page,
+  }) => {
+    // ensure metric graph is visible
+    await expect(page.getByText("Metric Summary")).toBeVisible();
 
-  //   //navigate to config page
-  //   await page.getByTestId("configButton").click();
+    //navigate to config page
+    await (await page.getByTestId("configButton")).click();
 
-  //   // delete difficulty button (not touched by other tests)
-  //   const metricDeleteButton = await page.getByTestId("delete-Difficulty");
+    const targetMetric = "Workload";
 
-  //   expect(metricDeleteButton).toBeVisible();
+    // delete difficulty button (not touched by other tests)
+    const metricDeleteButton = await page.getByTestId(`delete-${targetMetric}`);
 
-  //   await metricDeleteButton.click();
+    await expect(metricDeleteButton).toBeVisible();
 
-  //   await expect(metricDeleteButton).not.toBeVisible();
+    await metricDeleteButton.click();
 
-  //   // go back to graph page
-  //   await (await page.getByTestId("back-button")).click();
+    await expect(metricDeleteButton).not.toBeVisible();
 
-  //   // metric should still be visible
-  //   await expect(await page.getByText("Difficulty")).toBeVisible();
-  // });
+    // go back to graph page
+    await (await page.getByTestId("back-button")).click();
 
-  // // todo: uncomment this test when level bug has been removed
-  // test("renaming a level (that has ratings in the last week) should create a new level for that metric on the graph (when level bug has been fixed", async ({
-  //   page,
-  // }) => {
-  //   // ensure metric graph is visible
-  //   await expect(page.getByText("Metric Summary")).toBeVisible();
+    // metric should still be visible
+    await expect(await page.getByText(targetMetric)).toBeVisible();
 
-  //   //navigate to config page
-  //   await page.getByTestId("configButton").click();
+    // clean up
+    await (await page.getByTestId("configButton")).click();
 
-  //   // edit workload metric
-  //   const metricEditButton = await page.getByTestId("edit-metric-Workload");
+    const addMetricButton = await page.getByTestId("add-metric-button");
 
-  //   expect(metricEditButton).toBeVisible();
+    await expect(addMetricButton).toBeVisible();
 
-  //   await metricEditButton.click();
+    await addMetricButton.click();
+    // Change name of new metric
+    const metricEditButton = await page.getByTestId(`edit-metric-New Metric`);
+    await metricEditButton.click();
 
-  //   const existingText = "Medium";
-  //   const inputField = await page.getByPlaceholder(existingText);
-  //   const testText = "Mild";
-  //   await inputField.fill(testText);
+    const metricNameInput = await page.getByPlaceholder("New Metric", {
+      exact: true,
+    });
+    await expect(metricNameInput).toBeVisible();
 
-  //   // go back to graph page
-  //   await (await page.getByTestId("back-button")).click();
+    await metricNameInput.fill(targetMetric);
+    await (await page.getByTestId("save-button-New Metric")).click();
+  });
 
-  //   // new level should be visible
-  //   expect(await page.getByText(testText)).toBeVisible();
-  //   // old level should also be visible
-  //   await expect(await page.getByText(existingText)).toBeVisible();
-  // });
+  test("renaming a level (that has ratings in the last week) should create a new level for that metric on the graph", async ({
+    page,
+  }) => {
+    // ensure metric graph is visible
+    await expect(await page.getByText("Metric Summary")).toBeVisible();
+
+    //navigate to config page
+    await (await page.getByTestId("configButton")).click();
+
+    // edit workload metric
+    const metricEditButton = await page.getByTestId("edit-metric-Complexity");
+
+    await expect(metricEditButton).toBeVisible();
+
+    await metricEditButton.click();
+
+    const existingText = "epic";
+    const inputField = await page.getByPlaceholder(existingText);
+    const testText = "super";
+    await inputField.fill(testText);
+    await (await page.getByTestId("save-button-Complexity")).click();
+
+    // go back to graph page
+    await (await page.getByTestId("back-button")).click();
+
+    // new level should be visible
+    await expect(await page.getByText(testText)).toBeVisible();
+    // old level should also be visible
+    await expect(await page.getByText(existingText)).toBeVisible();
+
+    // clean up
+    //navigate to config page
+    await (await page.getByTestId("configButton")).click();
+
+    // edit workload metric
+    const revertMetricEditButton = await page.getByTestId(
+      "edit-metric-Complexity"
+    );
+
+    await expect(revertMetricEditButton).toBeVisible();
+
+    await revertMetricEditButton.click();
+
+    const revertInputField = await page.getByPlaceholder(testText);
+    await revertInputField.fill(existingText);
+    await (await page.getByTestId("save-button-Complexity")).click();
+  });
 
   test("emoji change is reflected in the graphs", async ({ page }) => {
     // todo: when emoji config has been added need to have an e2e test ensuring the emojis used in the graphs are the current emoji

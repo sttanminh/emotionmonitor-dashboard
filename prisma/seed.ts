@@ -40,7 +40,7 @@ async function main() {
   });
   const level3 = await prisma.level.create({
     data: {
-      levelLabel: "high",
+      levelLabel: "epic",
       levelOrder: 3,
       active: true,
       metricId: complexity.id,
