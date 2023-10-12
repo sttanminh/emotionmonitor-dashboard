@@ -5,7 +5,7 @@ import React, { useState } from "react";
 import { EmotionSummaryModule } from "@/components/modules/emotionSummaryModule";
 import { TaskInfoModule } from "@/components/modules/taskInfoModule";
 import { ProjectSelector } from "@/components/ProjectSelector/projectSelector";
-import { Level, Project } from "@prisma/client";
+import { Level, Metric, Project, Rating } from "@prisma/client";
 import "react-datepicker/dist/react-datepicker.css";
 import DateRangeSelector from "@/components/datePicker";
 import { MetricGraphModule } from "@/components/modules/metricGraphModule";
@@ -38,15 +38,7 @@ export interface Task {
   taskName: string;
 }
 
-export interface Rating {
-  id: string;
-  emoScore: number;
-  level: number;
-  metric: {
-    name: string;
-    levels: { levelLabel: string; levelOrder: number }[];
-  };
-}
+export type Ratings = (Rating & { metric: Metric & { levels: Level[] } })[];
 
 export const availableEmojis = ["😢", "😔", "😐", "😊", "😀"];
 
@@ -57,7 +49,7 @@ const Page: NextPageWithLayout = () => {
   const [activeProject, setActiveProject] = useState<ProjectPlus>();
   const [summaryTypeSelection, setSummaryTypeSelection] = useState("Overall");
   const [activeTask, setActiveTask] = useState<Task>();
-  const [ratings, setRatings] = useState<Rating[]>();
+  const [ratings, setRatings] = useState<Ratings>();
 
   // Default start date to 1 week ago
   const oneWeekAgo = new Date();

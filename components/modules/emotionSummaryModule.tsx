@@ -1,10 +1,10 @@
 import { FC } from "react";
 import { HorizontalBarGraph } from "../graphs/horizontalBarGraph";
-import { Rating } from "@/pages";
+import { Ratings } from "@/pages";
 import { Typography } from "@mui/material";
 
 interface Props {
-  ratings: Rating[];
+  ratings: Ratings;
   isLoading: boolean;
 }
 

@@ -51,7 +51,7 @@ async function getProjects() {
       },
       metrics: {
         where: { active: true },
-        include: { levels: true },
+        include: { levels: { where: { active: true } } },
       },
     },
   });
@@ -218,8 +218,6 @@ async function configureMetricsAndLevels(projectData: ProjectProps) {
       }
     });
   });
-  console.log(newLevels);
-  console.log(existingLevelIds);
   if (newLevels.length > 0) {
     await prisma.level.createMany({
       data: newLevels,
