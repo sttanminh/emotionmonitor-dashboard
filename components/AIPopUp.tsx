@@ -13,21 +13,38 @@ interface AIPopUpProps {
     }[] | null;
 
     onClose: () => void;
+
+    taskName: String
   }
 
-  const AIPopUp: React.FC<AIPopUpProps> = ({ ratings, onClose }) => {
+  const AIPopUp: React.FC<AIPopUpProps> = ({ ratings, onClose, taskName }) => {
   const [loading, setLoading] = useState(true);
   const [result, setResult] = useState<string | null>(null);
 
-  useEffect(() => {
-    console.log(ratings)
-    fetch(`/api/recommendations?data=${ratings}`)
-      .then((res) => res.json())
-      .then((res) => {
-        setResult(res);
-        setLoading(false);
-      });
-  }, []);
+    
+    async function APICALL() {
+      console.log(ratings)
+      const response = await fetch('/api/recommendations',{
+      method: 'POST',
+      body: JSON.stringify({
+        data: {ratings:ratings,taskName: taskName}
+      }),
+      headers:{
+        'Content-Type':'application/json'
+      }
+    })
+      setLoading(false)
+      console.log(response)
+      console.log(response.json().then((i)=>{
+        console.log(i.result)
+        setResult(i.result)
+      }))
+    }
+   
+    useEffect(()=>{
+      APICALL()
+    },[])
+
 
   return (
     <div className="popup-container">
@@ -35,8 +52,10 @@ interface AIPopUpProps {
         X
       </button>
       <div className="popup-content">
-        {loading && <HamsterLoader />}
-        {result && <div>AI Result: {result}</div>}
+      {loading &&<div >
+        { <HamsterLoader />}
+        </div>}
+        {result && <div className='AItext'>AI Result: {result}</div>}
       </div>
     </div>
   );

@@ -243,7 +243,7 @@ const Page: NextPageWithLayout = () => {
           <MetricGraphModule ratings={ratings} isLoading={isRatingsLoading} />
         </div>
       )}
-      {showPopup && <AIPopup ratings={ratings}  onClose={closePopUp}/>}
+      {showPopup&& ratings && <AIPopup ratings={ratings} taskName={activeTask?.taskName!} onClose={closePopUp}/>}
     </div>
   );
 };

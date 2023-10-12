@@ -113,7 +113,10 @@ export default async function handler(
     req: NextApiRequest,
     res: NextApiResponse
 ) {
+    console.log("asdasd")
     if (req.method === 'POST') {
+        console.log("start APi Call")
+        console.log(req.body)
         const { data } = req.body
         try {
             var prompt = generatePrompt(data)
@@ -126,6 +129,7 @@ export default async function handler(
                 messages: [{ role: "system", content:  prompt}],
                 model: "gpt-3.5-turbo"
             });
+            console.log(completion.choices[0].message.content)
             res.status(200).json({result: completion.choices[0].message.content})
         } catch (error: any) {
             if (error.response) {
