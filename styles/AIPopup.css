@@ -19,7 +19,6 @@
     /* border: 1px solid rgb(71, 71, 71); */
     border-radius: 13px;
     box-shadow: 2px 2px 2px 2px rgb(111, 111, 111);
-    max-height: 50%;
   }
 .close-button{
     top: 10px;
@@ -35,6 +34,8 @@
   margin-top: 40px;
   margin-bottom: 20px;
   white-space: pre-wrap;
+  max-height: 70vh;
+  overflow-y: auto;
 }
 .hamster{
   width: 100px;
