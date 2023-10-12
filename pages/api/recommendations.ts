@@ -19,105 +19,13 @@ const openai = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY,
 });
 
-// const dummy = {
-//     taskName: "User first time adding needs to sign a privacy policy",
-//     ratings: [
-//         {
-//             emoScore: 0,
-//             level: 1,
-//             metric: {
-//                 levels: [
-//                     {
-//                         levelLabel: "low",
-//                         levelOrder: 1
-//                     },
-//                     {
-//                         levelLabel: "medium",
-//                         levelOrder: 2
-//                     },
-//                     {
-//                         levelLabel: "high",
-//                         levelOrder: 3
-//                     }
-//                 ],
-//                 name: "Complexity"
-//             }
-//         },
-//         {
-//             emoScore: 4,
-//             level: 3,
-//             metric: {
-//                 levels: [
-//                     {
-//                         levelLabel: "low",
-//                         levelOrder: 1
-//                     },
-//                     {
-//                         levelLabel: "medium",
-//                         levelOrder: 2
-//                     },
-//                     {
-//                         levelLabel: "high",
-//                         levelOrder: 3
-//                     }
-//                 ],
-//                 name: "Complexity"
-//             }
-//         },
-//         {
-//             emoScore: 4,
-//             level: 1,
-//             metric: {
-//                 levels: [
-//                     {
-//                         levelLabel: "easy",
-//                         levelOrder: 1
-//                     },
-//                     {
-//                         levelLabel: "medium",
-//                         levelOrder: 2
-//                     },
-//                     {
-//                         levelLabel: "difficulty",
-//                         levelOrder: 3
-//                     }
-//                 ],
-//                 name: "Difficulty"
-//             }
-//         },
-//         {
-//             emoScore: 5,
-//             level: 1,
-//             metric: {
-//                 levels: [
-//                     {
-//                         levelLabel: "easy",
-//                         levelOrder: 1
-//                     },
-//                     {
-//                         levelLabel: "medium",
-//                         levelOrder: 2
-//                     },
-//                     {
-//                         levelLabel: "difficulty",
-//                         levelOrder: 3
-//                     }
-//                 ],
-//                 name: "Difficulty"
-//             }
-//         }
-//     ]
-// }
-
 export default async function handler(
     req: NextApiRequest,
     res: NextApiResponse
 ) {
-    console.log("asdasd")
     if (req.method === 'POST') {
-        console.log("start APi Call")
-        console.log(req.body)
         const { data } = req.body
+        console.log(data)
         try {
             var prompt = generatePrompt(data)
             if (prompt == '') {
