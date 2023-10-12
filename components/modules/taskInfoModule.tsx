@@ -19,13 +19,19 @@ export const TaskInfoModule: FC<Props> = ({ id }: Props) => {
       });
   }, [id]);
 
-  if (isLoading) return <Typography variant="body1">Loading...</Typography>;
   if (!data) return <Typography variant="body1">No profile data</Typography>;
   return (
     data && (
       <div className="task-info-container">
-        <Typography variant="h2">{data.taskName}</Typography>
-        <Typography variant="body1">{`${data.description}`}</Typography>
+        {isLoading ? (
+          <Typography variant="body1">Loading...</Typography>
+        ) : (
+          <>
+            <Typography variant="h2">{data.taskName}</Typography>
+            <br />
+            <Typography variant="h5">{`${data.description}`}</Typography>
+          </>
+        )}
       </div>
     )
   );

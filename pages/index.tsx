@@ -5,7 +5,7 @@ import React, { useState } from "react";
 import { EmotionSummaryModule } from "@/components/modules/emotionSummaryModule";
 import { TaskInfoModule } from "@/components/modules/taskInfoModule";
 import { ProjectSelector } from "@/components/ProjectSelector/projectSelector";
-import { Project } from "@prisma/client";
+import { Level, Metric, Project, Rating } from "@prisma/client";
 import "react-datepicker/dist/react-datepicker.css";
 import DateRangeSelector from "@/components/datePicker";
 import { MetricGraphModule } from "@/components/modules/metricGraphModule";
@@ -28,23 +28,22 @@ import Loader from "@/components/hamsterLoader";
 
 export interface ProjectPlus extends Project {
   trelloCards: Task[];
+  metrics: {
+    id: string;
+    name: string;
+    active: boolean;
+    projectId: string;
+    levels: Level[];
+  }[];
 }
 export interface Task {
   id: string;
   taskName: string;
 }
 
-export interface Rating {
-  id: string;
-  emoScore: number;
-  level: number;
-  metric: {
-    name: string;
-    levels: { levelLabel: string; levelOrder: number }[];
-  };
-}
+export type Ratings = (Rating & { metric: Metric & { levels: Level[] } })[];
 
-export const availableEmojis = ["😔", "😢", "😐", "😊", "😀"];
+export const availableEmojis = ["😢", "😔", "😐", "😊", "😀"];
 
 const Page: NextPageWithLayout = () => {
   const [projects, setprojects] = useState<ProjectPlus[] | null>(null);
@@ -53,7 +52,7 @@ const Page: NextPageWithLayout = () => {
   const [activeProject, setActiveProject] = useState<ProjectPlus>();
   const [summaryTypeSelection, setSummaryTypeSelection] = useState("Overall");
   const [activeTask, setActiveTask] = useState<Task>();
-  const [ratings, setRatings] = useState<Rating[]>();
+  const [ratings, setRatings] = useState<Ratings>();
   const [showPopup, setShowPopup] = useState(false);
 
   const handleAIButtonClick = () => {
@@ -81,7 +80,6 @@ const Page: NextPageWithLayout = () => {
   const handleDateRangeSelect = (startDate: Date, endDate: Date) => {
     setSelectedStartDate(startDate);
     setSelectedEndDate(endDate);
-    console.log(selectedStartDate, selectedEndDate);
   };
 
   useEffect(() => {
@@ -89,7 +87,6 @@ const Page: NextPageWithLayout = () => {
       setRatingsLoading(true);
       const projectId = activeProject.id;
       const cardId = activeTask?.id;
-      console.log("fetching ratings with cardId", cardId);
       fetch(
         `/api/ratings?projectId=${projectId}&startDate=${selectedStartDate}&endDate=${selectedEndDate}${
           cardId ? "&cardId=" + cardId : ""
@@ -120,16 +117,28 @@ const Page: NextPageWithLayout = () => {
   }, [projects]);
 
   if (isLoading || !activeProject)
-    return <Typography variant="body1">Loading...</Typography>;
+    return (
+      <div className="page-container background">
+        <Typography variant="body1">Loading...</Typography>
+      </div>
+    );
   if (!projects || !activeProject) {
-    return <Typography variant="body1">No profile projects</Typography>;
+    return (
+      <div className="page-container background">
+        <Typography variant="body1">No profile projects</Typography>
+      </div>
+    );
   }
 
   return (
     <div className="page-container background">
       <div className="settings-button-container">
         <Link href={`/config?data=${activeProject.id}`}>
-          <SettingsIcon fontSize="large" color="primary" />
+          <SettingsIcon
+            data-testid="configButton"
+            fontSize="large"
+            color="primary"
+          />
         </Link>
       </div>
       <ProjectSelector
@@ -144,6 +153,7 @@ const Page: NextPageWithLayout = () => {
               setSummaryTypeSelection("By Task");
               setActiveTask(activeProject.trelloCards[0]);
             }}
+            data-testid="byTaskButton"
             area-disabled={summaryTypeSelection === "By Task"}
             variant={
               (summaryTypeSelection === "By Task" ? "contained" : undefined) ||
@@ -158,6 +168,7 @@ const Page: NextPageWithLayout = () => {
               setSummaryTypeSelection("Overall");
               setActiveTask(undefined);
             }}
+            data-testid="overallButton"
             area-disabled={summaryTypeSelection === "Overall"}
             variant={
               (summaryTypeSelection === "Overall" ? "contained" : undefined) ||
@@ -176,10 +187,10 @@ const Page: NextPageWithLayout = () => {
             }
             <Select
               value={activeTask?.id}
+              data-testid="taskSelector"
               label={"Task"}
               variant="filled"
               onChange={(event) => {
-                console.log("active task", activeTask);
                 const taskId = event.target.value;
                 setActiveTask(
                   activeProject.trelloCards.find((card) => card.id == taskId)!
@@ -240,7 +251,11 @@ const Page: NextPageWithLayout = () => {
             />
             {activeTask && <TaskInfoModule id={activeTask?.id} />}
           </div>
-          <MetricGraphModule ratings={ratings} isLoading={isRatingsLoading} />
+          <MetricGraphModule
+            ratings={ratings}
+            activeMetrics={activeProject.metrics}
+            isLoading={isRatingsLoading}
+          />
         </div>
       )}
       {showPopup&& ratings && <AIPopup ratings={ratings} taskName={activeTask?.taskName!} onClose={closePopUp}/>}

@@ -1,0 +1,32 @@
+name: Playwright CI Tests
+env:
+  GITHUB_PR_NUMBER: ${{github.event.pull_request.number}}
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+jobs:
+  tests_e2e:
+    name: Run end-to-end tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+      - uses: docker-practice/actions-setup-docker@master
+        timeout-minutes: 12
+      - name: setup db
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: make all
+      - name: setup playwright
+        run: npx playwright install
+      - name: install deps
+        run: npm install
+      - name: build app
+        run: npm run build
+      - name: run playwright
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: npm run test:e2e

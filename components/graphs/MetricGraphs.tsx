@@ -157,6 +157,7 @@ function MetricGraphs({
             paddingRight: "20px",
             marginTop: "10px",
           }}
+          data-testid={`metric-${metricName}`}
         >
           <Typography variant="h3"> {metricName}</Typography>
         </div>
@@ -178,7 +179,9 @@ function MetricGraphs({
                 height: "28px",
               }}
             >
-              <Typography variant="subtitle1">{level}</Typography>
+              <Typography data-testid={`level-${level}`} variant="subtitle1">
+                {level}
+              </Typography>
             </div>
           ))}
         </div>
