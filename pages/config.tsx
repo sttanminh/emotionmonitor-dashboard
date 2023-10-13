@@ -1,26 +1,24 @@
-import React, { useState } from "react";
-import MetricsSetting from "../components/metricsSetting/metricsSetting";
-import EmojiSetting from "../components/emojiSetting/emojiSetting";
+import React, { useState } from 'react';
+import { useRouter } from 'next/router';
+import MetricsSetting from "../components/metricsSetting/metricsSetting"
 import { GetServerSidePropsContext } from "next";
-import { FaPlusCircle } from "react-icons/fa";
-import { getProject } from "./api/projects";
-import Link from "next/link";
-import { ArrowBack } from "@mui/icons-material";
-import { Typography } from "@mui/material";
+import Link from 'next/link';
+import { FaPlusCircle } from 'react-icons/fa';
+import { getProject, configureProject } from "./api/projects";
 
 export type ProjectProps = {
-    projectId: string,
-    metrics: {
-        metricId: string;
-        metricName: string;
-        levels: {
-            levelLabel: string,
-            levelOrder: number
-        }[]
-    }[],
-    emojis: string[],
-    referenceNumber: number
-}
+  projectId: string;
+  metrics: {
+      metricId: string;
+      metricName: string;
+      levels: {
+          levelLabel: string;
+          levelOrder: number;
+      }[];
+  }[];
+  emojis: string[];
+  referenceNumber: number;
+};
 
 const ConfigurationPage = (initialProjectData: ProjectProps) => {
     // maintain projectData so the UI re-render when changes happen
