@@ -5,6 +5,8 @@ import "../components/global.css"; // Import the global CSS file
 import "@/styles/index.css";
 import "@/styles/datePicker.css";
 import Head from "next/head";
+import '@/styles/hamsterLoaderCss.css';
+import '@/styles/AIPopup.css'
 
 export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
   getLayout?: (page: ReactElement) => ReactNode;
