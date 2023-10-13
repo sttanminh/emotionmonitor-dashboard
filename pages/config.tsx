@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
-import { useRouter } from 'next/router';
-import MetricsSetting from "../components/metricsSetting/metricsSetting"
+import React, { useState } from "react";
+import MetricsSetting from "../components/metricsSetting/metricsSetting";
+import EmojiSetting from "../components/emojiSetting/emojiSetting";
 import { GetServerSidePropsContext } from "next";
-import Link from 'next/link';
-import { FaPlusCircle } from 'react-icons/fa';
-import { getProject, configureProject } from "./api/projects";
+import { FaPlusCircle } from "react-icons/fa";
+import { getProject } from "./api/projects";
+import Link from "next/link";
+import { ArrowBack } from "@mui/icons-material";
+import { Typography } from "@mui/material";
 
 export type ProjectProps = {
   projectId: string;
@@ -128,39 +130,71 @@ const ConfigurationPage = (initialProjectData: ProjectProps) => {
 
 
     return (
-        <div className="body-config">
-            <section className='background'>
-                <h1>Emotimonitor Configuration</h1>
-                <p>This page allow you to manage the content shown in the Trello PowerUp, including modifying, adding, or removing metrics and adjusting emoji for each level.</p>
-                <div className="header-container">
-                    <h2>Manage Metrics</h2>
-                    <button className="trans-button" onClick={addMetric}>
-                        <FaPlusCircle size={18} style={{ color: "#50C878" }} />
-                    </button>
-                </div>
-                <div className='metric-container'>
-                    {
-                        // for each element in the metrics array we add a MetricsSetting component using map()
-                        projectData.metrics.map((metric, index) => (
-                            // metric is the current element of the projec tData.metrics array, index is the index of the current element in the projectData.metrics array
-                            <MetricsSetting
-                                key={index}
-                                index={index}
-                                metric={metric}
-                                onDeleteButtonClick={() => deleteMetric(index)}
-                                onAddLevelButtonClick={() => addLevel(index)}
-                                // levelIndex need to be passed from the component hence: (levelIndex: number)
-                                onDeleteLevelButtonClick={(levelIndex: number) => deleteLevel(index, levelIndex)}
-                                onSaveButtonClick={() => saveToBackEnd()}
-                                onMetricNameChange={(updatedMetricName: string) => updateMetricName(index, updatedMetricName)}
-                                onLevelLabelChange={(levelIndex: number, updatedLvLabel: string) => updateLvLabel(index, levelIndex, updatedLvLabel)} />
-                        ))
-                    }
-                </div>
-            </section>
-        </div>
-    );
-
+      <div className="body-config">
+          <section className="background">
+              <div>
+                  {/* <Link href={`/`}>
+                      <ArrowBack
+                          data-testid="back-button"
+                          fontSize="large"
+                          color="primary"
+                      />
+                  </Link> */}
+              </div>
+              <Typography variant="h3">Emotimonitor Configuration</Typography>
+              <Typography variant="h6">
+                  This page allow you to manage the content shown in the Trello PowerUp,
+                  including modifying, adding, or removing metrics and adjusting emoji
+                  for each level.
+              </Typography>
+              <div className="header-container">
+                  <h2>Manage Metrics</h2>
+                  <button
+                      data-testid={"add-metric-button"}
+                      className="trans-button"
+                      onClick={addMetric}
+                  >
+                      <FaPlusCircle size={18} style={{ color: "#50C878" }} />
+                  </button>
+              </div>
+              <div className="metric-container">
+                  {
+                      // for each element in the metrics array we add a MetricsSetting component using map()
+                      projectData.metrics.map((metric, index) => (
+                          // metric is the current element of the projec tData.metrics array, index is the index of the current element in the projectData.metrics array
+                          <MetricsSetting
+                              key={index}
+                              index={index}
+                              metric={metric}
+                              onDeleteButtonClick={() => deleteMetric(index)}
+                              onAddLevelButtonClick={() => addLevel(index)}
+                              // levelIndex need to be passed from the component hence: (levelIndex: number)
+                              onDeleteLevelButtonClick={(levelIndex: number) =>
+                                  deleteLevel(index, levelIndex)
+                              }
+                              onSaveButtonClick={() => saveToBackEnd()}
+                              onMetricNameChange={(updatedMetricName: string) =>
+                                  updateMetricName(index, updatedMetricName)
+                              }
+                              onLevelLabelChange={(
+                                  levelIndex: number,
+                                  updatedLvLabel: string
+                              ) => updateLvLabel(index, levelIndex, updatedLvLabel)}
+                          />
+                      ))
+                  }
+              </div>
+              <div className="header-container">
+                  <h2>Manage Emoji</h2>
+              </div>
+              <div>
+                  {
+                      <EmojiSetting emojis={projectData.emojis} onEmojiChange={(emojiIndex: number, newEmoji: string) => changeEmoji(emojiIndex, newEmoji)} />
+                  }
+              </div>
+          </section>
+      </div>
+  );
 };
 
 
