@@ -72,6 +72,7 @@ const ConfigurationPage = (initialProjectData: ProjectProps) => {
         updatedData.metrics.push(newMetric);
         // update the state with the new object to triggers re-render of component
         setProjectData({ ...updatedData });
+        saveToBackEnd();
     }
 
     // function to delete a levels
@@ -105,18 +106,24 @@ const ConfigurationPage = (initialProjectData: ProjectProps) => {
         setProjectData({ ...updatedData });
     }
 
+    const changeEmoji = (emojiIndex: number, newEmoji: string) => {
+      const updatedData = { ...projectData };
+      updatedData.emojis[emojiIndex] = newEmoji;
+      setProjectData({ ...updatedData });
+      console.log(projectData.emojis)
+  };
+
     const saveToBackEnd = async () => {
-        console.log(projectData)
-        const response = await fetch('/api/projects', {
-            method: 'PUT',
+        const response = await fetch("/api/projects", {
+            method: "PUT",
             body: JSON.stringify({
-                projectData: projectData
+                projectData: projectData,
             }),
             headers: {
-                'Content-Type': 'application/json'
-            }
-        })
-    }
+                "Content-Type": "application/json",
+            },
+        });
+    };
 
 
 
