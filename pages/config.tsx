@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import MetricsSetting from "../components/metricsSetting/metricsSetting";
+import EmojiSetting from "../components/emojiSetting/emojiSetting";
 import { GetServerSidePropsContext } from "next";
 import { FaPlusCircle } from "react-icons/fa";
 import { getProject } from "./api/projects";
@@ -21,83 +22,7 @@ export type ProjectProps = {
     referenceNumber: number;
 };
 
-const ConfigurationPage = () => {
-    const emojiRange = Array.from({ length: 128591 - 128513 + 1 }, (_, i) => 128513 + i);
-
-
-    const initialProjectData = {
-        projectid: '643d2f9487baeec2c1c0c2d1',
-        metrics: [
-            {
-                metricName: 'Complexity',
-                levels: [
-                    {
-                        levelLabel: "Low",
-                        levelOrder: 1
-                    }, {
-                        levelLabel: "Medium",
-                        levelOrder: 2
-                    }, {
-                        levelLabel: "High",
-                        levelOrder: 3
-                    }
-                ],
-                metricId: '64f6c424d4c684fa3223598d'
-            },
-            {
-                metricName: 'Teamwork',
-                levels: [
-                    {
-                        levelLabel: "Low",
-                        levelOrder: 1
-                    }, {
-                        levelLabel: "Medium",
-                        levelOrder: 2
-                    }, {
-                        levelLabel: "High",
-                        levelOrder: 3
-                    }
-                ],
-                metricId: ''
-            },
-            {
-                metricName: 'Difficulty',
-                levels: [
-                    {
-                        levelLabel: "Low",
-                        levelOrder: 1
-                    }, {
-                        levelLabel: "Medium",
-                        levelOrder: 2
-                    }, {
-                        levelLabel: "High",
-                        levelOrder: 3
-                    }, {
-                        levelLabel: "Extreme",
-                        levelOrder: 3
-                    }
-                ],
-                metricId: ''
-            },
-            {
-                metricName: 'Timespan',
-                levels: [
-                    {
-                        levelLabel: "Short",
-                        levelOrder: 1
-                    }, {
-                        levelLabel: "Reasonable",
-                        levelOrder: 2
-                    }, {
-                        levelLabel: "Long",
-                        levelOrder: 3
-                    }
-                ],
-                metricId: ''
-            }
-        ],
-        emojis: ['😢', '😔', '😐', '😀', '😊']
-    }
+const ConfigurationPage = (initialProjectData: ProjectProps) => {
 
     // maintain projectData so the UI re-render when changes happen
     const [projectData, setProjectData] = useState(initialProjectData);
@@ -190,9 +115,9 @@ const ConfigurationPage = () => {
         setProjectData({ ...updatedData });
     };
 
-    const onEmojiChange = (emojiIndex: number, event: React.ChangeEvent<HTMLSelectElement>) => {
+    const changeEmoji = (emojiIndex: number, newEmoji: string) => {
         const updatedData = { ...projectData };
-        updatedData.emojis[emojiIndex] = event.target.value;
+        updatedData.emojis[emojiIndex] = newEmoji;
         setProjectData({ ...updatedData });
         console.log(projectData.emojis)
     };
@@ -222,7 +147,7 @@ const ConfigurationPage = () => {
                     </Link>
                 </div>
                 <Typography variant="h3">Emotimonitor Configuration</Typography>
-                <Typography variant="h5">
+                <Typography variant="h6">
                     This page allow you to manage the content shown in the Trello PowerUp,
                     including modifying, adding, or removing metrics and adjusting emoji
                     for each level.
@@ -267,19 +192,9 @@ const ConfigurationPage = () => {
                 <div className="header-container">
                     <h2>Manage Emoji</h2>
                 </div>
-                <div className="metric-container">
+                <div>
                     {
-                        projectData.emojis.map((emoji, index) => (
-                            <select value={emoji} onChange={(event) => onEmojiChange(index, event)}>
-                                {
-                                    emojiRange.map((emojiInNumber) => (
-                                        <option>
-                                            {String.fromCodePoint(emojiInNumber)}
-                                        </option>
-                                    ))
-                                }
-                            </select>
-                        ))
+                        <EmojiSetting emojis={projectData.emojis} onEmojiChange={(emojiIndex: number, newEmoji: string) => changeEmoji(emojiIndex, newEmoji)} />
                     }
                 </div>
             </section>
@@ -287,43 +202,43 @@ const ConfigurationPage = () => {
     );
 };
 
-// export async function getServerSideProps(context: GetServerSidePropsContext) {
-//     const { data } = context.query;
-//     var projectId = data as string;
-//     projectId = projectId.replaceAll('"', "");
-//     var project = await getProject(projectId);
-//     var projectData: ProjectProps = {
-//         projectId: projectId,
-//         metrics: [],
-//         emojis: project?.emojis!,
-//         referenceNumber: project?.referenceNumber!,
-//     };
-//     var metricArray = [];
-//     var metricDictionary: any = {};
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+    const { data } = context.query;
+    var projectId = data as string;
+    projectId = projectId.replaceAll('"', "");
+    var project = await getProject(projectId);
+    var projectData: ProjectProps = {
+        projectId: projectId,
+        metrics: [],
+        emojis: project?.emojis!,
+        referenceNumber: project?.referenceNumber!,
+    };
+    var metricArray = [];
+    var metricDictionary: any = {};
 
-//     project?.metrics
-//         .filter((metric) => metric.active)
-//         .forEach((metric) => {
-//             metricDictionary[metric.id] = {
-//                 metricName: metric.name,
-//                 levels: [],
-//             };
-//             metric.levels
-//                 .filter((level) => level.active)
-//                 .forEach((level: any) => {
-//                     metricDictionary[metric.id].levels.push({
-//                         levelLabel: level.levelLabel,
-//                         levelOrder: level.levelOrder,
-//                     });
-//                 });
-//         });
-//     for (let key in metricDictionary) {
-//         metricArray.push({ ...metricDictionary[key], metricId: key });
-//     }
-//     projectData.metrics = metricArray;
-//     return {
-//         props: projectData,
-//     };
-// }
+    project?.metrics
+        .filter((metric) => metric.active)
+        .forEach((metric) => {
+            metricDictionary[metric.id] = {
+                metricName: metric.name,
+                levels: [],
+            };
+            metric.levels
+                .filter((level) => level.active)
+                .forEach((level: any) => {
+                    metricDictionary[metric.id].levels.push({
+                        levelLabel: level.levelLabel,
+                        levelOrder: level.levelOrder,
+                    });
+                });
+        });
+    for (let key in metricDictionary) {
+        metricArray.push({ ...metricDictionary[key], metricId: key });
+    }
+    projectData.metrics = metricArray;
+    return {
+        props: projectData,
+    };
+}
 
 export default ConfigurationPage;

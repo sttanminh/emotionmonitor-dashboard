@@ -9,6 +9,7 @@ body {
 }
 
 .header-container {
+  padding-top: 15px;
   display: flex;
   flex-direction: row;
 }
