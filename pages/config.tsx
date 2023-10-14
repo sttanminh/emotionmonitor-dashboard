@@ -128,7 +128,6 @@ const ConfigurationPage = (initialProjectData: ProjectProps) => {
         const updatedData = { ...projectData };
         updatedData.emojis[emojiIndex] = newEmoji;
         setProjectData({ ...updatedData });
-        saveToBackEnd();
         console.log(projectData.emojis)
     };
 
@@ -246,9 +245,6 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
         metricArray.push({ ...metricDictionary[key], metricId: key });
     }
     projectData.metrics = metricArray;
-    projectData.metrics.forEach(metric => {
-        metric.levels.sort((a, b) => a.levelOrder - b.levelOrder);
-    });
     return {
         props: projectData,
     };
