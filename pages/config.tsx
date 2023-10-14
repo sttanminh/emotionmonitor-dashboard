@@ -128,6 +128,7 @@ const ConfigurationPage = (initialProjectData: ProjectProps) => {
         const updatedData = { ...projectData };
         updatedData.emojis[emojiIndex] = newEmoji;
         setProjectData({ ...updatedData });
+        saveToBackEnd();
         console.log(projectData.emojis)
     };
 
