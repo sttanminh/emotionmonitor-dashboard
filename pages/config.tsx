@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import MetricsSetting from "../components/metricsSetting/metricsSetting";
 import EmojiSetting from "../components/emojiSetting/emojiSetting";
 import { GetServerSidePropsContext } from "next";
@@ -26,6 +26,15 @@ const ConfigurationPage = (initialProjectData: ProjectProps) => {
 
     // maintain projectData so the UI re-render when changes happen
     const [projectData, setProjectData] = useState(initialProjectData);
+
+    useEffect(() => {
+        // Function to run immediately on page load
+        projectData.metrics.forEach(metric => {
+            metric.levels.sort((a, b) => a.levelOrder - b.levelOrder);
+        });
+        setProjectData({ ...projectData })
+        console.log('Page loaded');
+    }, []);
 
     // function to delete a metric from the project data
     const deleteMetric = async (indexToDelete: number) => {
@@ -119,6 +128,7 @@ const ConfigurationPage = (initialProjectData: ProjectProps) => {
         const updatedData = { ...projectData };
         updatedData.emojis[emojiIndex] = newEmoji;
         setProjectData({ ...updatedData });
+        saveToBackEnd();
         console.log(projectData.emojis)
     };
 
@@ -236,6 +246,9 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
         metricArray.push({ ...metricDictionary[key], metricId: key });
     }
     projectData.metrics = metricArray;
+    projectData.metrics.forEach(metric => {
+        metric.levels.sort((a, b) => a.levelOrder - b.levelOrder);
+    });
     return {
         props: projectData,
     };
