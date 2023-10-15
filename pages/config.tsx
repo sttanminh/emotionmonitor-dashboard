@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import MetricsSetting from "../components/metricsSetting/metricsSetting";
 import EmojiSetting from "../components/emojiSetting/emojiSetting";
 import { GetServerSidePropsContext } from "next";
@@ -7,6 +7,10 @@ import { getProject } from "./api/projects";
 import Link from "next/link";
 import ArrowBack from "@mui/icons-material/ArrowBack";
 import Typography from "@mui/material/Typography";
+import Button from "@mui/material/Button";
+import Snackbar from "@mui/material/Snackbar";
+import IconButton from "@mui/material/IconButton";
+import CloseIcon from "@mui/icons-material/Close";
 
 export type ProjectProps = {
   projectId: string;
@@ -24,8 +28,32 @@ export type ProjectProps = {
 
 const ConfigurationPage = (initialProjectData: ProjectProps) => {
   // maintain projectData so the UI re-render when changes happen
-  const [projectData, setProjectData] = useState(initialProjectData);
+  const [projectData, setProjectData] = React.useState(initialProjectData);
+  const [open, setOpen] = React.useState(false);
 
+  const handleClose = (
+    event: React.SyntheticEvent | Event,
+    reason?: string
+  ) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    setOpen(false);
+  };
+
+  const action = (
+    <React.Fragment>
+      <IconButton
+        size="small"
+        aria-label="close"
+        color="inherit"
+        onClick={handleClose}
+      >
+        <CloseIcon fontSize="small" />
+      </IconButton>
+    </React.Fragment>
+  );
   // function to delete a metric from the project data
   const deleteMetric = async (indexToDelete: number) => {
     // create a new object that contains the modified data
@@ -130,6 +158,9 @@ const ConfigurationPage = (initialProjectData: ProjectProps) => {
         "Content-Type": "application/json",
       },
     });
+    if (response.ok) {
+      setOpen(true);
+    }
   };
 
   return (
@@ -208,6 +239,13 @@ const ConfigurationPage = (initialProjectData: ProjectProps) => {
           }
         </div>
       </section>
+      <Snackbar
+        open={open}
+        autoHideDuration={6000}
+        onClose={handleClose}
+        message="Configuration saved"
+        action={action}
+      />
     </div>
   );
 };
