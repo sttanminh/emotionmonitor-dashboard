@@ -93,6 +93,7 @@ const Page: NextPageWithLayout = () => {
         .catch((error) => {
           console.error("Error fetching ratings:", error);
         });
+      setAvailableEmojis(activeProject.emojis);
       setRatingsLoading(false);
     }
   }, [activeProject, activeTask, selectedStartDate, selectedEndDate]);
