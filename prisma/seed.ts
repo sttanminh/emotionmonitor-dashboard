@@ -165,118 +165,118 @@ async function main() {
 
   const rating1 = await prisma.rating.create({
     data: {
-      emoScore: 0,
+      emoScore: 1,
       level: 1,
       levelId: level1.id,
       metricId: complexity.id,
       submissionId: submissionOne.id,
     },
   });
-  const rating2 = await prisma.rating.create({
-    data: {
-      emoScore: 3,
-      level: 3,
-      levelId: level3.id,
-      metricId: complexity.id,
-      submissionId: submissionTwo.id,
-    },
-  });
-  const rating3 = await prisma.rating.create({
-    data: {
-      emoScore: 2,
-      level: 1,
-      levelId: difLevel1.id,
-      metricId: difficulty.id,
-      submissionId: submissionOne.id,
-    },
-  });
-  const rating4 = await prisma.rating.create({
-    data: {
-      emoScore: 0,
-      level: 3,
-      levelId: difLevel3.id,
-      metricId: difficulty.id,
-      submissionId: submissionTwo.id,
-    },
-  });
-  const rating5 = await prisma.rating.create({
-    data: {
-      emoScore: 1,
-      level: 1,
-      levelId: workloadLevel1.id,
-      metricId: workload.id,
-      submissionId: submissionOne.id,
-    },
-  });
-  const rating6 = await prisma.rating.create({
-    data: {
-      emoScore: 5,
-      level: 3,
-      levelId: workloadLevel3.id,
-      metricId: workload.id,
-      submissionId: submissionTwo.id,
-    },
-  });
-  const rating7 = await prisma.rating.create({
-    data: {
-      emoScore: 5,
-      level: 1,
-      levelId: level1.id,
-      metricId: complexity.id,
-      submissionId: submissionThree.id,
-    },
-  });
-  const rating8 = await prisma.rating.create({
-    data: {
-      emoScore: 2,
-      level: 3,
-      levelId: level3.id,
-      metricId: complexity.id,
-      submissionId: submissionFour.id,
-    },
-  });
-  const rating9 = await prisma.rating.create({
-    data: {
-      emoScore: 0,
-      level: 1,
-      levelId: difLevel1.id,
-      metricId: difficulty.id,
-      submissionId: submissionThree.id,
-    },
-  });
-  const rating10 = await prisma.rating.create({
-    data: {
-      emoScore: 4,
-      level: 3,
-      levelId: difLevel3.id,
-      metricId: difficulty.id,
-      submissionId: submissionFour.id,
-    },
-  });
-  const rating11 = await prisma.rating.create({
-    data: {
-      emoScore: 2,
-      level: 1,
-      levelId: workloadLevel1.id,
-      metricId: workload.id,
-      submissionId: submissionThree.id,
-    },
-  });
-  const rating12 = await prisma.rating.create({
-    data: {
-      emoScore: 1,
-      level: 3,
-      levelId: workloadLevel3.id,
-      metricId: workload.id,
-      submissionId: submissionFour.id,
-    },
-  });
+  // const rating2 = await prisma.rating.create({
+  //   data: {
+  //     emoScore: 4,
+  //     level: 3,
+  //     levelId: level3.id,
+  //     metricId: complexity.id,
+  //     submissionId: submissionTwo.id,
+  //   },
+  // });
+  // const rating3 = await prisma.rating.create({
+  //   data: {
+  //     emoScore: 3,
+  //     level: 1,
+  //     levelId: difLevel1.id,
+  //     metricId: difficulty.id,
+  //     submissionId: submissionOne.id,
+  //   },
+  // });
+  // const rating4 = await prisma.rating.create({
+  //   data: {
+  //     emoScore: 1,
+  //     level: 3,
+  //     levelId: difLevel3.id,
+  //     metricId: difficulty.id,
+  //     submissionId: submissionTwo.id,
+  //   },
+  // });
+  // const rating5 = await prisma.rating.create({
+  //   data: {
+  //     emoScore: 2,
+  //     level: 1,
+  //     levelId: workloadLevel1.id,
+  //     metricId: workload.id,
+  //     submissionId: submissionOne.id,
+  //   },
+  // });
+  // const rating6 = await prisma.rating.create({
+  //   data: {
+  //     emoScore: 4,
+  //     level: 3,
+  //     levelId: workloadLevel3.id,
+  //     metricId: workload.id,
+  //     submissionId: submissionTwo.id,
+  //   },
+  // });
+  // const rating7 = await prisma.rating.create({
+  //   data: {
+  //     emoScore: 4,
+  //     level: 1,
+  //     levelId: level1.id,
+  //     metricId: complexity.id,
+  //     submissionId: submissionThree.id,
+  //   },
+  // });
+  // const rating8 = await prisma.rating.create({
+  //   data: {
+  //     emoScore: 2,
+  //     level: 3,
+  //     levelId: level3.id,
+  //     metricId: complexity.id,
+  //     submissionId: submissionFour.id,
+  //   },
+  // });
+  // const rating9 = await prisma.rating.create({
+  //   data: {
+  //     emoScore: 5,
+  //     level: 1,
+  //     levelId: difLevel1.id,
+  //     metricId: difficulty.id,
+  //     submissionId: submissionThree.id,
+  //   },
+  // });
+  // const rating10 = await prisma.rating.create({
+  //   data: {
+  //     emoScore: 4,
+  //     level: 3,
+  //     levelId: difLevel3.id,
+  //     metricId: difficulty.id,
+  //     submissionId: submissionFour.id,
+  //   },
+  // });
+  // const rating11 = await prisma.rating.create({
+  //   data: {
+  //     emoScore: 2,
+  //     level: 1,
+  //     levelId: workloadLevel1.id,
+  //     metricId: workload.id,
+  //     submissionId: submissionThree.id,
+  //   },
+  // });
+  // const rating12 = await prisma.rating.create({
+  //   data: {
+  //     emoScore: 1,
+  //     level: 3,
+  //     levelId: workloadLevel3.id,
+  //     metricId: workload.id,
+  //     submissionId: submissionFour.id,
+  //   },
+  // });
 
-  const user = await prisma.user.upsert({
-    where: { id: objectId },
-    update: {},
-    create: { id: objectId, name: "thisUser", email: "test@test.com" },
-  });
+  // const user = await prisma.user.upsert({
+  //   where: { id: objectId },
+  //   update: {},
+  //   create: { id: objectId, name: "thisUser", email: "test@test.com" },
+  // });
 }
 main()
   .then(async () => {

@@ -67,10 +67,10 @@ export const HorizontalBarGraph: FC<Props> = ({
   let graphData: { x: string; y: number }[] = [];
 
   ratings.forEach((rating) => {
-    if (!emojiData[availableEmojis[rating.emoScore]]) {
-      emojiData[availableEmojis[rating.emoScore]] = 0;
+    if (!emojiData[availableEmojis[rating.emoScore -1]]) {
+      emojiData[availableEmojis[rating.emoScore -1]] = 0;
     }
-    emojiData[availableEmojis[rating.emoScore]]++;
+    emojiData[availableEmojis[rating.emoScore -1]]++;
   });
 
   availableEmojis.forEach((emoji) =>
