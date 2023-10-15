@@ -43,7 +43,7 @@ export default async function handler(
         try {
             var prompt = generatePrompt(data)
             if (prompt == '') {
-                res.status(201).json({result: "No ratings for this card"})
+                res.status(200).json({result: "No ratings for this card"})
                 return
             }
             console.log(prompt)
@@ -54,16 +54,10 @@ export default async function handler(
             console.log(completion.choices[0].message.content)
             res.status(200).json({result: completion.choices[0].message.content})
         } catch (error: any) {
-            if (error.response) {
-                console.error(error.response.status, error.response.data);
-                res.status(error.response.status).json(error.response.data);
+            if (error instanceof TypeError) {
+                res.status(400).json({ message: "Bad request, please check request body" })
             } else {
-                console.error(`Error with OpenAI API request: ${error.message}`);
-                res.status(500).json({
-                    error: {
-                        message: 'An error occurred during your request.',
-                    }
-                });
+            res.status(500).json({ message: "Internal server error" })
             }
         }
     }
