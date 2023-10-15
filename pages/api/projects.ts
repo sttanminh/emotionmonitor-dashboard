@@ -29,15 +29,19 @@ async function handler(req: NextApiRequest, res: NextApiResponse<Data>) {
         .setHeader("Content-Type", "application/json")
         .json({ message: "ratings retrieved", ...projects });
     } catch (error: any) {
-      res.status(500).json({ message: error.message });
+      res.status(500).json({ message: "Internal server error" });
     }
   } else if (req.method === "PUT") {
     try {
       const { projectData } = req.body;
       await configureProject(projectData);
-      res.status(201).json({ message: "Project configured!" });
+      res.status(204).json({ message: "Project configured!" });
     } catch (error: any) {
-      res.status(500).json({ message: error.message });
+      if (error instanceof TypeError) {
+        res.status(400).json({ message: "Bad request, please check request body" })
+      } else {
+      res.status(500).json({ message: "Internal server error" });
+      }
     }
   }
 }

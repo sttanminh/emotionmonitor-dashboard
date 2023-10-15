@@ -15,6 +15,21 @@ type RatingsSummary = {
     }
 }
 
+type PropjectData = {
+    taskName: string,
+    ratings: {
+        emoScore: number,
+        level: number,
+        metric: {
+            name: string,
+            levels: {
+                levelLabel: string,
+                levelOrder: string
+            }[]
+        }
+    }[]
+}
+
 const openai = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY,
 });
@@ -25,11 +40,10 @@ export default async function handler(
 ) {
     if (req.method === 'POST') {
         const { data } = req.body
-        console.log(data)
         try {
             var prompt = generatePrompt(data)
             if (prompt == '') {
-                res.status(200).json({result: "No ratings for this card"})
+                res.status(201).json({result: "No ratings for this card"})
                 return
             }
             console.log(prompt)
@@ -55,7 +69,7 @@ export default async function handler(
     }
 }
     
-function generatePrompt(data: any): string {
+function generatePrompt(data: PropjectData): string {
     var taskName = data.taskName
     var processedData: RatingsSummary = generateRatingsSummary(data)
     var statsString = ""
@@ -83,7 +97,7 @@ function generatePrompt(data: any): string {
     ${statsString}Please provide tailored advice to manage the team working on this card in the next 2 weeks`;
 }
 
-function generateRatingsSummary(data: any): RatingsSummary {
+function generateRatingsSummary(data: PropjectData): RatingsSummary {
     var processedData: any = {}
     data.ratings.forEach((rating: any) => {
         if (!(rating.metric.name in processedData)) {
