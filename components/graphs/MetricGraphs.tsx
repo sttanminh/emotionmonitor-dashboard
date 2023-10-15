@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Chart, registerables } from "chart.js";
-import { availableEmojis } from "@/pages";
-import { Typography } from "@mui/material";
+import Typography from "@mui/material/Typography";
 
 Chart.register(...registerables);
 
@@ -14,6 +13,7 @@ interface MetricGraphsProps {
   metricName: string;
   orderedLevels: string[];
   displayEmojis: boolean;
+  availableEmojis: string[];
 }
 
 function MetricGraphs({
@@ -21,6 +21,7 @@ function MetricGraphs({
   metricName,
   orderedLevels,
   displayEmojis,
+  availableEmojis,
 }: MetricGraphsProps) {
   const chartContainerRefs = useRef<Record<string, HTMLDivElement | null>>({});
 

@@ -1,11 +1,12 @@
 import { FC } from "react";
 import { VictoryBar, VictoryChart, VictoryTheme } from "victory";
-import { Ratings, availableEmojis } from "@/pages";
-import { Typography } from "@mui/material";
+import { Ratings } from "@/pages";
+import Typography from "@mui/material/Typography";
 
 interface Props {
   ratings: Ratings;
   isLoading: boolean;
+  availableEmojis: string[];
 }
 
 interface GraphData {
@@ -13,7 +14,7 @@ interface GraphData {
   y?: number;
 }
 
-const getGraph = (graphData: GraphData[]) => {
+const getGraph = (graphData: GraphData[], emojis: string[]) => {
   return (
     <>
       <VictoryChart
@@ -33,15 +34,15 @@ const getGraph = (graphData: GraphData[]) => {
             data: {
               fill: ({ datum }) => {
                 switch (datum.x) {
-                  case "😀":
+                  case emojis[4]:
                     return "#785EF0";
-                  case "😐":
+                  case emojis[3]:
                     return "#648FFF";
-                  case "😢":
+                  case emojis[2]:
                     return "#FFB000";
-                  case "😊":
+                  case emojis[1]:
                     return "#DC267F";
-                  case "😔":
+                  case emojis[0]:
                     return "#FE6100";
                   default:
                     return "#000000";
@@ -56,7 +57,11 @@ const getGraph = (graphData: GraphData[]) => {
   );
 };
 
-export const HorizontalBarGraph: FC<Props> = ({ ratings, isLoading }) => {
+export const HorizontalBarGraph: FC<Props> = ({
+  ratings,
+  isLoading,
+  availableEmojis,
+}) => {
   // Initialize an empty object to store the aggregated metric
   const emojiData: Record<string, number> = {};
   let graphData: { x: string; y: number }[] = [];
@@ -78,5 +83,5 @@ export const HorizontalBarGraph: FC<Props> = ({ ratings, isLoading }) => {
     return (
       <Typography variant="body1">No rating for this time period</Typography>
     );
-  return <>{getGraph(graphData)}</>;
+  return <>{getGraph(graphData, availableEmojis)}</>;
 };

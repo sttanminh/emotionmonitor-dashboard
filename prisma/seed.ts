@@ -12,6 +12,7 @@ async function main() {
       name: "Dev insights project",
       source: "TRELLO",
       referenceNumber: 7,
+      emojis: ["😢", "😔", "😐", "😀", "😊"],
     },
   });
   const complexity = await prisma.metric.create({
