@@ -53,7 +53,7 @@ export const MetricGraphModule: FC<Props> = ({
           : (usedLevels[metricName] = [thisLevel]);
       }
       metricData[metricName][emoLabel][levelLabel] =
-        (metricData[metricName][emoLabel][levelLabel] || 0);
+        (metricData[metricName][emoLabel][levelLabel] || 0) + 1;
     }
   });
   // Fill in missing levels and emojis with 0
@@ -76,7 +76,7 @@ export const MetricGraphModule: FC<Props> = ({
       break;
     }
     for (let emoScore = 0; emoScore < availableEmojis.length; emoScore++) {
-      const emoLabel = availableEmojis[emoScore];
+      const emoLabel = availableEmojis[emoScore-1];
       if (!metricData[metricName][emoLabel]) {
         metricData[metricName][emoLabel] = {};
       }
@@ -94,6 +94,8 @@ export const MetricGraphModule: FC<Props> = ({
   }
 
   const metricGraphData = metricData;
+  console.log(metricGraphData)
+  
   return (
     <div className="metricGraph">
       {isLoading && <Typography variant="body1">Loading data...</Typography>}
