@@ -1,3 +1,7 @@
+# Dev Insights Emotimonitor Dashboard
+
+This repo contains the NextJS app for observing the data submitted through emotimonitor (currently developed plugin for [Trello](https://github.com/dev-insights-development-team/emotimonitor-trello) with opportunity to expand to Jira). The dashboard displays the data using emotion summary graphs as well as a holistic metric graph. It is also used to configure the plugin. Please read below for instructions on how to develop on the repo.
+
 ## To set up local developing environment
 
 Install docker https://docs.docker.com/get-docker/
@@ -47,14 +51,16 @@ The `pages/api` directory is mapped to `/api/*`. Files in this directory are tre
 
 This repo is using playwright for end to end testing using a built version of the app and your running db in docker.
 
-To run the tests run:
+The code will first need to be built:
+```bash
+npm run build
+```
+
+Then to run the tests:
 
 ```bash
 npm run test:e2e
 ```
 
-To run a specific test run:
-
-```bash
-npm run test:e2e path/to/file.ts:lineNumber
-```
+## Deployment
+This app is deployed using Netlify.
