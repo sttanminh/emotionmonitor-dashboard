@@ -1,23 +1,29 @@
 # Get all metrics
+
 Get all metrics
 
 ```http
 GET /api/metrics
 ```
+
 ## URL parameters
+
 None
 
 ## Request body
+
 None
 
 ## Responses
+
 ### Status Codes
 
 | Status Code | Description |
-| :--- | :--- |
-| 200 | `OK` |
+| :---------- | :---------- |
+| 200         | `OK`        |
 
 ### Response body
+
 ```typescript
 {
   "id": string,
@@ -29,103 +35,133 @@ None
 
 ## Status Codes
 
-| Status Code | Description |
-| :--- | :--- |
-| 500 | `INTERNAL SERVER ERROR` |
+| Status Code | Description             |
+| :---------- | :---------------------- |
+| 500         | `INTERNAL SERVER ERROR` |
 
 ## Response body
+
 ```javascript
 {
   "message": "Internal server error"
 }
 ```
 
-# Get all Trello cards
+# Get a trello card by id
+
 Get all Trello cards
 
 ```http
 GET /api/trelloCard
 ```
+
 ## URL parameters
-None
+
+```typescript
+id: string;
+```
 
 ## Request body
+
 None
 
 ## Responses
+
 ### Status Codes
 
 | Status Code | Description |
-| :--- | :--- |
-| 200 | `OK` |
+| :---------- | :---------- |
+| 200         | `OK`        |
 
 ### Response body
+
 ```typescript
 {
-  "id: string,
-  "taskName: string,
-  "description: string,
-  "projectId: string,
-}[]
+  "id": string,
+  "taskName": string,
+  "description": string,
+  "projectId": string,
+}
 ```
 
 ## Status Codes
 
-| Status Code | Description |
-| :--- | :--- |
-| 500 | `INTERNAL SERVER ERROR` |
+| Status Code | Description             |
+| :---------- | :---------------------- |
+| 500         | `INTERNAL SERVER ERROR` |
 
 ## Response body
+
 ```javascript
 {
   "message": "Internal server error"
 }
 ```
+
 # Get all ratings
-Get all ratings for a project
+
+Get all ratings for a project within a given time period, with the ability to filter by card and metric
 
 ```http
 GET /api/ratings
 ```
+
 ## URL parameters
-| Parameter | Type | Description |
-| :--- | :--- | :--- |
-| `projectId` | `string` | Project id |
-| `cardId` | `string` | Card id |
-| `metricId` | `string` | Metric id |
-| `startDate` | `Date` | Start date |
-| `endDate` | `Date` | End date |
+
+| Parameter   | Type      | Description |
+| :---------- | :-------- | :---------- |
+| `projectId` | `string`  | Project id  |
+| `cardId`    | `string?` | Card id     |
+| `metricId`  | `string?` | Metric id   |
+| `startDate` | `Date`    | Start date  |
+| `endDate`   | `Date`    | End date    |
 
 ## Request body
+
 None
 
 ## Responses
+
 ### Status Codes
 
 | Status Code | Description |
-| :--- | :--- |
-| 200 | `OK` |
+| :---------- | :---------- |
+| 200         | `OK`        |
 
 ### Response body
+
 ```typescript
 {
   "message": string
-  "id": string,
-  "emoScore": int,
-  "level": int,
-  "levelId": string,
-  "submissionId": string
-  "metricId": string
-}[]
+  "ratings": {
+    "id": string,
+    "emoScore": int,
+    "level": int,
+    "levelId": string,
+    "submissionId": string,
+    "metricId": string,
+    "metric": {
+      "name": string,
+      "levels": {
+        "id": string,
+        "levelLabel": string,
+        "levelOrder": number,
+        "active": boolean,
+        "metricId": string,
+      }[]
+    }
+  }[]
+}
 ```
 
 ## Status Codes
 
-| Status Code | Description |
-| :--- | :--- |
-| 500 | `INTERNAL SERVER ERROR` |
+| Status Code | Description             |
+| :---------- | :---------------------- |
+| 500         | `INTERNAL SERVER ERROR` |
 
 ## Response body
+
 ```javascript
 {
   "message": "Internal server error"
@@ -133,26 +169,32 @@ None
 ```
 
 # Get all projects
+
 Get all projects
 
 ```http
 GET /api/projects
 ```
+
 ## URL parameters
+
 None
 
 ## Request body
+
 None
 
 ## Responses
+
 ### Status Codes
 
 | Status Code | Description |
-| :--- | :--- |
-| 200 | `OK` |
+| :---------- | :---------- |
+| 200         | `OK`        |
 
 ### Response body
-```javascript
+
+```typescript
 {
   "id": string,
   "name": string,
@@ -180,26 +222,32 @@ None
 
 ## Status Codes
 
-| Status Code | Description |
-| :--- | :--- |
-| 500 | `INTERNAL SERVER ERROR` |
+| Status Code | Description             |
+| :---------- | :---------------------- |
+| 500         | `INTERNAL SERVER ERROR` |
 
 ## Response body
-```javascript
+
+```json
 {
   "message": "Internal server error"
 }
 ```
 
 # Configure project
+
 Update features of a project such as metrics, levels, emojis and reference number
 
 ```http
 PUT /api/projects
 ```
+
 ## URL parameters
+
 None
+
 ### Request body
+
 ```typescript
 {
   "projectId": string,
@@ -217,13 +265,15 @@ None
 ```
 
 ### Responses
+
 #### Status Codes
 
 | Status Code | Description |
-| :--- | :--- |
-| 204 | `OK` |
+| :---------- | :---------- |
+| 204         | `OK`        |
 
 ### Response body
+
 ```javascript
 {
   "message": "Project configured!"
@@ -232,11 +282,12 @@ None
 
 ### Status Codes
 
-| Status Code | Description |
-| :--- | :--- |
-| 400 | `BAD REQUEST` |
+| Status Code | Description   |
+| :---------- | :------------ |
+| 400         | `BAD REQUEST` |
 
 ### Response body
+
 ```javascript
 {
   "message": "Bad request, please check request body"
@@ -245,11 +296,12 @@ None
 
 ### Status Codes
 
-| Status Code | Description |
-| :--- | :--- |
-| 500 | `INTERNAL SERVER ERROR` |
+| Status Code | Description             |
+| :---------- | :---------------------- |
+| 500         | `INTERNAL SERVER ERROR` |
 
 ### Response body
+
 ```javascript
 {
   "message": "Internal server error"
@@ -257,14 +309,19 @@ None
 ```
 
 # Get AI recommendations
+
 Get AI recommendations based on the ratings of a card over a period of time
 
 ```http
 POST /api/recommendations
 ```
+
 ## URL parameters
+
 None
+
 ### Request body
+
 ```typescript
 {
   "taskName": string,
@@ -283,23 +340,26 @@ None
 ```
 
 ### Responses
+
 #### Status Codes
 
 | Status Code | Description |
-| :--- | :--- |
-| 200 | `OK` |
+| :---------- | :---------- |
+| 200         | `OK`        |
 
 ### Response body
+
 If there were no ratings send via request body (array was empty)
-{
-```javascript
+
+```json
 {
   "message": "No ratings for this card"
 }
+```
 
 Otherwise
-{
-```javascript
+
+```json
 {
   "message": "<Recommendations from AI>"
 }
@@ -307,11 +367,12 @@ Otherwise
 
 ### Status Codes
 
-| Status Code | Description |
-| :--- | :--- |
-| 400 | `BAD REQUEST` |
+| Status Code | Description   |
+| :---------- | :------------ |
+| 400         | `BAD REQUEST` |
 
 ### Response body
+
 ```javascript
 {
   "message": "Bad request, please check request body"
@@ -320,11 +381,12 @@ Otherwise
 
 ### Status Codes
 
-| Status Code | Description |
-| :--- | :--- |
-| 500 | `INTERNAL SERVER ERROR` |
+| Status Code | Description             |
+| :---------- | :---------------------- |
+| 500         | `INTERNAL SERVER ERROR` |
 
 ### Response body
+
 ```javascript
 {
   "message": "Internal server error"
