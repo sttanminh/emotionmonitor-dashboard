@@ -95,7 +95,6 @@ export const MetricGraphModule: FC<Props> = ({
   }
 
   const metricGraphData = metricData;
-  console.log(" Metric data: ",metricData)
 
   
   return (
