@@ -15,6 +15,21 @@ type RatingsSummary = {
     }
 }
 
+type PropjectData = {
+    taskName: string,
+    ratings: {
+        emoScore: number,
+        level: number,
+        metric: {
+            name: string,
+            levels: {
+                levelLabel: string,
+                levelOrder: string
+            }[]
+        }
+    }[]
+}
+
 const openai = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY,
 });
@@ -25,7 +40,6 @@ export default async function handler(
 ) {
     if (req.method === 'POST') {
         const { data } = req.body
-        console.log(data)
         try {
             var prompt = generatePrompt(data)
             if (prompt == '') {
@@ -40,22 +54,16 @@ export default async function handler(
             console.log(completion.choices[0].message.content)
             res.status(200).json({result: completion.choices[0].message.content})
         } catch (error: any) {
-            if (error.response) {
-                console.error(error.response.status, error.response.data);
-                res.status(error.response.status).json(error.response.data);
+            if (error instanceof TypeError) {
+                res.status(400).json({ message: "Bad request, please check request body" })
             } else {
-                console.error(`Error with OpenAI API request: ${error.message}`);
-                res.status(500).json({
-                    error: {
-                        message: 'An error occurred during your request.',
-                    }
-                });
+            res.status(500).json({ message: "Internal server error" })
             }
         }
     }
 }
     
-function generatePrompt(data: any): string {
+function generatePrompt(data: PropjectData): string {
     var taskName = data.taskName
     var processedData: RatingsSummary = generateRatingsSummary(data)
     var statsString = ""
@@ -83,7 +91,7 @@ function generatePrompt(data: any): string {
     ${statsString}Please provide tailored advice to manage the team working on this card in the next 2 weeks`;
 }
 
-function generateRatingsSummary(data: any): RatingsSummary {
+function generateRatingsSummary(data: PropjectData): RatingsSummary {
     var processedData: any = {}
     data.ratings.forEach((rating: any) => {
         if (!(rating.metric.name in processedData)) {

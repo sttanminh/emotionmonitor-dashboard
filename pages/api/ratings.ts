@@ -26,7 +26,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse<Data>) {
         .setHeader("Content-Type", "application/json")
         .json({ message: "ratings retrieved", ...ratings });
     } catch (error: any) {
-      res.status(500).json({ message: error.message });
+      res.status(500).json({ message: "Internal server error" });
     }
   }
 }
