@@ -24,7 +24,6 @@ import {
   TextField,
 } from "@mui/material";
 import { Search } from "@mui/icons-material";
-import Loader from "@/components/hamsterLoader";
 
 export interface ProjectPlus extends Project {
   trelloCards: Task[];
@@ -43,13 +42,12 @@ export interface Task {
 
 export type Ratings = (Rating & { metric: Metric & { levels: Level[] } })[];
 
-export const availableEmojis = ["😢", "😔", "😐", "😊", "😀"];
-
 const Page: NextPageWithLayout = () => {
   const [projects, setprojects] = useState<ProjectPlus[] | null>(null);
   const [isLoading, setLoading] = useState(true);
   const [isRatingsLoading, setRatingsLoading] = useState(true);
   const [activeProject, setActiveProject] = useState<ProjectPlus>();
+  const [availableEmojis, setAvailableEmojis] = useState<string[]>([]);
   const [summaryTypeSelection, setSummaryTypeSelection] = useState("Overall");
   const [activeTask, setActiveTask] = useState<Task>();
   const [ratings, setRatings] = useState<Ratings>();
@@ -113,6 +111,7 @@ const Page: NextPageWithLayout = () => {
   useEffect(() => {
     if (projects != null) {
       setActiveProject(projects[0]);
+      setAvailableEmojis(projects[0].emojis);
     }
   }, [projects]);
 
@@ -237,8 +236,12 @@ const Page: NextPageWithLayout = () => {
                   <MenuItem value={card.id}>{card.taskName}</MenuItem>
                 ))}
             </Select>
-            {activeTask && <button className="AIButton" onClick={handleAIButtonClick}> AI</button>}
-            
+            {activeTask && (
+              <button className="AIButton" onClick={handleAIButtonClick}>
+                {" "}
+                AI
+              </button>
+            )}
           </>
         )}
       </div>
@@ -248,6 +251,7 @@ const Page: NextPageWithLayout = () => {
             <EmotionSummaryModule
               ratings={ratings}
               isLoading={isRatingsLoading}
+              availableEmojis={availableEmojis}
             />
             {activeTask && <TaskInfoModule id={activeTask?.id} />}
           </div>
@@ -255,10 +259,17 @@ const Page: NextPageWithLayout = () => {
             ratings={ratings}
             activeMetrics={activeProject.metrics}
             isLoading={isRatingsLoading}
+            availableEmojis={availableEmojis}
           />
         </div>
       )}
-      {showPopup&& ratings && <AIPopup ratings={ratings} taskName={activeTask?.taskName!} onClose={closePopUp}/>}
+      {showPopup && ratings && (
+        <AIPopup
+          ratings={ratings}
+          taskName={activeTask?.taskName!}
+          onClose={closePopUp}
+        />
+      )}
     </div>
   );
 };

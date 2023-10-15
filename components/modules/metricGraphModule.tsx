@@ -1,5 +1,5 @@
 import { FC } from "react";
-import { Ratings, availableEmojis } from "@/pages";
+import { Ratings } from "@/pages";
 import MetricGraphs from "../graphs/MetricGraphs";
 import { Typography } from "@mui/material";
 import { Level, Metric, Rating } from "@prisma/client";
@@ -14,12 +14,14 @@ interface Props {
     levels: Level[];
   }[];
   isLoading: boolean;
+  availableEmojis: string[];
 }
 
 export const MetricGraphModule: FC<Props> = ({
   ratings,
   activeMetrics,
   isLoading,
+  availableEmojis,
 }) => {
   // Initialize an empty object to store the aggregated metric
   const metricData: Record<string, Record<string, Record<string, number>>> = {};
@@ -114,6 +116,7 @@ export const MetricGraphModule: FC<Props> = ({
                 .sort((a, b) => a.levelOrder - b.levelOrder)
                 .map((level) => level.levelLabel)}
               displayEmojis={index === Object.keys(metricGraphData).length - 1}
+              availableEmojis={availableEmojis}
             />
           ))}
         </>
