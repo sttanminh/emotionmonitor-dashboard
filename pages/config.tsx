@@ -136,13 +136,13 @@ const ConfigurationPage = (initialProjectData: ProjectProps) => {
     <div className="body-config">
       <section className="background">
         <div>
-          <Link href={`/`}>
+          <a href={`/`}>
             <ArrowBack
               data-testid="back-button"
               fontSize="large"
               color="primary"
             />
-          </Link>
+          </a>
         </div>
         <Typography variant="h3">Emotimonitor Configuration</Typography>
         <Typography variant="h6">
