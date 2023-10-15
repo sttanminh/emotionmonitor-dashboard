@@ -10,20 +10,18 @@ import "react-datepicker/dist/react-datepicker.css";
 import DateRangeSelector from "@/components/datePicker";
 import { MetricGraphModule } from "@/components/modules/metricGraphModule";
 import Button from "@mui/material/Button";
-import { Typography } from "@mui/material";
+import Typography from "@mui/material/Typography";
 import Link from "next/link";
 import SettingsIcon from "@mui/icons-material/Settings";
 import HamsterLoader from "@/components/hamsterLoader";
 import AIPopup from "@/components/AIPopUp";
-import {
-  ButtonGroup,
-  InputAdornment,
-  ListSubheader,
-  MenuItem,
-  Select,
-  TextField,
-} from "@mui/material";
-import { Search } from "@mui/icons-material";
+import Search from "@mui/icons-material/Search";
+import MenuItem from "@mui/material/MenuItem";
+import Select from "@mui/material/Select";
+import InputAdornment from "@mui/material/InputAdornment";
+import TextField from "@mui/material/TextField";
+import ButtonGroup from "@mui/material/ButtonGroup";
+import ListSubheader from "@mui/material/ListSubheader";
 
 export interface ProjectPlus extends Project {
   trelloCards: Task[];

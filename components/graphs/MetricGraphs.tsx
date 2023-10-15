@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Chart, registerables } from "chart.js";
-import { Typography } from "@mui/material";
+import Typography from "@mui/material/Typography";
 
 Chart.register(...registerables);
 

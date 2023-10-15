@@ -1,4 +1,4 @@
-import { Typography } from "@mui/material";
+import Typography from "@mui/material/Typography";
 import { TrelloCard } from "@prisma/client";
 import { FC, useEffect, useState } from "react";
 

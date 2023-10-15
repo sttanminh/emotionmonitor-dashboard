@@ -5,8 +5,8 @@ import { GetServerSidePropsContext } from "next";
 import { FaPlusCircle, FaSave } from "react-icons/fa";
 import { getProject } from "./api/projects";
 import Link from "next/link";
-import { ArrowBack } from "@mui/icons-material";
-import { Typography } from "@mui/material";
+import ArrowBack from "@mui/icons-material/ArrowBack";
+import Typography from "@mui/material/Typography";
 
 export type ProjectProps = {
   projectId: string;
@@ -136,13 +136,13 @@ const ConfigurationPage = (initialProjectData: ProjectProps) => {
     <div className="body-config">
       <section className="background">
         <div>
-          <a href={`/`}>
+          <Link href={`/`}>
             <ArrowBack
               data-testid="back-button"
               fontSize="large"
               color="primary"
             />
-          </a>
+          </Link>
         </div>
         <Typography variant="h3">Emotimonitor Configuration</Typography>
         <Typography variant="h6">

@@ -1,7 +1,7 @@
 import { FC } from "react";
 import { HorizontalBarGraph } from "../graphs/horizontalBarGraph";
 import { Ratings } from "@/pages";
-import { Typography } from "@mui/material";
+import Typography from "@mui/material/Typography";
 
 interface Props {
   ratings: Ratings;

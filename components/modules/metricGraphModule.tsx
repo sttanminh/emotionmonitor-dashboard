@@ -1,8 +1,8 @@
 import { FC } from "react";
 import { Ratings } from "@/pages";
 import MetricGraphs from "../graphs/MetricGraphs";
-import { Typography } from "@mui/material";
-import { Level, Metric, Rating } from "@prisma/client";
+import Typography from "@mui/material/Typography";
+import { Level } from "@prisma/client";
 
 interface Props {
   ratings: Ratings;

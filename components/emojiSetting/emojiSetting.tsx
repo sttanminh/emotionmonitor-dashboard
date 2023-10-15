@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import styles from "./emojiSetting.module.css"; // Import the CSS module
-import { MenuItem, Select, SelectChangeEvent } from "@mui/material";
+import MenuItem from "@mui/material/MenuItem";
+import Select from "@mui/material/Select";
+import { SelectChangeEvent } from "@mui/material/Select";
 
 interface EmojiSettingProps {
   emojis: string[];
