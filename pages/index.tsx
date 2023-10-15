@@ -10,21 +10,18 @@ import "react-datepicker/dist/react-datepicker.css";
 import DateRangeSelector from "@/components/datePicker";
 import { MetricGraphModule } from "@/components/modules/metricGraphModule";
 import Button from "@mui/material/Button";
-import { Typography } from "@mui/material";
+import Typography from "@mui/material/Typography";
 import Link from "next/link";
 import SettingsIcon from "@mui/icons-material/Settings";
 import HamsterLoader from "@/components/hamsterLoader";
 import AIPopup from "@/components/AIPopUp";
-import {
-  ButtonGroup,
-  InputAdornment,
-  ListSubheader,
-  MenuItem,
-  Select,
-  TextField,
-} from "@mui/material";
-import { Search } from "@mui/icons-material";
-import Loader from "@/components/hamsterLoader";
+import Search from "@mui/icons-material/Search";
+import MenuItem from "@mui/material/MenuItem";
+import Select from "@mui/material/Select";
+import InputAdornment from "@mui/material/InputAdornment";
+import TextField from "@mui/material/TextField";
+import ButtonGroup from "@mui/material/ButtonGroup";
+import ListSubheader from "@mui/material/ListSubheader";
 
 export interface ProjectPlus extends Project {
   trelloCards: Task[];
@@ -43,13 +40,12 @@ export interface Task {
 
 export type Ratings = (Rating & { metric: Metric & { levels: Level[] } })[];
 
-export const availableEmojis = ["😢", "😔", "😐", "😊", "😀"];
-
 const Page: NextPageWithLayout = () => {
   const [projects, setprojects] = useState<ProjectPlus[] | null>(null);
   const [isLoading, setLoading] = useState(true);
   const [isRatingsLoading, setRatingsLoading] = useState(true);
   const [activeProject, setActiveProject] = useState<ProjectPlus>();
+  const [availableEmojis, setAvailableEmojis] = useState<string[]>([]);
   const [summaryTypeSelection, setSummaryTypeSelection] = useState("Overall");
   const [activeTask, setActiveTask] = useState<Task>();
   const [ratings, setRatings] = useState<Ratings>();
@@ -113,6 +109,7 @@ const Page: NextPageWithLayout = () => {
   useEffect(() => {
     if (projects != null) {
       setActiveProject(projects[0]);
+      setAvailableEmojis(projects[0].emojis);
     }
   }, [projects]);
 
@@ -237,8 +234,12 @@ const Page: NextPageWithLayout = () => {
                   <MenuItem value={card.id}>{card.taskName}</MenuItem>
                 ))}
             </Select>
-            {activeTask && <button className="AIButton" onClick={handleAIButtonClick}> AI</button>}
-            
+            {activeTask && (
+              <button className="AIButton" onClick={handleAIButtonClick}>
+                {" "}
+                AI
+              </button>
+            )}
           </>
         )}
       </div>
@@ -248,6 +249,7 @@ const Page: NextPageWithLayout = () => {
             <EmotionSummaryModule
               ratings={ratings}
               isLoading={isRatingsLoading}
+              availableEmojis={availableEmojis}
             />
             {activeTask && <TaskInfoModule id={activeTask?.id} />}
           </div>
@@ -255,10 +257,17 @@ const Page: NextPageWithLayout = () => {
             ratings={ratings}
             activeMetrics={activeProject.metrics}
             isLoading={isRatingsLoading}
+            availableEmojis={availableEmojis}
           />
         </div>
       )}
-      {showPopup&& ratings && <AIPopup ratings={ratings} taskName={activeTask?.taskName!} onClose={closePopUp}/>}
+      {showPopup && ratings && (
+        <AIPopup
+          ratings={ratings}
+          taskName={activeTask?.taskName!}
+          onClose={closePopUp}
+        />
+      )}
     </div>
   );
 };

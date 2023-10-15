@@ -1,12 +1,9 @@
 import { ProjectPlus } from "@/pages";
-import { Search } from "@mui/icons-material";
-import {
-  InputAdornment,
-  ListSubheader,
-  MenuItem,
-  Select,
-  TextField,
-} from "@mui/material";
+import Search from "@mui/icons-material/Search";
+import MenuItem from "@mui/material/MenuItem";
+import Select from "@mui/material/Select";
+import InputAdornment from "@mui/material/InputAdornment";
+import TextField from "@mui/material/TextField";
 import React, { FC, useState } from "react";
 
 type Project = { name: string; id: string };
