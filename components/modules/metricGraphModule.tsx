@@ -53,7 +53,7 @@ export const MetricGraphModule: FC<Props> = ({
           : (usedLevels[metricName] = [thisLevel]);
       }
       metricData[metricName][emoLabel][levelLabel] =
-        (metricData[metricName][emoLabel][levelLabel] || 0) + 1;
+        (metricData[metricName][emoLabel][levelLabel] || 0);
     }
   });
   // Fill in missing levels and emojis with 0
