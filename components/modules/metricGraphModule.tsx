@@ -30,7 +30,7 @@ export const MetricGraphModule: FC<Props> = ({
   ratings.forEach((rating) => {
     const { metric: ratingMetric, emoScore, level } = rating;
     const metricName = ratingMetric.name;
-    const emoLabel = availableEmojis[emoScore];
+    const emoLabel = availableEmojis[emoScore-1];
     const thisLevel =
       level > 0
         ? ratingMetric.levels.find(
@@ -56,6 +56,7 @@ export const MetricGraphModule: FC<Props> = ({
         (metricData[metricName][emoLabel][levelLabel] || 0) + 1;
     }
   });
+  
   // Fill in missing levels and emojis with 0
   activeMetrics.forEach((metric) => {
     if (!metricData[metric.name]) metricData[metric.name] = {};
@@ -94,6 +95,8 @@ export const MetricGraphModule: FC<Props> = ({
   }
 
   const metricGraphData = metricData;
+
+  
   return (
     <div className="metricGraph">
       {isLoading && <Typography variant="body1">Loading data...</Typography>}
