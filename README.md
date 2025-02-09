@@ -1,4 +1,7 @@
 # Dev Insights Emotimonitor Dashboard
+![dashboard](https://github.com/user-attachments/assets/9f43b389-eae8-4a20-a4a6-40c21d9bfc80)
+
+
 
 This repo contains the NextJS app for observing the data submitted through emotimonitor (currently developed plugin for [Trello](https://github.com/dev-insights-development-team/emotimonitor-trello) with opportunity to expand to Jira). The dashboard displays the data using emotion summary graphs as well as a holistic metric graph. It is also used to configure the plugin. Please read below for instructions on how to develop on the repo.
 
